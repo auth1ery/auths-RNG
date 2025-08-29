@@ -4,7 +4,7 @@ please make sure you know what you are doing, if it breaks, it aint my fault.
 my code is really messy so please excuse that. 
 
 # features
-ooh lets get spicy
+ooh lets get spicy...
 the main features are:
 
 1. rolling (duh)
@@ -17,6 +17,6 @@ the main features are:
 
 # what the hell do i do with this code????
 you can change my messy code and maybe optimize it (so updating code in neocities isnt the most laggy thing ever)
-mess around and maybe laugh of how messy and terrible my code is :)
+and maybe mess around and maybe laugh of how messy and terrible my code is :)
 
 -- auth --
