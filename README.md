@@ -1,7 +1,5 @@
 # auth's RNG
-repository for auth's RNG!
-please make sure you know what you are doing, if it breaks, it aint my fault.
-my code is really messy so please excuse that.
+the repository for auth's RNG! want a feature that you think will be good? send a pull request!
 
 # features
 ooh lets get spicy...
@@ -18,5 +16,7 @@ the main features are:
 # what the hell do i do with this code????
 you can change my messy code and maybe optimize it (so updating code in neocities isnt the most laggy thing ever)
 and maybe mess around and maybe laugh of how messy and terrible my code is :)
+
+if you wanna change stuff
 
 -- auth --
