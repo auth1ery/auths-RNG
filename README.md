@@ -17,6 +17,6 @@ the main features are:
 you can change my messy code and maybe optimize it (so updating code in neocities isnt the most laggy thing ever)
 and maybe mess around and maybe laugh of how messy and terrible my code is :)
 
-if you wanna change stuff
+if you wanna change stuff... send a pull request, or something like that...? honestly i don't know i have no idea how to do this stuff good :sob:
 
 -- auth --
