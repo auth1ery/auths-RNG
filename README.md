@@ -1,5 +1,5 @@
 # auth's RNG
-the repository for auth's RNG! want a feature that you think will be good? send a pull request!
+the repository for auth's RNG! want a feature that you think will be good? send a pull request! or tell me how to actually make my code "fork-able"
 
 # features
 ooh lets get spicy...
@@ -17,6 +17,6 @@ the main features are:
 you can change my messy code and maybe optimize it (so updating code in neocities isnt the most laggy thing ever)
 and maybe mess around and maybe laugh of how messy and terrible my code is :)
 
-if you wanna change stuff... send a pull request, or something like that...? honestly i don't know i have no idea how to do this stuff good :sob:
+pull requests and forks arent here yet...
 
 -- auth --
