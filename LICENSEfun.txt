@@ -1,0 +1,23 @@
+copyright 2025 auth
+
+you can:
+
+use it
+copy it
+sell it
+change it
+put it in your toaster for extra flavour
+
+HOWEVER you MUST
+
+keep the license (not the fun one the legal one)
+give credit to auth
+
+and if it breaks:
+
+you can't sue auth
+you can't be mad at auth
+you can't summon lawyers at midnight
+it's "as-is" deal with it bozo
+
+"if it breaks you can't sue auth lmao" -- MIT license
