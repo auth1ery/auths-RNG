@@ -1,5 +1,5 @@
 # auth's RNG
-the repository for auth's RNG! want a feature that you think will be good? send a pull request! or tell me how to actually make my code easily "fork-able"
+the repository for auth's RNG! (https://authsrng.neocities.org/) want a feature that you think will be good? send a pull request! or tell me how to actually make my code easily "fork-able"
 
 # features
 ooh lets get spicy...
@@ -13,7 +13,5 @@ the main features are:
 6. achievements
 7. thats it
 
-# what the hell do i do with this code????
-idk man
 
 -- auth --
