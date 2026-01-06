@@ -1,6 +1,4 @@
 # auth's RNG
 the repository for auth's RNG! (https://authsrng.neocities.org/)
 
-this will be updated soon to the latest version of auth's RNG.
-
--- auth --
+extremely outdated repo. will be changed on update 9.1
