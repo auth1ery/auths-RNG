@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - auth's RNG</title>
+
+  <style>
+    body {
+      background-color: #0e0e0e;
+      color: #dcdcdc;
+      font-family: monospace;
+      margin: 0;
+      padding: 28px;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: normal;
+      letter-spacing: 0.06em;
+      margin: 0 0 0.5em 0;
+      text-transform: lowercase;
+      opacity: 0.95;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      font-weight: normal;
+      letter-spacing: 0.04em;
+      margin: 2em 0 1em 0;
+      text-transform: lowercase;
+      opacity: 0.85;
+      border-bottom: 1px solid #2a2a2a;
+      padding-bottom: 0.5em;
+    }
+
+    .faq-item {
+      margin-bottom: 1.8em;
+      padding: 16px;
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+
+    .faq-item:hover {
+      background: #151515;
+    }
+
+    .question {
+      font-size: 0.95em;
+      opacity: 0.7;
+      margin-bottom: 0.6em;
+      font-weight: bold;
+    }
+
+    .answer {
+      margin: 0;
+      opacity: 0.88;
+      line-height: 1.6;
+    }
+
+    .answer strong {
+      color: #ffb86b;
+      font-weight: normal;
+    }
+
+    .example {
+      background: #0a0a0a;
+      padding: 12px;
+      margin-top: 0.8em;
+      border-left: 2px solid #2a2a2a;
+      font-size: 0.9em;
+      opacity: 0.75;
+    }
+
+    a {
+      color: #dcdcdc;
+      text-decoration: none;
+      border-bottom: 1px dotted #444;
+      transition: opacity 0.2s;
+    }
+
+    a:hover {
+      opacity: 0.7;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2em;
+      padding: 8px 16px;
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 2px;
+      text-decoration: none;
+      border-bottom: none;
+    }
+
+    .back-link:hover {
+      background: #222;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1>frequently asked questions</h1>
+    <p>this also serves as a tutorial for auth's RNG :)</p>
+    <br>
+    <script async src="https://cse.google.com/cse.js?cx=e0002c8d28f9746ac">
+    </script>
+    <div class="gcse-search"></div>
+    <small>search what you need help with (beta)</small>
+
+    <h2>basics</h2>
+
+    <div class="faq-item">
+      <div class="question">how do i roll?</div>
+      <div class="answer">press the roll button above the "total rolls: X" counter, or press auto roll if you're lazy.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="question">why is there a big counter on the screen?</div>
+      <div class="answer">every 100 rolls, you get x4 luck for a minute. its nothing to worry about, its only good, no bad.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="question">what are anomalies?</div>
+      <div class="answer">anomalies are little rare things where you can "consume" them for a 0.5x permanent luck boost that can build up overtime. this is great for getting rarities that are usually impossible with just raw luck. you get them every time you roll a rarity above 1/10,000.</div>
+    </div>
+
+    <h2>shop system</h2>
+
+    <div class="faq-item">
+      <div class="question">how do i get points?</div>
+      <div class="answer">
+        double-click any rarity in your inventory to "sell it out" for points. you keep the rarity, but it gets marked as sold. the rarer it is, the more points you get!
+        <div class="example">
+          formula: rarity number ÷ 3 (rounded up)<br>
+          example: a 1/90 rarity gives you 30 points<br>
+          if you have duplicates, you sell all unsold copies at once for more points
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="question">what happens when i sell out?</div>
+      <div class="answer">the rarity gets a "sold" marker, meaning you can't sell it again until you get another duplicate. once you roll another copy, the sold marker disappears and you can sell the new copies.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="question">what are the shop upgrades?</div>
+      <div class="answer">
+        <strong>luck boost:</strong> increases your luck multiplier by 1.1x per level (stacks multiplicatively). max level 100. costs 50 points + (level × 25).
+        <br><br>
+        <strong>roll speed:</strong> decreases roll animation time by 0.2 seconds per level. max level 3 (minimum 0.25s roll time). costs 100 points + (level × 50).
+        <br><br>
+        <strong>point multiplier:</strong> decreases the divisor used to calculate points by 0.2 per level. starts at ÷3, eventually becomes ÷1 (meaning you get full rarity value as points). max level 10. costs 150 points + (level × 75).
+        <div class="example">
+          legendary 1/90 with no upgrades: 90 ÷ 3 = 30 points<br>
+          with 5 point multiplier upgrades: 90 ÷ 2 = 45 points<br>
+          at max level: 90 ÷ 1 = 90 points!
+        </div>
+        <br><br>
+        <strong>rarity magnet:</strong> each level you get a 1.1x luck boost to get rarities you haven't got before. max level 5.
+        <br><br>
+        <strong>point printer:</strong> its basically the kinda upgrade you see in most incremental games. every second you get +1 points and depending on how much levels you have on it you can either get 30/sec on level 30, or 300/sec on level 300. there is no max level.
+        <br><br>
+        <strong>duplicate chance:</strong> every level you get a 1% chance that stacks. every roll yoou're essentially getting a chance to clone that rarity you got into 2. so lets say you rolled common and you get a popup saying that you got a duplicate, you now got 2 commons from that roll. max level 10.
+        <br><br>
+        <strong>the potions</strong> are simple. you dont need help on potions trust me.
+      </div>
+    </div>
+
+    <h2>other features</h2>
+
+    <div class="faq-item">
+      <div class="question">do the rarities do anything?</div>
+      <div class="answer">not right now. they're mostly so you can collect them, kinda like pokemon cards.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="question">do achievements do anything?</div>
+      <div class="answer">no. its mostly there to give a sense of progression at the start. they dont do anything.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="question">what are run cards?</div>
+      <div class="answer">run cards can be generated with the button under "reset data...". when you press the button it generates a summary of your current stats. your rolls, your playtime, your run id, and your rarities. these numbers may not be accurate as the run card logic is held together by duct tape.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">what are the daily and weekly features?</div>
+      <div class="answer">its supposed to keep you on the site HAHAHAHA but the streaks don't do anything, it's just to keep you awfully addicted to the game</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">what does the wishing well do?</div>
+      <div class="answer">the wishing well is a bonus feature in auth's RNG. you can trust your luck and get a chance to double the amount of points you put in. you can only put in the amount of points you have. when you throw points into the wishing well, theres a 40% chance that the amount of points you put in will double, and theres a 60% chance that the amount of points you put in will not be doubled. if the points get doubled, you get the final amount. if the points don't get doubled, you dont get anything and you lose the amount of points you put in.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">what are the keybinds?</div>
+      <div class="answer">A and Left Arrow to move pages to left. D and Right Arrow to move pages to right. W to click (just hover your mouse onto something and press W)</div>
+    </div>
+    
+    <h2>ranked mode</h2>
+    
+    <div class="faq-item">
+      <div class="question">what is ranked mode?</div>
+      <div class="answer">ranked mode is a way to challenge your friends with pure raw luck! you type out your friend's user id and your friend types out your user id, then you guys battle.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">do i get anything if i win</div>
+      <div class="answer">you get 1 win and get placed on the leaderboard. the leaderboard is for people with the most wins</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">do i lose anything if i lose</div>
+      <div class="answer">...no</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">i thought neocities was a static web host? how did you even manage to add servers?</div>
+      <div class="answer">i made a service called "haze" as the advanced backend for auth's RNG. i then just made the link a constant to fetch from.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">why the ranked system?</div>
+      <div class="answer">fun</div>
+    </div>
+    
+    <h2>txt</h2>
+    
+    <div class="faq-item">
+      <div class="question">what is txt?</div>
+      <div class="answer">txt is a social media platform service purely for auth's RNG players and normal people alike! it's a great way to interact with the community if you dont have discord. you can also link your auth's RNG client TO your txt account to show off that you gamble for fun</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">what does linking do</div>
+      <div class="answer">it just puts a badge on your profile in the words of "auth's RNG linked!". it doesnt do anything other than that</div>
+    </div>
+        
+    <div class="faq-item">
+      <div class="question">why txt?</div>
+      <div class="answer">because i said so. now go make an account please please please</div>
+    </div>
+    
+    <h2>troubleshooting</h2>
+
+    <div class="faq-item">
+      <div class="question">i took a daily/weekly and it reset my streak to 1. is it bugged?</div>
+      <div class="answer">no, you just missed a day or a week and you lost your streak because of it.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">i left the tab on auto roll. why didnt i get anything?</div>
+      <div class="answer">its almost definitely not auth's RNG itself and its definitely your browser. if you have a browser like Microsoft Edge or Opera GX, those browsers really like to sleep tabs when inactive or not opened for a bit. either stay on the tab where you're playing auth's RNG or change a setting in your browser. look for something like "battery saver" or "sleep tabs" or "resource saving" or "CPU/RAM limiter" and turn them/it off.</div>
+    </div> 
+    
+    <div class="faq-item">
+      <div class="question">my file size is under 10 megabytes, why cant i upload it? (custom music)</div>
+      <div class="answer">sometimes localStorage gets a bit too aggressive. try compressing it down to under 3 MB so it can upload safely.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">why isnt music playing?</div>
+      <div class="answer">you probably clicked the "mute music" option in settings. uncheck it and music will most definitely work. if music doesnt play still, its your browser. try moving to a different browser like chrome or firefox.</div>
+    </div>
+    
+    <div class="faq-item">
+      <div class="question">why isnt ranked mode working?</div>
+      <div class="answer">it may be a CSP or CORS issue, check the console and open an issue in the github repository or post in the nerimity or discord server!</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="question">why isnt some things working?</div>
+      <div class="answer">you found a bug. join the nerimity server linked in the "links and more" page and report in "bugs". or join the discord server and report in #bugs or email me at auth24d@proton.me --- however i may not be active on my email. you can also open a github issue.</div>
+    </div>
+
+    <a href="/" class="back-link">← back to game</a>
+
+  </div>
+</body>
+</html>
