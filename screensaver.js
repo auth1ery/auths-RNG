@@ -115,7 +115,11 @@
     "wut the dawg doin",
     "RAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH",
     "mincraft",
-    "i used to always say REEEE when im mad... i used to be so damn cringe"
+    "i used to always say REEEE when im mad... i used to be so damn cringe",
+    "guys i am NOT a femboy, i am TRANS",
+    "please stop calling me gay or harrass me because im trans.. please...",
+    "subway",
+    "imagine swearing lmao"
   ];
 
   let screensaver, textElem, idleTimer, messageTimer, typeInterval;
