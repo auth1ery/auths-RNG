@@ -2,13 +2,26 @@
 the repository for auth's RNG!
 
 ![Version](https://img.shields.io/github/v/release/auth1ery/auths-RNG)
-![Build](https://img.shields.io/github/actions/workflow/status/auth1ery/auths-RNG/release.yml)
-![Last Commit](https://img.shields.io/github/last-commit/auth1ery/auths-RNG/main)
-![License](https://img.shields.io/github/license/auth1ery/auths-RNG)
 ![Stars](https://img.shields.io/github/stars/auth1ery/auths-RNG)
+![Forks](https://img.shields.io/github/forks/auth1ery/auths-RNG)
+![Watchers](https://img.shields.io/github/watchers/auth1ery/auths-RNG)
 
 main branch: https://authsrng.xyz (main stable site)
 nightly branch: https://nightly.authsrng.xyz (unstable testing branch)
+
+---
+
+# about auth's RNG
+
+auth's RNG can be described as "a web-based, incremental RNG game!"
+
+it has many features, many depths of gameplay, and is overall decently addicting!
+
+auth's RNG is inspired by RNG games on the platform Roblox, such as Sol's RNG and Juke's RNG
+
+---
+
+# versioning notes
 
 this repository starts at version `9.1`. however, the game has been updated since 1.0 beta. 
 
