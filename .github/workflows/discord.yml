@@ -1,81 +1,20 @@
-name: discord notifier
+name: discord notify
 
 on:
   push:
-  pull_request:
-  issues:
-  issue_comment:
-  create:
-  delete:
+    branches: [ "**" ]
 
 jobs:
-  notify:
+  discord:
     runs-on: ubuntu-latest
-
     steps:
-      - name: send to discord
-        shell: bash
-        run: |
-          set -e
-
-          type="${{ github.event_name }}"
-          event='${{ toJSON(github.event) }}'
-
-          payload=$(jq -n \
-            --arg type "$type" \
-            --argjson event "$event" \
-            '
-            def safe(x): (x // "n/a");
-
-            {
-              embeds: [
-                {
-                  title: ("github event: " + ($type | ascii_downcase)),
-                  description: (
-                    "repo: " + (safe($event.repository.full_name)) + "\n" +
-                    "actor: " + (safe($event.sender.login)) + "\n" +
-                    "branch/ref: " + (safe($event.ref))
-                  ),
-                  color: 3447003,
-
-                  fields: (
-                    if $type == "push" then
-                      [{
-                        name: "commits",
-                        value: (
-                          ($event.commits // [])
-                          | map("- " + (.message | tostring))
-                          | join("\n")
-                        )
-                      }]
-                    elif $type == "pull_request" then
-                      [{
-                        name: "pull request",
-                        value: (
-                          "title: " + (safe($event.pull_request.title)) + "\n" +
-                          "action: " + (safe($event.action)) + "\n" +
-                          "state: " + (safe($event.pull_request.state))
-                        )
-                      }]
-                    elif $type == "issues" then
-                      [{
-                        name: "issue",
-                        value: (
-                          "title: " + (safe($event.issue.title)) + "\n" +
-                          "action: " + (safe($event.action)) + "\n" +
-                          "state: " + (safe($event.issue.state))
-                        )
-                      }]
-                    else
-                      []
-                    end
-                  )
-                }
-              ]
-            }
-            ')
-
-          curl -s -H "Content-Type: application/json" \
-            -X POST \
-            -d "$payload" \
-            "${{ secrets.DISCORD_WEBHOOK }}"
+      - name: send push to discord
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          noembed: true
+          content: |
+            push: ${{ github.repository }}@${{ github.ref_name }}
+            commit: ${{ github.sha }}
+            author: ${{ github.actor }}
+            message: ${{ github.event.head_commit.message }}
