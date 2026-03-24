@@ -1,10 +1,59 @@
+# contributing to auth's RNG
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare dolor non metus suscipit sagittis. Suspendisse lobortis maximus justo ut mollis. Nunc malesuada libero ex, a elementum odio faucibus id. Nunc sit amet rhoncus ex. Suspendisse non augue sed leo rhoncus finibus. Proin dui augue, molestie vel justo aliquam, faucibus iaculis nisi. Fusce rutrum ultrices ipsum, at porta enim facilisis dignissim. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam quis accumsan enim.
+thank you for your interest in contributing to **auth's RNG**! please follow these guidelines to ensure smooth collaboration!!!!!!!!!!!!!!!
 
-Donec eu tristique metus. Phasellus at est sit amet mi hendrerit egestas. Vivamus et lacus sapien. Nullam sem eros, semper quis euismod nec, gravida sit amet nulla. Nullam est velit, placerat eget pulvinar non, tincidunt vitae augue. Sed ut justo libero. Quisque eget sagittis massa, quis ultrices elit. Maecenas facilisis lacus eget varius posuere. Nunc condimentum dolor at tellus dignissim convallis. Etiam faucibus mauris purus, sit amet tristique arcu convallis eu. Praesent porta lobortis lectus, eu rhoncus ligula pretium eu.
+## how to contribute
 
-Fusce volutpat sapien sed justo volutpat pharetra. Nullam interdum diam euismod posuere tincidunt. Praesent at orci sit amet justo porttitor consequat. Fusce nec dui at neque hendrerit viverra accumsan quis sapien. Integer dignissim libero ac eros tempor, id auctor dolor sodales. Suspendisse et diam sapien. Mauris eu quam mauris. Aliquam tincidunt ex sed tincidunt rhoncus. Proin sem dui, viverra sit amet bibendum a, volutpat ultricies nisl. Ut vitae mi in lorem placerat consectetur at eget neque. Duis ex magna, mollis vel neque eleifend, laoreet scelerisque justo. Pellentesque tempus molestie enim, ac placerat dolor imperdiet vel. Curabitur lobortis purus tempus, consequat dui sit amet, aliquam nisi. Duis in facilisis libero, non pulvinar elit. Nullam non metus augue. Mauris tempor condimentum nibh sit amet sagittis.
+1. **fork the repository**  
+   click the "fork" button on the top-right of the repo page to create your own copy.
 
-Etiam vehicula nulla purus, non imperdiet velit dapibus a. Sed iaculis pellentesque lacus a ultricies. Curabitur vitae sapien quis leo pulvinar tempus in eu nisl. Aliquam erat volutpat. In hac habitasse platea dictumst. Quisque vulputate ac nulla a varius. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam porttitor massa sed metus sagittis fringilla. Donec vitae tempor dui. Quisque venenatis ornare turpis ultrices scelerisque. Maecenas porttitor, dolor sed pellentesque condimentum, tellus ante elementum dui, sit amet dictum neque nisi eu ligula. Praesent ultrices ultrices metus nec tempus. Maecenas euismod, enim quis convallis malesuada, leo ex mattis augue, ac imperdiet nibh eros id enim. Nam tempus sapien ac augue elementum lacinia. Vivamus vulputate mollis egestas. Nullam placerat sed lectus varius pulvinar.
+2. **clone your fork**  
+   once you've forked the repo, clone it to your local machine:  
+   `git clone https://github.com/your-username/auths-RNG.git`
 
-In nulla urna, lobortis non ante ut, dapibus congue est. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut in ligula lorem. Nullam convallis, dui sodales hendrerit tempus, purus ipsum varius tellus, in pulvinar nisi felis iaculis elit. Donec suscipit leo purus, at bibendum neque semper sed. Duis eget dolor consequat, condimentum nibh at, commodo odio. Proin semper elit enim, ut eleifend erat sodales in. Sed eget ipsum iaculis libero dapibus varius eget non tortor.
+3. **create a branch**  
+   create a new branch for your work:  
+   `git checkout -b feature/your-feature-name`
+
+4. **make changes**  
+   work on the feature, fix, or improvement you want to contribute.
+
+5. **commit your changes**  
+   commit your changes with a clear and concise message:  
+   `git commit -m "add feature: description of the change"`
+
+6. **push to your fork**  
+   push your changes to your forked repo:  
+   `git push origin feature/your-feature-name`
+
+7. **create a pull request**  
+   open a pull request (PR) from your fork's branch to the main repository. describe the changes you've made and why! 
+
+## pull request guidelines
+
+- **describe your changes** clearly. provide context on what was changed and why.
+- **test your changes** before submitting a PR. ensure that the game still works and that your code does not introduce bugs.
+- **keep commits focused** on one task or feature. if necessary, break down large changes into smaller, manageable pieces.
+- **maintain coding style**. follow existing coding conventions, such as indentation, variable naming, and comments.
+- **avoid modifying unrelated files**. only modify files related to the feature or bug fix you're working on.
+- **keep it simple**. don't overcomplicate your changes. aim for clean, understandable code.
+- and the most important.. **NEVER TOUCH THE .github/workflows FOLDERS AND FILES!** please... im begging you...
+
+## issue tracker
+
+if you find a bug or have a feature request, feel free to open an issue. please be clear about the problem you're encountering or the feature you'd like to see added.
+
+## code of conduct
+
+- **be respectful** to others. we all have different experiences, and it's important to be kind and understanding.
+- **no spam or offensive content**. keep all communication professional and on-topic.
+- **be constructive** when giving feedback. offer suggestions and alternatives when necessary.
+- **be a normal human being** and have common sense.
+
+## license
+
+by contributing to this project, you agree that your contributions will be licensed under the same license as the project. see the LICENSE file for more details.
+
+## p.s.
+
+don't use AI thanks
