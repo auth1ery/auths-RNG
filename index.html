@@ -74,9 +74,19 @@
 
 <body>
 
-<div style="position:fixed;top:0;left:0;width:100%;background:#000;color:#fff;font-family:monospace;font-size:11px;padding:6px 8px;z-index:2147483647;text-align:center;">
-UNSTABLE BUILD! this build is for testers and the developer of the game. do NOT trust your save data with this version.
+<div id="unstable-banner" style="position:fixed;top:0;left:0;width:100%;background:#000;color:#fff;font-family:monospace;font-size:11px;padding:6px 8px;z-index:2147483647;text-align:center;cursor:pointer;">
+UNSTABLE BUILD! this build is for testers and the developer of the game. do NOT trust your save data with this version. click me to dismiss.
 </div>
+
+<script>
+  if (window.location.hostname !== "nightly.authsrng.xyz") {
+    document.getElementById("unstable-banner").style.display = "none";
+  } else {
+    document.getElementById("unstable-banner").addEventListener("click", function () {
+      this.style.display = "none";
+    });
+  }
+</script>
 
 <div id="nightly-info" style="position:fixed;bottom:4px;right:6px;color:#fff;font-size:10px;font-family:monospace;z-index:2147483647;white-space:pre;pointer-events:none;"></div>
 <script>
