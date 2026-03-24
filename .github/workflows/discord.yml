@@ -2,9 +2,7 @@ name: discord notify
 
 on:
   push:
-    branches:
-      - main
-      - nightly
+    branches: [ "**" ]
 
 jobs:
   discord:
@@ -14,5 +12,5 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
             -X POST \
-            -d "{\"content\": \"push: ${{ github.repository }}@${{ github.ref_name }}\ncommit: ${{ github.sha }}\nauthor: ${{ github.actor }}\nmessage: ${{ github.event.head_commit.message }}\"}" \
+            -d "{\"content\": \"push: ${{ github.repository }}@${{ github.ref_name }}\ncommit: ${{ github.sha }}\nurl: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\nauthor: ${{ github.actor }}\nmessage: ${{ github.event.head_commit.message }}\"}" \
             ${{ secrets.DISCORD_WEBHOOK }}
