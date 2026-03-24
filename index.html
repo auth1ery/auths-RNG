@@ -74,23 +74,41 @@
 
 <body>
 
-<div id="nightly-info" style="position:fixed;bottom:4px;right:6px;color:#fff;font-size:10px;font-family:monospace;z-index:2147483647;"></div> <!-- lmao i hit da limit -->
+<div id="nightly-info" style="position:fixed;bottom:4px;right:6px;color:#fff;font-size:10px;font-family:monospace;z-index:2147483647;white-space:pre;pointer-events:none;"></div>
 <script>
 (async()=>{
 if(location.hostname!=="nightly.authsrng.xyz")return;
 let el=document.getElementById("nightly-info");
 try{
-let r=await fetch("https://api.github.com/repos/auth1ery/auths-RNG/commits?per_page=1");
-if(r.status===403){
+let [mainC,nightlyC,releases]=await Promise.all([
+fetch("https://api.github.com/repos/auth1ery/auths-RNG/commits/main").then(r=>r.status===403?{rate:1}:r.json()),
+fetch("https://api.github.com/repos/auth1ery/auths-RNG/commits/nightly").then(r=>r.status===403?{rate:1}:r.json()),
+fetch("https://api.github.com/repos/auth1ery/auths-RNG/releases").then(r=>r.status===403?{rate:1}:r.json())
+]);
+
+if(mainC.rate||nightlyC.rate||releases.rate){
 el.textContent="Rate limited by Github.";
 return;
 }
-let j=await r.json();
-let c=j[0];
+
+let fmt=c=>{
 let msg=c.commit.message.split("\n")[0];
 let sha=c.sha.slice(0,7);
 let date=new Date(c.commit.author.date).toLocaleString();
-el.textContent=`${sha} • ${msg} • ${date}`;
+return `${sha} • ${msg} • ${date}`;
+};
+
+let mainR=releases.find(r=>r.target_commitish==="main");
+let nightlyR=releases.find(r=>r.target_commitish==="nightly");
+
+let mainRDate=mainR?new Date(mainR.published_at).toLocaleString():"none";
+let nightlyRDate=nightlyR?new Date(nightlyR.published_at).toLocaleString():"none";
+
+el.textContent=
+`(nightly) branch: ${fmt(nightlyC)}
+(main) branch: ${fmt(mainC)}
+Last release date on main: ${mainRDate}
+Last release date on nightly: ${nightlyRDate}`;
 }catch(e){
 el.textContent="";
 }
