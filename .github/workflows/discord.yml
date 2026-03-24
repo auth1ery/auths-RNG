@@ -2,19 +2,17 @@ name: discord notify
 
 on:
   push:
-    branches: [ "**" ]
+    branches:
+      - main
+      - nightly
 
 jobs:
   discord:
     runs-on: ubuntu-latest
     steps:
       - name: send push to discord
-        uses: step-security/action-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: |
-            push: ${{ github.repository }}@${{ github.ref_name }}
-            commit: ${{ github.sha }}
-            author: ${{ github.actor }}
-            message: ${{ github.event.head_commit.message }}
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{\"content\": \"push: ${{ github.repository }}@${{ github.ref_name }}\ncommit: ${{ github.sha }}\nauthor: ${{ github.actor }}\nmessage: ${{ github.event.head_commit.message }}\"}" \
+            ${{ secrets.DISCORD_WEBHOOK }}
