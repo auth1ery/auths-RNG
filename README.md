@@ -1,6 +1,11 @@
 # auth's RNG
-the repository for auth's RNG! (https://authsrng.neocities.org/)
+the repository for auth's RNG!
 
-repo for https://authsrng.xyz
+main branch: https://authsrng.xyz (main stable site)
+nightly branch: https://nightly.authsrng.xyz (unstable testing branch)
 
-extremely outdated repo. will be fully updated once update 9.1 releases. however it will be occasionally update to the latest neocities version
+this repository starts at version `9.1`. however, the game has been updated since 1.0 beta. 
+
+- site archives can be found at https://archive.org with the wayback machine. search https://authsrng.neocities.org - plus possible later archives can be found at https://authsrng.w3schools.com
+
+- and personal, found archives are at https://archive.org/details/@skunko_lee
