@@ -1,0 +1,26 @@
+name: Discord Notifications
+
+on:
+  push:
+  pull_request:
+  issues:
+  issue_comment:
+  release:
+  create:
+  delete:
+  check_run:
+
+jobs:
+  discord:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send to Discord
+        run: |
+          EVENT='${{ toJSON(github.event) }}'
+          TYPE='${{ github.event_name }}'
+
+          curl -H "Content-Type: application/json" \
+          -X POST \
+          -d "{\"content\":\"**new github event:** $TYPE\n```json\n$EVENT\n```\"}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
