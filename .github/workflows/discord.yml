@@ -1,26 +1,74 @@
-name: Discord Notifications
+- name: send to discord
+  run: |
+    type="${{ github.event_name }}"
+    event='${{ toJSON(github.event) }}'
 
-on:
-  push:
-  pull_request:
-  issues:
-  issue_comment:
-  release:
-  create:
-  delete:
-  check_run:
+    payload=$(jq -n \
+      --arg type "$type" \
+      --argjson event "$event" \
+      '
+      def trunc(s; n):
+        s | tostring | .[0:n];
 
-jobs:
-  discord:
-    runs-on: ubuntu-latest
+      {
+        embeds: [
+          {
+            title: ("github event: " + $type),
+            description: (
+              "repository: " + $event.repository.full_name + "\n" +
+              "branch: " + ($event.ref // "n/a") + "\n" +
+              "actor: " + ($event.sender.login // "unknown") + "\n"
+            ),
+            fields: (
+              if $type == "push" then
+                [
+                  {
+                    name: "commits",
+                    value: (
+                      ($event.commits // [])
+                      | map("- " + (.message | trunc(80)))
+                      | join("\n")
+                    )
+                  }
+                ]
+              elif $type == "pull_request" then
+                [
+                  {
+                    name: "pull request",
+                    value: (
+                      "title: " + ($event.pull_request.title // "n/a") + "\n" +
+                      "action: " + ($event.action // "n/a") + "\n" +
+                      "state: " + ($event.pull_request.state // "n/a")
+                    )
+                  }
+                ]
+              elif $type == "issues" then
+                [
+                  {
+                    name: "issue",
+                    value: (
+                      "title: " + ($event.issue.title // "n/a") + "\n" +
+                      "action: " + ($event.action // "n/a") + "\n" +
+                      "state: " + ($event.issue.state // "n/a")
+                    )
+                  }
+                ]
+              else
+                [
+                  {
+                    name: "info",
+                    value: (tostring($event) | trunc(1000))
+                  }
+                ]
+              end
+            ),
+            color: 3447003
+          }
+        ]
+      }
+      ')
 
-    steps:
-      - name: Send to Discord
-        run: |
-          EVENT='${{ toJSON(github.event) }}'
-          TYPE='${{ github.event_name }}'
-
-          curl -H "Content-Type: application/json" \
-          -X POST \
-          -d "{\"content\":\"**new github event:** $TYPE\n```json\n$EVENT\n```\"}" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+    curl -H "Content-Type: application/json" \
+      -X POST \
+      -d "$payload" \
+      ${{ secrets.DISCORD_WEBHOOK }}
