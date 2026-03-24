@@ -6,7 +6,8 @@ the repository for auth's RNG!
 ![Forks](https://img.shields.io/github/forks/auth1ery/auths-RNG)
 ![Watchers](https://img.shields.io/github/watchers/auth1ery/auths-RNG)
 
-main branch: https://authsrng.xyz (main stable site)
+main branch: https://authsrng.xyz (main stable site)   
+
 nightly branch: https://nightly.authsrng.xyz (unstable testing branch)
 
 ---
