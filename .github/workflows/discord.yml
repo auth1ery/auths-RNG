@@ -9,11 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: send push to discord
-        uses: Ilshidur/action-discord@master
+        uses: step-security/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          noembed: true
-          content: |
+          args: |
             push: ${{ github.repository }}@${{ github.ref_name }}
             commit: ${{ github.sha }}
             author: ${{ github.actor }}
