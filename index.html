@@ -73,7 +73,30 @@
 </head>
 
 <body>
-  
+
+<div id="nightly-info" style="position:fixed;bottom:4px;right:6px;color:#fff;font-size:10px;font-family:monospace;z-index:9999;"></div>
+<script>
+(async()=>{
+if(location.hostname!=="nightly.authsrng.xyz")return;
+let el=document.getElementById("nightly-info");
+try{
+let r=await fetch("https://api.github.com/repos/auth1ery/auths-RNG/commits?per_page=1");
+if(r.status===403){
+el.textContent="Rate limited by Github.";
+return;
+}
+let j=await r.json();
+let c=j[0];
+let msg=c.commit.message.split("\n")[0];
+let sha=c.sha.slice(0,7);
+let date=new Date(c.commit.author.date).toLocaleString();
+el.textContent=`${sha} • ${msg} • ${date}`;
+}catch(e){
+el.textContent="";
+}
+})();
+</script>
+
 <script>
 if (navigator.userAgent.includes("Screenjesus")) {
   const img = document.createElement("img");
