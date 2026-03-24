@@ -38,6 +38,6 @@ the earliest archive can be found on version `5.5`, which is when auth's RNG bec
 
 # contributing notes
 
-the `.discord/workflows` part should NOT be changed or else they change how the development process work. if you do, i will hunt you down with a shovel
+the `.github/workflows` part should NOT be changed or else they change how the development process work. if you do, i will hunt you down with a shovel
 
 refer to CONTRIBUTING.md for further instructions
