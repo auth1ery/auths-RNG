@@ -1,66 +1,21 @@
 - name: send to discord
   run: |
     type="${{ github.event_name }}"
+
     event='${{ toJSON(github.event) }}'
 
     payload=$(jq -n \
       --arg type "$type" \
       --argjson event "$event" \
       '
-      def trunc(s; n):
-        s | tostring | .[0:n];
-
       {
         embeds: [
           {
             title: ("github event: " + $type),
             description: (
-              "repository: " + $event.repository.full_name + "\n" +
-              "branch: " + ($event.ref // "n/a") + "\n" +
-              "actor: " + ($event.sender.login // "unknown") + "\n"
-            ),
-            fields: (
-              if $type == "push" then
-                [
-                  {
-                    name: "commits",
-                    value: (
-                      ($event.commits // [])
-                      | map("- " + (.message | trunc(80)))
-                      | join("\n")
-                    )
-                  }
-                ]
-              elif $type == "pull_request" then
-                [
-                  {
-                    name: "pull request",
-                    value: (
-                      "title: " + ($event.pull_request.title // "n/a") + "\n" +
-                      "action: " + ($event.action // "n/a") + "\n" +
-                      "state: " + ($event.pull_request.state // "n/a")
-                    )
-                  }
-                ]
-              elif $type == "issues" then
-                [
-                  {
-                    name: "issue",
-                    value: (
-                      "title: " + ($event.issue.title // "n/a") + "\n" +
-                      "action: " + ($event.action // "n/a") + "\n" +
-                      "state: " + ($event.issue.state // "n/a")
-                    )
-                  }
-                ]
-              else
-                [
-                  {
-                    name: "info",
-                    value: (tostring($event) | trunc(1000))
-                  }
-                ]
-              end
+              "repo: " + ($event.repository.full_name // "unknown") + "\n" +
+              "actor: " + ($event.sender.login // "unknown") + "\n" +
+              "ref: " + ($event.ref // "n/a")
             ),
             color: 3447003
           }
