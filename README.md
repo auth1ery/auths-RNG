@@ -32,3 +32,11 @@ this repository starts at version `9.1`. however, the game has been updated sinc
 - and personal, found archives are at https://archive.org/details/@skunko_lee
 
 the earliest archive can be found on version `5.5`, which is when auth's RNG became open source.
+
+---
+
+# contributing notes
+
+the `.discord/workflows` part should NOT be changed or else they change how the development process work. if you do, i will hunt you down with a shovel
+
+refer to CONTRIBUTING.md for further instructions
