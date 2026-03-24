@@ -55,6 +55,7 @@
     "my mom is kinda homeless",
     "WOAAAAHHHHHHHHHHHH did you do a backflip???",
     "also play terraria!",
+    "slurs",
     "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
     "this game was made with neocities",
     "https://authsblog.blogspot.com/",
