@@ -8,7 +8,7 @@ the repository for auth's RNG!
 
 main branch: https://authsrng.xyz (main stable site)   
 
-nightly branch: https://nightly.authsrng.xyz (unstable testing branch)
+nightly branch: https://nightly.authsrng.xyz (unstable testing branch, but contains the latest pre-versions)
 
 ---
 
@@ -18,7 +18,7 @@ auth's RNG can be described as "a web-based, incremental RNG game!"
 
 it has many features, many depths of gameplay, and is overall decently addicting!
 
-roll for rarities, sell-out those rarities, buy upgrades, wish upon this wishing well, and collect the most rarities possible!
+roll for rarities, sell-out those rarities, buy upgrades, wish upon the wishing well, and collect the most rarities possible!
 
 auth's RNG is inspired by RNG games on the platform Roblox, such as Sol's RNG and Juke's RNG
 
