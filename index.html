@@ -476,7 +476,14 @@ if (navigator.userAgent.includes("Screenjesus")) {
 
     </div>
     
-    <div class="page" id="page-3">
+<div class="page" id="page-3">
+  <h2 style="margin-top: 0;">gauntlets</h2>
+  <p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 12px;">collect all rarities in a tier to claim a reward!</p>
+  <div id="gauntletRollDisplay" style="font-size: 0.78em; opacity: 0.5; margin-bottom: 14px;">your rolls: 0</div>
+  <div id="gauntletContainer"></div>
+</div>
+
+    <div class="page" id="page-4">
   <h2 style="margin-top: 0;">wishing well</h2>
   
   <div class="well-container">
@@ -518,7 +525,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
   </div>
 </div>
 
-<div class="page" id="page-4">
+<div class="page" id="page-5">
   <h2 style="margin-top: 0; margin-bottom: 20px;">settings</h2>
   
   <div style="width: 100%; max-width: 400px; font-size: 0.9em; padding: 0 20px;">
@@ -633,7 +640,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
   </div>
 </div>
     
-<div class="page" id="page-5">
+<div class="page" id="page-6">
   <h2 style="margin-top: 0;">links and more</h2>
   
   <button id="rankedModeBtn" class="lazy" style="margin-bottom: 20px; width: 100%; max-width: 400px; font-size: 1.1em; padding: 12px; background: linear-gradient(90deg, #ff6b6b, #4ecdc4); color: #000; border: none; font-weight: bold;">
@@ -793,6 +800,8 @@ if (navigator.userAgent.includes("Screenjesus")) {
   <div class="page-dot" data-page="2"></div>
   <div class="page-dot" data-page="3"></div>
     <div class="page-dot" data-page="4"></div>
+<div class="page-dot" data-page="5"></div>
+
 </div>
 
 <button class="page-arrow left" id="prevPage">‹</button>
@@ -1538,7 +1547,7 @@ function getCurrentSettings() {
   const swipeIndicator = document.querySelector('.swipe-indicator');
   
   let currentPage = 0;
-  const totalPages = 5;
+  const totalPages = 6;
   
   // ???????????????????????????????????/
 let visitCount = parseInt(localStorage.getItem('pageVisitCount') || '0');
