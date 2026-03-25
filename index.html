@@ -652,27 +652,14 @@ if (navigator.userAgent.includes("Screenjesus")) {
   </div>
   
   <button id="generateRunCard" class="lazy" style="margin-top: 10px;">generate run card</button>
-  <button id="link-txt-btn" class="lazy" style="margin-top: 10px;">connect with txt</button>
-  <script>
-    function generateToken(length=16){
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-      let token = ""
-      for(let i=0;i<length;i++) token += chars.charAt(Math.floor(Math.random()*chars.length))
-      return token
-    }
 
-    document.getElementById("link-txt-btn").addEventListener("click", () => {
-      const token = generateToken()
-      window.location.href = "https://txt-ctgm.onrender.com/verify-rng?token=" + token
-    })
-  </script>
   <div id="playtimeDisplay" class="lazy">total playtime: 0s</div>
   
   <br><br>
   
-  <a class="lazy" href="credits.html">credits</a>
-  <a class="lazy" href="FAQ.html">FAQ</a>
-  <a class="lazy" href="http://authsrng.web.fc2.com/">lite version (old browsers only)</a>
+  <a class="lazy" href="credits.html">credits</a>
+  <a class="lazy" href="http://authsrng.web.fc2.com/">lite version</a>
+<a class="lazy" href="FAQ.html">FAQ</a>
   
   <br><br>
   
@@ -681,24 +668,21 @@ if (navigator.userAgent.includes("Screenjesus")) {
     <a href="https://github.com/auth1ery/auths-RNG" class="image-link">
       <span class="link-text">github</span>
     </a>
-    <a href="https://nerimity.com/i/K0zUp" class="image-link">
-      <span class="link-text">nerimity</span>
+    <a href="https://discord.gg/mTDw8jJYqX" class="image-link">
+      <span class="link-text">discord</span>
     </a>
     <a href="https://www.reddit.com/r/authsRNG/" class="image-link">
       <span class="link-text">reddit</span>
-    </a>
-    <a href="https://txt-ctgm.onrender.com/" class="image-link">
-      <span class="link-text">txt</span>
-    </a>
-    <a href="https://discord.gg/mTDw8jJYqX" class="image-link">
-      <span class="link-text">discord</span>
+    </a>
+    <a href="https://nerimity.com/i/K0zUp" class="image-link">
+      <span class="link-text">nerimity</span>
     </a>
   </div>
   
   <br>
   <br>
   
-  <p>more links...</p>
+  <p>even more links...</p>
   <div class="image-column">
     <a href="https://stats.uptimerobot.com/TAmAzlTA1g" class="image-link">
       <span class="link-text">status</span>
@@ -725,6 +709,81 @@ if (navigator.userAgent.includes("Screenjesus")) {
   <p>feed my pet while you're at it:</p>
   <a href="https://tamanotchi.world/29830c"><img src="https://tamanotchi.world/i/29830" alt="It's tamaNOTchi! Click to feed!"></a>
   
+<br>
+<br>
+
+<p>contributors:</p>
+<div id="contributors"></div>
+
+<style>
+#contributors{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:8px;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,monospace;
+}
+
+.contributor{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px;
+  background:#0a0a0a;
+  border:1px solid #1a1a1a;
+  border-radius:6px;
+  color:#e5e5e5;
+  text-decoration:none;
+  transition:background .15s,border-color .15s;
+}
+
+.contributor:hover{
+  background:#111;
+  border-color:#2a2a2a;
+}
+
+.contributor img{
+  width:20px;
+  height:20px;
+  border-radius:50%;
+}
+
+.name{
+  flex:1;
+  font-size:12px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.count{
+  font-size:11px;
+  color:#777;
+}
+</style>
+
+<script>
+(async () => {
+  const res = await fetch("https://api.github.com/repos/auth1ery/auths-RNG/contributors?per_page=100");
+  const users = await res.json();
+
+  const root = document.getElementById("contributors");
+
+  users.forEach(u => {
+    const a = document.createElement("a");
+    a.className = "contributor";
+    a.href = u.html_url;
+    a.target = "_blank";
+
+    a.innerHTML = `
+      <img src="${u.avatar_url}">
+      <span class="name">${u.login}</span>
+      <span class="count">${u.contributions}</span>
+    `;
+
+    root.appendChild(a);
+  });
+})();
+</script>
   </div>
 </div>
 
