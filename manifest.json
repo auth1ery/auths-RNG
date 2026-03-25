@@ -3,7 +3,7 @@
   "short_name": "RNG",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#000000",
+  "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons": [
     {
@@ -17,5 +17,11 @@
       "type": "image/png"
     }
   ],
-  "description": "a web-based, incremental RNG game!"
+  "dir": "auto",
+  "lang": "en",
+  "orientation": "portrait",
+  "categories": [
+    "entertainment",
+    "games"
+  ]
 }
