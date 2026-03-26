@@ -1493,31 +1493,48 @@ updatePointsDisplay();
 updateShopUI();
 
 function resetInventory() {
-  const required = "sudo auths-RNG delete 'data'";
-  const input = prompt(
-    "this will delete EVERYTHING. and by everything, i mean EVERYTHING.\n\n" +
-    "type the command exactly to confirm:\n" +
-    required
-  );
-
-  if (!input || input.trim() !== required) {
-    alert("incorrect command. your data has been spared.");
-    return;
+  if (confirm('are you comfortably sure that you will delete your sweet sweet data???')) {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(TOTAL_ROLLS_KEY);
+    localStorage.removeItem(ACHIEVEMENTS_KEY);
+    localStorage.removeItem(ANOMALIES_KEY);
+    localStorage.removeItem(ANOMALIES_USED_KEY);
+    localStorage.removeItem(POINTS_KEY);
+    localStorage.removeItem(SHOP_UPGRADES_KEY);
+    localStorage.removeItem(SOLD_OUT_KEY);
+    localStorage.removeItem(LUCK_KEY);
+    localStorage.removeItem('daily_lastClaim');
+    localStorage.removeItem('daily_streak');
+    localStorage.removeItem('weekly_lastClaim');
+    localStorage.removeItem('weekly_streak');
+    localStorage.removeItem(playtimeKey);
+    
+    inventoryData.clear();
+    inventoryList.innerHTML = '';
+    achievementsUnlocked.clear();
+    updateAchievementsUI();
+    totalRolls = 0;
+    updateTotalRolls();
+    points = 0;
+    anomalies = 0;
+    anomaliesUsed = 0;
+    shopUpgrades = { luck: 0, speed: 0, pointMult: 0 };
+    soldOutRarities.clear();
+    shopLuckMultiplier = 1.0;
+    rollSpeed = 1.0;
+    pointDivisor = 3.0;
+    totalSeconds = 0;
+    
+    recalcLuckMultiplier();
+    updatePointsDisplay();
+    updateShopUI();
+    updateAnomalyUI();
+    updatePlaytimeDisplay();
+    updateLuckDisplay();
+    
+    alert('all data reset! it was your choice btw');
+    location.reload();
   }
-  
-  if (!confirm("final warning. you CANNOT undo this.")) return;
-
-  localStorage.clear();
-
-  recalcLuckMultiplier();
-  updatePointsDisplay();
-  updateShopUI();
-  updateAnomalyUI();
-  updatePlaytimeDisplay();
-  updateLuckDisplay();
-
-  alert("all data successfully reset...");
-  location.reload();
 }
 
 function startLuckBoost() {
