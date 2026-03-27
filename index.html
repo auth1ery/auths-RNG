@@ -32,7 +32,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://i.imgur.com">
   <link rel="dns-prefetch" href="https://i.imgur.com">
-
+  <link rel="preconnect" href="https://challenges.cloudflare.com">
 
   <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
   <meta name="format-detection" content="telephone=no, email=no, address=no">
@@ -130,6 +130,32 @@ Last release date on nightly: ${nightlyRDate}`;
 el.textContent="";
 }
 })();
+</script>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<div id="turnstile"></div>
+
+<script>
+  let widgetId;
+
+  window.onload = () => {
+    widgetId = turnstile.render('#turnstile', {
+      sitekey: '0x4AAAAAACw7cZX4pJ-LwP66',
+      size: 'invisible',
+      callback: (token) => {
+        console.log("token:", token);
+
+        fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+      }
+    });
+
+    turnstile.execute(widgetId);
+  };
 </script>
 
   <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" width="0" />
