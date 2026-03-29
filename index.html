@@ -1279,7 +1279,7 @@ if (settings.dev) {
     output += `<span class="dev-label">Images:</span> <span class="dev-value">${images}</span>`;
     output += '</div>';
     
-    // Game state section
+    // Game state section which is completely broken and non accurate
     output += '<div class="dev-section">';
     output += '<div class="dev-header">GAME STATE</div>';
     output += `<span class="dev-label">Total Rolls:</span> <span class="dev-value">${gameData.totalRolls || 0}</span><br>`;
@@ -1336,7 +1336,7 @@ if (settings.dev) {
     output += `<span class="dev-label">Online:</span> <span class="dev-value ${navigator.onLine ? 'dev-success' : 'dev-error'}">${navigator.onLine ? 'YES' : 'NO'}</span>`;
     output += '</div>';
     
-    // Event Listeners
+    // event Listeners because javascript loves torturing me with all this shit... thanks javascript.. and no im not moving to typescript
     output += '<div class="dev-section">';
     output += '<div class="dev-header">EVENT LISTENERS</div>';
     const eventCounts = {
@@ -1580,6 +1580,7 @@ function getCurrentSettings() {
 </script>
 
   <script>
+    // the custom cursor design is stupid
     if (window.matchMedia("(pointer: fine)").matches) {
       const cursor = document.getElementById('custom-cursor');
       const plus = cursor.querySelector('.plus');
@@ -1884,6 +1885,7 @@ function handleSwipe() {
       legacyShopPopup.classList.remove('open');
     }
     
+    // Check if it starts dumping people with buckets of bugs
     if (!clickedInSettings && !clickedSettingsBtn && !clickedInModal) {
       legacySettingsPopup.classList.remove('open');
     }
@@ -2360,7 +2362,8 @@ function handleSwipe() {
     'Duration','Ring','Despair','Carina','Tarantula',
     'Insanity','Rosette','Eskimo','Lagoon','Trifid'
   ];
-
+  
+  // This is where you make the fucking gauntlets... it's like making a new rarity except if it took 5x longer to make one
   const TIERS = [
     {
       id:'global', name:'global', emoji:'🌐',
@@ -2430,11 +2433,21 @@ function handleSwipe() {
         {type:'anomaly',amount:1800,            label:'1,800 anomalies'},
         {type:'luck',   mult:5,   dur:300,      label:'5m 5x luck'}
       ]
+    },
+    {
+      id:'snowy', name:'snowy', emoji:'❄️',
+      minRolls:15000,
+      rarities:['Cosmic', 'Neurosis', 'Trauma', 'Mania'],
+      rewards:[
+        {type:'points', amount:1200000          label:'1,200,000 pts'},
+        {type:'anomaly',amount:3000,            label:'3,000 anomalies'},
+        {type:'luck',   mult:7    dur:360,      label:'6m 7x luck'}
+      ]
     }
   ];
 
   // pre-register gauntlet luck keys in potionData so main.js never
-  // crashes on a page-reload while a gauntlet luck is still active
+  // crashes on a page-reload while a gauntlet luck is still active and shit
   ['global','easy','medium','hard','insane','godlike'].forEach(id => {
     if (typeof potionData !== 'undefined') {
       potionData['_g_' + id] = {name: id + ' luck', emoji:'🏆', mult:0, duration:0};
@@ -2490,7 +2503,7 @@ function handleSwipe() {
     return rem > 0 ? 'cooldown: ' + formatWellTime(rem) : null;
   }
 
-  // ── reward application ───────────────────────────────────────────────
+  // ── reward application ───────────────────────────rfvgbhgvfcdfvgbvfc────────────────────
   function applyReward(rew, tierId) {
     if (rew.type === 'points') {
       points += rew.amount;
@@ -2657,7 +2670,7 @@ function handleSwipe() {
         }
 
       } else {
-        // locked — dim reward preview
+        // locked — dim reward preview because being evil is SOOOOO FUNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
         const prev = document.createElement('div');
         prev.className = 'gauntlet-locked-preview';
         prev.textContent = 'rewards: ' + tier.rewards.map(r => r.label).join(' · ');
