@@ -22,6 +22,8 @@ Do not make it stand out too, too much. Examples of this are brightly white elem
 
 Learn color theory when using multiple colors, or at least learn the basics of it. It will help increase your chances of getting your PR merged.
 
+To see a basic example of the styling, check out the FAQ page on the site, or credits page.
+
 ---
 
 Overall, keep it dark, minimalist, but just slightly messy enough to the point it doesn't feel like over-polished, corporation slop, and instead it's own thing.
