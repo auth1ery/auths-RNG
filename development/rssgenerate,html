@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSS Generator</title>
+<style>
+body {
+  background-color: #0e0e0e;
+  color: #dcdcdc;
+  font-family: monospace;
+  margin: 0;
+  padding: 28px;
+  line-height: 1.7;
+  font-size: 17px;
+}
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 1.4rem;
+  font-weight: normal;
+  margin: 0 0 1.2em 0;
+}
+textarea {
+  width: 100%;
+  min-height: 400px;
+  background: #1a1a1a;
+  color: #dcdcdc;
+  border: 1px solid #2a2a2a;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 14px;
+  margin: 1em 0;
+  box-sizing: border-box;
+}
+input {
+  width: 100%;
+  background: #1a1a1a;
+  color: #dcdcdc;
+  border: 1px solid #2a2a2a;
+  padding: 8px 12px;
+  font-family: monospace;
+  font-size: 16px;
+  margin: 0.5em 0;
+  box-sizing: border-box;
+}
+button {
+  background: #1a1a1a;
+  color: #dcdcdc;
+  border: 1px solid #2a2a2a;
+  padding: 10px 20px;
+  font-family: monospace;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 0.5em 0.5em 0.5em 0;
+}
+button:hover {
+  background: #222;
+}
+.success {
+  color: #4caf50;
+  margin: 1em 0;
+}
+.error {
+  color: #f44336;
+  margin: 1em 0;
+}
+label {
+  display: block;
+  margin-top: 1em;
+  opacity: 0.8;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>RSS Feed Generator</h1>
+  <p>FOR BLOG USE ONLY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</p>
+  
+  <label>Blog Title:</label>
+  <input type="text" id="blogTitle" value="auth's RNG blog" placeholder="Your blog title">
+  
+  <label>Blog URL:</label>
+  <input type="text" id="blogUrl" value="https://authsrng.neocities.org/blog/blog.html" placeholder="https://yourblog.com">
+  
+  <label>Blog Description:</label>
+  <input type="text" id="blogDesc" value="news, updates, and a whole lotta things" placeholder="Description of your blog">
+  
+  <label>Base URL for posts:</label>
+  <input type="text" id="baseUrl" value="https://authsrng.neocities.org/blog/post-s4f5.html?id=" placeholder="https://yourblog.com/post.html?id=">
+  
+  <label>Paste your posts.json content here:</label>
+  <textarea id="jsonInput" placeholder='[{"id":"001","title":"Post Title","date":"2025-01-20","description":"Short description"}]'></textarea>
+  
+  <button onclick="generateRSS()">Generate RSS</button>
+  <button onclick="copyToClipboard()">Copy to Clipboard</button>
+  
+  <div id="status"></div>
+  
+  <label>Generated RSS (save this as rss.xml):</label>
+  <textarea id="output" readonly></textarea>
+</div>
+
+<script>
+function generateRSS() {
+  const status = document.getElementById('status');
+  const output = document.getElementById('output');
+  const jsonInput = document.getElementById('jsonInput').value.trim();
+  
+  const blogTitle = document.getElementById('blogTitle').value;
+  const blogUrl = document.getElementById('blogUrl').value;
+  const blogDesc = document.getElementById('blogDesc').value;
+  const baseUrl = document.getElementById('baseUrl').value;
+  
+  if (!jsonInput) {
+    status.innerHTML = '<p class="error">Please paste your posts.json content!</p>';
+    return;
+  }
+  
+  try {
+    const posts = JSON.parse(jsonInput);
+    
+    if (!Array.isArray(posts)) {
+      throw new Error('posts.json must be an array');
+    }
+    
+    let rss = `<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>${escapeXml(blogTitle)}</title>
+    <link>${escapeXml(blogUrl)}</link>
+    <description>${escapeXml(blogDesc)}</description>
+    <language>en-us</language>
+    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
+`;
+
+    posts.forEach(post => {
+      const title = post.title || 'Untitled';
+      const id = post.id || '';
+      const date = post.date || new Date().toISOString().split('T')[0];
+      const description = post.description || post.title || '';
+      
+      const pubDate = new Date(date).toUTCString();
+      const link = baseUrl + id;
+      
+      rss += `
+    <item>
+      <title>${escapeXml(title)}</title>
+      <link>${escapeXml(link)}</link>
+      <description>${escapeXml(description)}</description>
+      <pubDate>${pubDate}</pubDate>
+      <guid>${escapeXml(link)}</guid>
+    </item>
+`;
+    });
+    
+    rss += `  </channel>
+</rss>`;
+    
+    output.value = rss;
+    status.innerHTML = `<p class="success">✓ Generated RSS feed with ${posts.length} posts!</p>`;
+    
+  } catch (e) {
+    status.innerHTML = `<p class="error">Error: ${e.message}</p>`;
+    output.value = '';
+  }
+}
+
+function escapeXml(unsafe) {
+  return unsafe.replace(/[<>&'"]/g, function (c) {
+    switch (c) {
+      case '<': return '&lt;';
+      case '>': return '&gt;';
+      case '&': return '&amp;';
+      case '\'': return '&apos;';
+      case '"': return '&quot;';
+    }
+  });
+}
+
+function copyToClipboard() {
+  const output = document.getElementById('output');
+  const status = document.getElementById('status');
+  
+  if (!output.value) {
+    status.innerHTML = '<p class="error">Nothing to copy! Generate RSS first.</p>';
+    return;
+  }
+  
+  output.select();
+  document.execCommand('copy');
+  status.innerHTML = '<p class="success">✓ Copied to clipboard!</p>';
+}
+</script>
+</body>
+</html>
