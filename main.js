@@ -405,7 +405,7 @@ let totalRolls = 0;
 const inventoryData = new Map();
 const achievementsUnlocked = new Set();
 
-const backgroundMusic = new Audio('https://files.catbox.moe/y2mn5w.mp3');
+const backgroundMusic = new Audio('assets/audio/y2mn5w.mp3');
 backgroundMusic.loop = true;
 backgroundMusic.volume = 0.3;
 
