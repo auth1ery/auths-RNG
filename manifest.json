@@ -20,8 +20,5 @@
   "dir": "auto",
   "lang": "en",
   "orientation": "portrait",
-  "categories": [
-    "entertainment",
-    "games"
-  ]
+  "categories": ["entertainment", "games"]
 }
