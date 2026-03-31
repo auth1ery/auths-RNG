@@ -5,10 +5,10 @@
  * @license MIT
  */
 
-(function(global, document) {
+(function (global, document) {
   'use strict';
 
-  var supportsDefineProperty = (function() {
+  var supportsDefineProperty = (function () {
     try {
       Object.defineProperty({}, 'x', {});
       return true;
@@ -17,23 +17,29 @@
     }
   })();
 
-  var defineProperty = supportsDefineProperty ? Object.defineProperty : function(obj, prop, descriptor) {
-    if (descriptor.get || descriptor.set) {
-      throw new TypeError('Getters & setters not supported on this browser');
-    }
-    if (descriptor.hasOwnProperty('value')) {
-      obj[prop] = descriptor.value;
-    }
-    return obj;
-  };
+  var defineProperty = supportsDefineProperty
+    ? Object.defineProperty
+    : function (obj, prop, descriptor) {
+        if (descriptor.get || descriptor.set) {
+          throw new TypeError(
+            'Getters & setters not supported on this browser',
+          );
+        }
+        if (descriptor.hasOwnProperty('value')) {
+          obj[prop] = descriptor.value;
+        }
+        return obj;
+      };
 
   // ==================== Array Polyfills ====================
 
   if (!Array.prototype.forEach) {
     defineProperty(Array.prototype, 'forEach', {
-      value: function(callback, thisArg) {
+      value: function (callback, thisArg) {
         if (this == null) {
-          throw new TypeError('Array.prototype.forEach called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.forEach called on null or undefined',
+          );
         }
         if (typeof callback !== 'function') {
           throw new TypeError(callback + ' is not a function');
@@ -41,7 +47,7 @@
         var O = Object(this);
         var len = O.length >>> 0;
         var k = 0;
-        
+
         while (k < len) {
           if (k in O) {
             callback.call(thisArg, O[k], k, O);
@@ -50,15 +56,17 @@
         }
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.map) {
     defineProperty(Array.prototype, 'map', {
-      value: function(callback, thisArg) {
+      value: function (callback, thisArg) {
         if (this == null) {
-          throw new TypeError('Array.prototype.map called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.map called on null or undefined',
+          );
         }
         if (typeof callback !== 'function') {
           throw new TypeError(callback + ' is not a function');
@@ -67,7 +75,7 @@
         var len = O.length >>> 0;
         var A = new Array(len);
         var k = 0;
-        
+
         while (k < len) {
           if (k in O) {
             A[k] = callback.call(thisArg, O[k], k, O);
@@ -77,15 +85,17 @@
         return A;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.filter) {
     defineProperty(Array.prototype, 'filter', {
-      value: function(callback, thisArg) {
+      value: function (callback, thisArg) {
         if (this == null) {
-          throw new TypeError('Array.prototype.filter called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.filter called on null or undefined',
+          );
         }
         if (typeof callback !== 'function') {
           throw new TypeError(callback + ' is not a function');
@@ -94,7 +104,7 @@
         var len = O.length >>> 0;
         var res = [];
         var k = 0;
-        
+
         while (k < len) {
           if (k in O) {
             var kValue = O[k];
@@ -107,15 +117,17 @@
         return res;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.reduce) {
     defineProperty(Array.prototype, 'reduce', {
-      value: function(callback, initialValue) {
+      value: function (callback, initialValue) {
         if (this == null) {
-          throw new TypeError('Array.prototype.reduce called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.reduce called on null or undefined',
+          );
         }
         if (typeof callback !== 'function') {
           throw new TypeError(callback + ' is not a function');
@@ -124,7 +136,7 @@
         var len = O.length >>> 0;
         var k = 0;
         var accumulator;
-        
+
         if (arguments.length >= 2) {
           accumulator = initialValue;
         } else {
@@ -140,7 +152,7 @@
             throw new TypeError('Reduce of empty array with no initial value');
           }
         }
-        
+
         while (k < len) {
           if (k in O) {
             accumulator = callback(accumulator, O[k], k, O);
@@ -150,15 +162,17 @@
         return accumulator;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.reduceRight) {
     defineProperty(Array.prototype, 'reduceRight', {
-      value: function(callback, initialValue) {
+      value: function (callback, initialValue) {
         if (this == null) {
-          throw new TypeError('Array.prototype.reduceRight called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.reduceRight called on null or undefined',
+          );
         }
         if (typeof callback !== 'function') {
           throw new TypeError(callback + ' is not a function');
@@ -167,7 +181,7 @@
         var len = O.length >>> 0;
         var k = len - 1;
         var accumulator;
-        
+
         if (arguments.length >= 2) {
           accumulator = initialValue;
         } else {
@@ -183,7 +197,7 @@
             throw new TypeError('Reduce of empty array with no initial value');
           }
         }
-        
+
         while (k >= 0) {
           if (k in O) {
             accumulator = callback(accumulator, O[k], k, O);
@@ -193,23 +207,25 @@
         return accumulator;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.indexOf) {
     defineProperty(Array.prototype, 'indexOf', {
-      value: function(searchElement, fromIndex) {
+      value: function (searchElement, fromIndex) {
         if (this == null) {
-          throw new TypeError('Array.prototype.indexOf called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.indexOf called on null or undefined',
+          );
         }
         var O = Object(this);
         var len = O.length >>> 0;
         if (len === 0) return -1;
-        
+
         var n = fromIndex | 0;
         if (n >= len) return -1;
-        
+
         var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
         while (k < len) {
           if (k in O && O[k] === searchElement) {
@@ -220,26 +236,28 @@
         return -1;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.lastIndexOf) {
     defineProperty(Array.prototype, 'lastIndexOf', {
-      value: function(searchElement, fromIndex) {
+      value: function (searchElement, fromIndex) {
         if (this == null) {
-          throw new TypeError('Array.prototype.lastIndexOf called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.lastIndexOf called on null or undefined',
+          );
         }
         var O = Object(this);
         var len = O.length >>> 0;
         if (len === 0) return -1;
-        
+
         var n = len - 1;
         if (arguments.length > 1) {
           n = fromIndex | 0;
           n = n >= 0 ? Math.min(n, len - 1) : len - Math.abs(n);
         }
-        
+
         for (var k = n; k >= 0; k--) {
           if (k in O && O[k] === searchElement) {
             return k;
@@ -248,15 +266,17 @@
         return -1;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.every) {
     defineProperty(Array.prototype, 'every', {
-      value: function(callback, thisArg) {
+      value: function (callback, thisArg) {
         if (this == null) {
-          throw new TypeError('Array.prototype.every called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.every called on null or undefined',
+          );
         }
         if (typeof callback !== 'function') {
           throw new TypeError(callback + ' is not a function');
@@ -264,7 +284,7 @@
         var O = Object(this);
         var len = O.length >>> 0;
         var k = 0;
-        
+
         while (k < len) {
           if (k in O && !callback.call(thisArg, O[k], k, O)) {
             return false;
@@ -274,15 +294,17 @@
         return true;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.some) {
     defineProperty(Array.prototype, 'some', {
-      value: function(callback, thisArg) {
+      value: function (callback, thisArg) {
         if (this == null) {
-          throw new TypeError('Array.prototype.some called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.some called on null or undefined',
+          );
         }
         if (typeof callback !== 'function') {
           throw new TypeError(callback + ' is not a function');
@@ -290,7 +312,7 @@
         var O = Object(this);
         var len = O.length >>> 0;
         var k = 0;
-        
+
         while (k < len) {
           if (k in O && callback.call(thisArg, O[k], k, O)) {
             return true;
@@ -300,22 +322,24 @@
         return false;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.find) {
     defineProperty(Array.prototype, 'find', {
-      value: function(predicate, thisArg) {
+      value: function (predicate, thisArg) {
         if (this == null) {
-          throw new TypeError('Array.prototype.find called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.find called on null or undefined',
+          );
         }
         if (typeof predicate !== 'function') {
           throw new TypeError(predicate + ' is not a function');
         }
         var O = Object(this);
         var len = O.length >>> 0;
-        
+
         for (var i = 0; i < len; i++) {
           var value = O[i];
           if (predicate.call(thisArg, value, i, O)) {
@@ -325,22 +349,24 @@
         return undefined;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.findIndex) {
     defineProperty(Array.prototype, 'findIndex', {
-      value: function(predicate, thisArg) {
+      value: function (predicate, thisArg) {
         if (this == null) {
-          throw new TypeError('Array.prototype.findIndex called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.findIndex called on null or undefined',
+          );
         }
         if (typeof predicate !== 'function') {
           throw new TypeError(predicate + ' is not a function');
         }
         var O = Object(this);
         var len = O.length >>> 0;
-        
+
         for (var i = 0; i < len; i++) {
           if (predicate.call(thisArg, O[i], i, O)) {
             return i;
@@ -349,27 +375,31 @@
         return -1;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.fill) {
     defineProperty(Array.prototype, 'fill', {
-      value: function(value, start, end) {
+      value: function (value, start, end) {
         if (this == null) {
-          throw new TypeError('Array.prototype.fill called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.fill called on null or undefined',
+          );
         }
         var O = Object(this);
         var len = O.length >>> 0;
         var relativeStart = start >> 0;
-        var k = relativeStart < 0 ? 
-          Math.max(len + relativeStart, 0) : 
-          Math.min(relativeStart, len);
+        var k =
+          relativeStart < 0
+            ? Math.max(len + relativeStart, 0)
+            : Math.min(relativeStart, len);
         var relativeEnd = end === undefined ? len : end >> 0;
-        var final = relativeEnd < 0 ? 
-          Math.max(len + relativeEnd, 0) : 
-          Math.min(relativeEnd, len);
-        
+        var final =
+          relativeEnd < 0
+            ? Math.max(len + relativeEnd, 0)
+            : Math.min(relativeEnd, len);
+
         while (k < final) {
           O[k] = value;
           k++;
@@ -377,27 +407,35 @@
         return O;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.includes) {
     defineProperty(Array.prototype, 'includes', {
-      value: function(searchElement, fromIndex) {
+      value: function (searchElement, fromIndex) {
         if (this == null) {
-          throw new TypeError('Array.prototype.includes called on null or undefined');
+          throw new TypeError(
+            'Array.prototype.includes called on null or undefined',
+          );
         }
         var O = Object(this);
         var len = O.length >>> 0;
         if (len === 0) return false;
-        
+
         var n = fromIndex | 0;
         var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
-        
+
         function sameValueZero(x, y) {
-          return x === y || (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y));
+          return (
+            x === y ||
+            (typeof x === 'number' &&
+              typeof y === 'number' &&
+              isNaN(x) &&
+              isNaN(y))
+          );
         }
-        
+
         while (k < len) {
           if (sameValueZero(O[k], searchElement)) {
             return true;
@@ -407,60 +445,67 @@
         return false;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.flat) {
     defineProperty(Array.prototype, 'flat', {
-      value: function(depth) {
+      value: function (depth) {
         var d = depth === undefined ? 1 : Math.floor(depth);
         if (d < 1) return Array.prototype.slice.call(this);
-        
-        var flattenDeep = function(arr, d) {
-          return d > 0 ? arr.reduce(function(acc, val) {
-            return acc.concat(Array.isArray(val) ? flattenDeep(val, d - 1) : val);
-          }, []) : arr.slice();
+
+        var flattenDeep = function (arr, d) {
+          return d > 0
+            ? arr.reduce(function (acc, val) {
+                return acc.concat(
+                  Array.isArray(val) ? flattenDeep(val, d - 1) : val,
+                );
+              }, [])
+            : arr.slice();
         };
-        
+
         return flattenDeep(this, d);
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.prototype.flatMap) {
     defineProperty(Array.prototype, 'flatMap', {
-      value: function(callback, thisArg) {
+      value: function (callback, thisArg) {
         return this.map(callback, thisArg).flat(1);
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!Array.isArray) {
-    Array.isArray = function(arg) {
+    Array.isArray = function (arg) {
       return Object.prototype.toString.call(arg) === '[object Array]';
     };
   }
 
   if (!Array.from) {
-    Array.from = function(arrayLike, mapFn, thisArg) {
+    Array.from = function (arrayLike, mapFn, thisArg) {
       if (arrayLike == null) {
         throw new TypeError('Array.from requires an array-like object');
       }
-      
+
       var items = Object(arrayLike);
       var len = items.length >>> 0;
       var A = typeof this === 'function' ? new this(len) : new Array(len);
       var k = 0;
-      
+
       while (k < len) {
         var kValue = items[k];
         if (mapFn) {
-          A[k] = typeof thisArg !== 'undefined' ? mapFn.call(thisArg, kValue, k) : mapFn(kValue, k);
+          A[k] =
+            typeof thisArg !== 'undefined'
+              ? mapFn.call(thisArg, kValue, k)
+              : mapFn(kValue, k);
         } else {
           A[k] = kValue;
         }
@@ -472,7 +517,7 @@
   }
 
   if (!Array.of) {
-    Array.of = function() {
+    Array.of = function () {
       return Array.prototype.slice.call(arguments);
     };
   }
@@ -480,7 +525,7 @@
   // ==================== Object Polyfills ====================
 
   if (!Object.keys) {
-    Object.keys = function(obj) {
+    Object.keys = function (obj) {
       if (obj !== Object(obj)) {
         throw new TypeError('Object.keys called on non-object');
       }
@@ -495,7 +540,7 @@
   }
 
   if (!Object.values) {
-    Object.values = function(obj) {
+    Object.values = function (obj) {
       if (obj !== Object(obj)) {
         throw new TypeError('Object.values called on non-object');
       }
@@ -510,7 +555,7 @@
   }
 
   if (!Object.entries) {
-    Object.entries = function(obj) {
+    Object.entries = function (obj) {
       if (obj !== Object(obj)) {
         throw new TypeError('Object.entries called on non-object');
       }
@@ -525,32 +570,34 @@
   }
 
   if (!Object.create) {
-    Object.create = function(proto, propertiesObject) {
+    Object.create = function (proto, propertiesObject) {
       if (typeof proto !== 'object' && typeof proto !== 'function') {
-        throw new TypeError('Object prototype may only be an Object or null: ' + proto);
+        throw new TypeError(
+          'Object prototype may only be an Object or null: ' + proto,
+        );
       }
       if (proto === null) {
         throw new Error('null [[Prototype]] not supported');
       }
-      
+
       function F() {}
       F.prototype = proto;
       var obj = new F();
-      
+
       if (propertiesObject !== undefined) {
         Object.defineProperties(obj, propertiesObject);
       }
-      
+
       return obj;
     };
   }
 
   if (!Object.assign) {
-    Object.assign = function(target) {
+    Object.assign = function (target) {
       if (target == null) {
         throw new TypeError('Cannot convert undefined or null to object');
       }
-      
+
       var to = Object(target);
       for (var index = 1; index < arguments.length; index++) {
         var nextSource = arguments[index];
@@ -567,56 +614,56 @@
   }
 
   if (!Object.freeze) {
-    Object.freeze = function(obj) {
+    Object.freeze = function (obj) {
       return obj;
     };
   }
 
   if (!Object.seal) {
-    Object.seal = function(obj) {
+    Object.seal = function (obj) {
       return obj;
     };
   }
 
   if (!Object.preventExtensions) {
-    Object.preventExtensions = function(obj) {
+    Object.preventExtensions = function (obj) {
       return obj;
     };
   }
 
   if (!Object.isFrozen) {
-    Object.isFrozen = function() {
+    Object.isFrozen = function () {
       return false;
     };
   }
 
   if (!Object.isSealed) {
-    Object.isSealed = function() {
+    Object.isSealed = function () {
       return false;
     };
   }
 
   if (!Object.isExtensible) {
-    Object.isExtensible = function() {
+    Object.isExtensible = function () {
       return true;
     };
   }
 
   if (!Object.getOwnPropertyNames) {
-    Object.getOwnPropertyNames = function(obj) {
+    Object.getOwnPropertyNames = function (obj) {
       return Object.keys(obj);
     };
   }
 
   if (!Object.setPrototypeOf) {
-    Object.setPrototypeOf = function(obj, proto) {
+    Object.setPrototypeOf = function (obj, proto) {
       obj.__proto__ = proto;
       return obj;
     };
   }
 
   if (!Object.getPrototypeOf) {
-    Object.getPrototypeOf = function(obj) {
+    Object.getPrototypeOf = function (obj) {
       if (obj !== Object(obj)) {
         throw new TypeError('Object.getPrototypeOf called on non-object');
       }
@@ -628,64 +675,66 @@
 
   if (!String.prototype.trim) {
     defineProperty(String.prototype, 'trim', {
-      value: function() {
+      value: function () {
         return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.trimStart && !String.prototype.trimLeft) {
-    var trimStart = function() {
+    var trimStart = function () {
       return this.replace(/^[\s\uFEFF\xA0]+/, '');
     };
     defineProperty(String.prototype, 'trimStart', {
       value: trimStart,
       writable: true,
-      configurable: true
+      configurable: true,
     });
     defineProperty(String.prototype, 'trimLeft', {
       value: trimStart,
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.trimEnd && !String.prototype.trimRight) {
-    var trimEnd = function() {
+    var trimEnd = function () {
       return this.replace(/[\s\uFEFF\xA0]+$/, '');
     };
     defineProperty(String.prototype, 'trimEnd', {
       value: trimEnd,
       writable: true,
-      configurable: true
+      configurable: true,
     });
     defineProperty(String.prototype, 'trimRight', {
       value: trimEnd,
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.repeat) {
     defineProperty(String.prototype, 'repeat', {
-      value: function(count) {
+      value: function (count) {
         if (this == null) {
-          throw new TypeError('String.prototype.repeat called on null or undefined');
+          throw new TypeError(
+            'String.prototype.repeat called on null or undefined',
+          );
         }
         var str = String(this);
         count = Number(count) || 0;
-        
+
         if (count < 0 || count === Infinity) {
           throw new RangeError('Invalid count value');
         }
-        
+
         count = Math.floor(count);
         if (str.length === 0 || count === 0) {
           return '';
         }
-        
+
         var result = '';
         while (count > 0) {
           if (count & 1) {
@@ -699,37 +748,39 @@
         return result;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.startsWith) {
     defineProperty(String.prototype, 'startsWith', {
-      value: function(searchString, position) {
+      value: function (searchString, position) {
         position = position || 0;
         return this.substr(position, searchString.length) === searchString;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.endsWith) {
     defineProperty(String.prototype, 'endsWith', {
-      value: function(searchString, length) {
+      value: function (searchString, length) {
         if (length === undefined || length > this.length) {
           length = this.length;
         }
-        return this.substring(length - searchString.length, length) === searchString;
+        return (
+          this.substring(length - searchString.length, length) === searchString
+        );
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.includes) {
     defineProperty(String.prototype, 'includes', {
-      value: function(search, start) {
+      value: function (search, start) {
         if (typeof start !== 'number') {
           start = 0;
         }
@@ -739,13 +790,13 @@
         return this.indexOf(search, start) !== -1;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.padStart) {
     defineProperty(String.prototype, 'padStart', {
-      value: function(targetLength, padString) {
+      value: function (targetLength, padString) {
         targetLength = targetLength >> 0;
         padString = String(typeof padString !== 'undefined' ? padString : ' ');
         if (this.length >= targetLength) {
@@ -758,13 +809,13 @@
         return padString.slice(0, targetLength) + String(this);
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   if (!String.prototype.padEnd) {
     defineProperty(String.prototype, 'padEnd', {
-      value: function(targetLength, padString) {
+      value: function (targetLength, padString) {
         targetLength = targetLength >> 0;
         padString = String(typeof padString !== 'undefined' ? padString : ' ');
         if (this.length >= targetLength) {
@@ -777,7 +828,7 @@
         return String(this) + padString.slice(0, targetLength);
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
@@ -785,56 +836,64 @@
 
   if (!Function.prototype.bind) {
     defineProperty(Function.prototype, 'bind', {
-      value: function(oThis) {
+      value: function (oThis) {
         if (typeof this !== 'function') {
-          throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+          throw new TypeError(
+            'Function.prototype.bind - what is trying to be bound is not callable',
+          );
         }
-        
+
         var aArgs = Array.prototype.slice.call(arguments, 1);
         var fToBind = this;
-        var fNOP = function() {};
-        var fBound = function() {
+        var fNOP = function () {};
+        var fBound = function () {
           return fToBind.apply(
             this instanceof fNOP ? this : oThis,
-            aArgs.concat(Array.prototype.slice.call(arguments))
+            aArgs.concat(Array.prototype.slice.call(arguments)),
           );
         };
-        
+
         if (this.prototype) {
           fNOP.prototype = this.prototype;
         }
         fBound.prototype = new fNOP();
-        
+
         return fBound;
       },
       writable: true,
-      configurable: true
+      configurable: true,
     });
   }
 
   // ==================== Number Polyfills ====================
 
   if (!Number.isNaN) {
-    Number.isNaN = function(value) {
+    Number.isNaN = function (value) {
       return typeof value === 'number' && isNaN(value);
     };
   }
 
   if (!Number.isFinite) {
-    Number.isFinite = function(value) {
+    Number.isFinite = function (value) {
       return typeof value === 'number' && isFinite(value);
     };
   }
 
   if (!Number.isInteger) {
-    Number.isInteger = function(value) {
-      return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+    Number.isInteger = function (value) {
+      return (
+        typeof value === 'number' &&
+        isFinite(value) &&
+        Math.floor(value) === value
+      );
     };
   }
 
   if (!Number.isSafeInteger) {
-    Number.isSafeInteger = function(value) {
-      return Number.isInteger(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER;
+    Number.isSafeInteger = function (value) {
+      return (
+        Number.isInteger(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER
+      );
     };
   }
 
@@ -861,14 +920,14 @@
   // ==================== Math Polyfills ====================
 
   if (!Math.trunc) {
-    Math.trunc = function(v) {
+    Math.trunc = function (v) {
       v = +v;
-      return (v - v % 1) || (!isFinite(v) || v === 0 ? v : v < 0 ? -0 : 0);
+      return v - (v % 1) || (!isFinite(v) || v === 0 ? v : v < 0 ? -0 : 0);
     };
   }
 
   if (!Math.sign) {
-    Math.sign = function(x) {
+    Math.sign = function (x) {
       x = +x;
       if (x === 0 || isNaN(x)) {
         return x;
@@ -878,36 +937,36 @@
   }
 
   if (!Math.cbrt) {
-    Math.cbrt = function(x) {
-      var y = Math.pow(Math.abs(x), 1/3);
+    Math.cbrt = function (x) {
+      var y = Math.pow(Math.abs(x), 1 / 3);
       return x < 0 ? -y : y;
     };
   }
 
   if (!Math.log10) {
-    Math.log10 = function(x) {
+    Math.log10 = function (x) {
       return Math.log(x) * Math.LOG10E;
     };
   }
 
   if (!Math.log2) {
-    Math.log2 = function(x) {
+    Math.log2 = function (x) {
       return Math.log(x) * Math.LOG2E;
     };
   }
 
   if (!Math.log1p) {
-    Math.log1p = function(x) {
+    Math.log1p = function (x) {
       x = Number(x);
       if (x < -1 || x !== x) return NaN;
       if (x === 0 || x === Infinity) return x;
-      var nearX = (x + 1) - 1;
+      var nearX = x + 1 - 1;
       return nearX === 0 ? x : x * (Math.log(x + 1) / nearX);
     };
   }
 
   if (!Math.expm1) {
-    Math.expm1 = function(x) {
+    Math.expm1 = function (x) {
       x = Number(x);
       if (x === 0 || x !== x || x === Infinity) return x;
       return Math.exp(x) - 1;
@@ -915,21 +974,21 @@
   }
 
   if (!Math.sinh) {
-    Math.sinh = function(x) {
+    Math.sinh = function (x) {
       var y = Math.exp(x);
-      return (y - 1/y) / 2;
+      return (y - 1 / y) / 2;
     };
   }
 
   if (!Math.cosh) {
-    Math.cosh = function(x) {
+    Math.cosh = function (x) {
       var y = Math.exp(x);
-      return (y + 1/y) / 2;
+      return (y + 1 / y) / 2;
     };
   }
 
   if (!Math.tanh) {
-    Math.tanh = function(x) {
+    Math.tanh = function (x) {
       if (x === Infinity) return 1;
       if (x === -Infinity) return -1;
       var y = Math.exp(2 * x);
@@ -938,26 +997,26 @@
   }
 
   if (!Math.asinh) {
-    Math.asinh = function(x) {
+    Math.asinh = function (x) {
       if (x === -Infinity) return x;
       return Math.log(x + Math.sqrt(x * x + 1));
     };
   }
 
   if (!Math.acosh) {
-    Math.acosh = function(x) {
+    Math.acosh = function (x) {
       return Math.log(x + Math.sqrt(x * x - 1));
     };
   }
 
   if (!Math.atanh) {
-    Math.atanh = function(x) {
+    Math.atanh = function (x) {
       return Math.log((1 + x) / (1 - x)) / 2;
     };
   }
 
   if (!Math.hypot) {
-    Math.hypot = function() {
+    Math.hypot = function () {
       var y = 0;
       var length = arguments.length;
       for (var i = 0; i < length; i++) {
@@ -971,24 +1030,24 @@
   }
 
   if (!Math.clz32) {
-    Math.clz32 = function(x) {
+    Math.clz32 = function (x) {
       x = Number(x) >>> 0;
       return x ? 32 - x.toString(2).length : 32;
     };
   }
 
   if (!Math.imul) {
-    Math.imul = function(a, b) {
+    Math.imul = function (a, b) {
       var ah = (a >>> 16) & 0xffff;
       var al = a & 0xffff;
       var bh = (b >>> 16) & 0xffff;
       var bl = b & 0xffff;
-      return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0) | 0);
+      return (al * bl + (((ah * bl + al * bh) << 16) >>> 0)) | 0;
     };
   }
 
   if (!Math.fround) {
-    Math.fround = function(x) {
+    Math.fround = function (x) {
       return new Float32Array([x])[0];
     };
   }
@@ -996,29 +1055,37 @@
   // ==================== Date Polyfills ====================
 
   if (!Date.now) {
-    Date.now = function() {
+    Date.now = function () {
       return new Date().getTime();
     };
   }
 
   if (!Date.prototype.toISOString) {
-    (function() {
+    (function () {
       function pad(number) {
         if (number < 10) {
           return '0' + number;
         }
         return number;
       }
-      
-      Date.prototype.toISOString = function() {
-        return this.getUTCFullYear() +
-          '-' + pad(this.getUTCMonth() + 1) +
-          '-' + pad(this.getUTCDate()) +
-          'T' + pad(this.getUTCHours()) +
-          ':' + pad(this.getUTCMinutes()) +
-          ':' + pad(this.getUTCSeconds()) +
-          '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
-          'Z';
+
+      Date.prototype.toISOString = function () {
+        return (
+          this.getUTCFullYear() +
+          '-' +
+          pad(this.getUTCMonth() + 1) +
+          '-' +
+          pad(this.getUTCDate()) +
+          'T' +
+          pad(this.getUTCHours()) +
+          ':' +
+          pad(this.getUTCMinutes()) +
+          ':' +
+          pad(this.getUTCSeconds()) +
+          '.' +
+          (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+          'Z'
+        );
       };
     })();
   }
@@ -1026,7 +1093,7 @@
   // ==================== Promise Polyfill ====================
 
   if (typeof Promise === 'undefined') {
-    (function() {
+    (function () {
       var PENDING = 0;
       var FULFILLED = 1;
       var REJECTED = 2;
@@ -1070,106 +1137,119 @@
           if (self.state === PENDING) {
             self.handlers.push(handler);
           } else {
-            if (self.state === FULFILLED && typeof handler.onFulfilled === 'function') {
+            if (
+              self.state === FULFILLED &&
+              typeof handler.onFulfilled === 'function'
+            ) {
               handler.onFulfilled(self.value);
             }
-            if (self.state === REJECTED && typeof handler.onRejected === 'function') {
+            if (
+              self.state === REJECTED &&
+              typeof handler.onRejected === 'function'
+            ) {
               handler.onRejected(self.value);
             }
           }
         }
 
-        self.done = function(onFulfilled, onRejected) {
-          setTimeout(function() {
+        self.done = function (onFulfilled, onRejected) {
+          setTimeout(function () {
             handle({
               onFulfilled: onFulfilled,
-              onRejected: onRejected
+              onRejected: onRejected,
             });
           }, 0);
         };
 
-        self.then = function(onFulfilled, onRejected) {
-          return new Promise(function(resolve, reject) {
-            self.done(function(result) {
-              if (typeof onFulfilled === 'function') {
-                try {
-                  return resolve(onFulfilled(result));
-                } catch (ex) {
-                  return reject(ex);
+        self.then = function (onFulfilled, onRejected) {
+          return new Promise(function (resolve, reject) {
+            self.done(
+              function (result) {
+                if (typeof onFulfilled === 'function') {
+                  try {
+                    return resolve(onFulfilled(result));
+                  } catch (ex) {
+                    return reject(ex);
+                  }
+                } else {
+                  return resolve(result);
                 }
-              } else {
-                return resolve(result);
-              }
-            }, function(error) {
-              if (typeof onRejected === 'function') {
-                try {
-                  return resolve(onRejected(error));
-                } catch (ex) {
-                  return reject(ex);
+              },
+              function (error) {
+                if (typeof onRejected === 'function') {
+                  try {
+                    return resolve(onRejected(error));
+                  } catch (ex) {
+                    return reject(ex);
+                  }
+                } else {
+                  return reject(error);
                 }
-              } else {
-                return reject(error);
-              }
-            });
+              },
+            );
           });
         };
 
-        self.catch = function(onRejected) {
+        self.catch = function (onRejected) {
           return self.then(null, onRejected);
         };
 
         doResolve(executor, resolve, reject);
       }
 
-      Promise.resolve = function(value) {
-        if (value && typeof value === 'object' && value.constructor === Promise) {
+      Promise.resolve = function (value) {
+        if (
+          value &&
+          typeof value === 'object' &&
+          value.constructor === Promise
+        ) {
           return value;
         }
-        return new Promise(function(resolve) {
+        return new Promise(function (resolve) {
           resolve(value);
         });
       };
 
-      Promise.reject = function(reason) {
-        return new Promise(function(resolve, reject) {
+      Promise.reject = function (reason) {
+        return new Promise(function (resolve, reject) {
           reject(reason);
         });
       };
 
-      Promise.all = function(promises) {
-        return new Promise(function(resolve, reject) {
+      Promise.all = function (promises) {
+        return new Promise(function (resolve, reject) {
           if (!Array.isArray(promises)) {
             return reject(new TypeError('Promise.all accepts an array'));
           }
-          
+
           var results = new Array(promises.length);
           var remaining = promises.length;
-          
+
           if (remaining === 0) {
             return resolve(results);
           }
-          
+
           function resolver(index) {
-            return function(value) {
+            return function (value) {
               results[index] = value;
               if (--remaining === 0) {
                 resolve(results);
               }
             };
           }
-          
+
           for (var i = 0; i < promises.length; i++) {
             Promise.resolve(promises[i]).then(resolver(i), reject);
           }
         });
       };
 
-      Promise.race = function(promises) {
-        return new Promise(function(resolve, reject) {
+      Promise.race = function (promises) {
+        return new Promise(function (resolve, reject) {
           if (!Array.isArray(promises)) {
             return reject(new TypeError('Promise.race accepts an array'));
           }
-          
+
           for (var i = 0; i < promises.length; i++) {
             Promise.resolve(promises[i]).then(resolve, reject);
           }
@@ -1190,15 +1270,18 @@
       function doResolve(fn, onFulfilled, onRejected) {
         var done = false;
         try {
-          fn(function(value) {
-            if (done) return;
-            done = true;
-            onFulfilled(value);
-          }, function(reason) {
-            if (done) return;
-            done = true;
-            onRejected(reason);
-          });
+          fn(
+            function (value) {
+              if (done) return;
+              done = true;
+              onFulfilled(value);
+            },
+            function (reason) {
+              if (done) return;
+              done = true;
+              onRejected(reason);
+            },
+          );
         } catch (ex) {
           if (done) return;
           done = true;
@@ -1211,35 +1294,37 @@
   }
 
   if (Promise && !Promise.finally) {
-    Promise.prototype.finally = function(callback) {
+    Promise.prototype.finally = function (callback) {
       var P = this.constructor;
       return this.then(
-        function(value) {
-          return P.resolve(callback()).then(function() {
+        function (value) {
+          return P.resolve(callback()).then(function () {
             return value;
           });
         },
-        function(reason) {
-          return P.resolve(callback()).then(function() {
+        function (reason) {
+          return P.resolve(callback()).then(function () {
             throw reason;
           });
-        }
+        },
       );
     };
   }
 
   if (Promise && !Promise.allSettled) {
-    Promise.allSettled = function(promises) {
-      return Promise.all(promises.map(function(p) {
-        return Promise.resolve(p).then(
-          function(value) {
-            return { status: 'fulfilled', value: value };
-          },
-          function(reason) {
-            return { status: 'rejected', reason: reason };
-          }
-        );
-      }));
+    Promise.allSettled = function (promises) {
+      return Promise.all(
+        promises.map(function (p) {
+          return Promise.resolve(p).then(
+            function (value) {
+              return { status: 'fulfilled', value: value };
+            },
+            function (reason) {
+              return { status: 'rejected', reason: reason };
+            },
+          );
+        }),
+      );
     };
   }
 
@@ -1249,13 +1334,13 @@
 
   // Element.matches
   if (global.Element && !Element.prototype.matches) {
-    Element.prototype.matches = 
-      Element.prototype.matchesSelector || 
-      Element.prototype.mozMatchesSelector || 
-      Element.prototype.msMatchesSelector || 
-      Element.prototype.oMatchesSelector || 
-      Element.prototype.webkitMatchesSelector || 
-      function(s) {
+    Element.prototype.matches =
+      Element.prototype.matchesSelector ||
+      Element.prototype.mozMatchesSelector ||
+      Element.prototype.msMatchesSelector ||
+      Element.prototype.oMatchesSelector ||
+      Element.prototype.webkitMatchesSelector ||
+      function (s) {
         var matches = (this.document || this.ownerDocument).querySelectorAll(s);
         var i = matches.length;
         while (--i >= 0 && matches.item(i) !== this) {}
@@ -1265,7 +1350,7 @@
 
   // Element.closest
   if (global.Element && !Element.prototype.closest) {
-    Element.prototype.closest = function(s) {
+    Element.prototype.closest = function (s) {
       var el = this;
       do {
         if (el.matches(s)) return el;
@@ -1277,7 +1362,7 @@
 
   // Element.remove
   if (global.Element && !Element.prototype.remove) {
-    Element.prototype.remove = function() {
+    Element.prototype.remove = function () {
       if (this.parentNode) {
         this.parentNode.removeChild(this);
       }
@@ -1286,7 +1371,7 @@
 
   // ChildNode.before
   if (global.Element && !Element.prototype.before) {
-    Element.prototype.before = function() {
+    Element.prototype.before = function () {
       var parent = this.parentNode;
       if (!parent) return;
       var args = Array.prototype.slice.call(arguments);
@@ -1303,7 +1388,7 @@
 
   // ChildNode.after
   if (global.Element && !Element.prototype.after) {
-    Element.prototype.after = function() {
+    Element.prototype.after = function () {
       var parent = this.parentNode;
       if (!parent) return;
       var args = Array.prototype.slice.call(arguments);
@@ -1326,7 +1411,7 @@
 
   // ChildNode.replaceWith
   if (global.Element && !Element.prototype.replaceWith) {
-    Element.prototype.replaceWith = function() {
+    Element.prototype.replaceWith = function () {
       var parent = this.parentNode;
       if (!parent) return;
       var args = Array.prototype.slice.call(arguments);
@@ -1345,7 +1430,7 @@
 
   // ParentNode.append
   if (global.Element && !Element.prototype.append) {
-    Element.prototype.append = function() {
+    Element.prototype.append = function () {
       var args = Array.prototype.slice.call(arguments);
       var i = 0;
       while (i < args.length) {
@@ -1361,7 +1446,7 @@
 
   // ParentNode.prepend
   if (global.Element && !Element.prototype.prepend) {
-    Element.prototype.prepend = function() {
+    Element.prototype.prepend = function () {
       var args = Array.prototype.slice.call(arguments);
       var ref = this.firstChild;
       var i = 0;
@@ -1385,7 +1470,12 @@
     function CustomEvent(event, params) {
       params = params || { bubbles: false, cancelable: false, detail: null };
       var evt = document.createEvent('CustomEvent');
-      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      evt.initCustomEvent(
+        event,
+        params.bubbles,
+        params.cancelable,
+        params.detail,
+      );
       return evt;
     }
     CustomEvent.prototype = global.Event.prototype;
@@ -1394,27 +1484,32 @@
 
   // classList polyfill
   if (!('classList' in document.createElement('_')) && global.Element) {
-    (function(view) {
+    (function (view) {
       if (!('Element' in view)) return;
-      
+
       var classListProp = 'classList';
       var protoProp = 'prototype';
       var elemCtrProto = view.Element[protoProp];
       var objCtr = Object;
-      var strTrim = String[protoProp].trim || function() {
-        return this.replace(/^\s+|\s+$/g, '');
-      };
-      var arrIndexOf = Array[protoProp].indexOf || function(item) {
-        var i = 0, len = this.length;
-        for (; i < len; i++) {
-          if (i in this && this[i] === item) {
-            return i;
+      var strTrim =
+        String[protoProp].trim ||
+        function () {
+          return this.replace(/^\s+|\s+$/g, '');
+        };
+      var arrIndexOf =
+        Array[protoProp].indexOf ||
+        function (item) {
+          var i = 0,
+            len = this.length;
+          for (; i < len; i++) {
+            if (i in this && this[i] === item) {
+              return i;
+            }
           }
-        }
-        return -1;
-      };
-      
-      var DOMTokenList = function(elem) {
+          return -1;
+        };
+
+      var DOMTokenList = function (elem) {
         var classes = strTrim.call(elem.getAttribute('class') || '');
         var tokens = classes ? classes.split(/\s+/) : [];
         var i = 0;
@@ -1424,25 +1519,25 @@
           this[i] = tokens[i];
         }
       };
-      
-      var listProto = DOMTokenList[protoProp] = [];
-      
-      listProto.item = function(i) {
+
+      var listProto = (DOMTokenList[protoProp] = []);
+
+      listProto.item = function (i) {
         return this[i] || null;
       };
-      
-      listProto.contains = function(token) {
+
+      listProto.contains = function (token) {
         token += '';
         return arrIndexOf.call(this, token) !== -1;
       };
-      
-      listProto.add = function() {
+
+      listProto.add = function () {
         var tokens = arguments;
         var i = 0;
         var l = tokens.length;
         var token;
         var updated = false;
-        
+
         do {
           token = tokens[i] + '';
           if (arrIndexOf.call(this, token) === -1) {
@@ -1451,20 +1546,20 @@
             updated = true;
           }
         } while (++i < l);
-        
+
         if (updated) {
           this._elem.className = this.toString();
         }
       };
-      
-      listProto.remove = function() {
+
+      listProto.remove = function () {
         var tokens = arguments;
         var i = 0;
         var l = tokens.length;
         var token;
         var updated = false;
         var index;
-        
+
         do {
           token = tokens[i] + '';
           index = arrIndexOf.call(this, token);
@@ -1475,30 +1570,30 @@
             index = arrIndexOf.call(this, token);
           }
         } while (++i < l);
-        
+
         if (updated) {
           this._elem.className = this.toString();
         }
       };
-      
-      listProto.toggle = function(token, force) {
+
+      listProto.toggle = function (token, force) {
         token += '';
         var result = this.contains(token);
-        var method = result ? 
-          force !== true && 'remove' : 
-          force !== false && 'add';
-        
+        var method = result
+          ? force !== true && 'remove'
+          : force !== false && 'add';
+
         if (method) {
           this[method](token);
         }
-        
+
         if (force === true || force === false) {
           return force;
         }
         return !result;
       };
-      
-      listProto.replace = function(token, replacement_token) {
+
+      listProto.replace = function (token, replacement_token) {
         var index = arrIndexOf.call(this, token + '');
         if (index !== -1) {
           this.splice(index, 1);
@@ -1508,27 +1603,31 @@
         }
         return false;
       };
-      
-      listProto.toString = function() {
+
+      listProto.toString = function () {
         return Array.prototype.slice.call(this).join(' ');
       };
-      
+
       listProto.splice = Array.prototype.splice;
-      
+
       if (objCtr.defineProperty) {
         var classListPropDesc = {
-          get: function() {
+          get: function () {
             return new DOMTokenList(this);
           },
           enumerable: true,
-          configurable: true
+          configurable: true,
         };
         try {
           objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
         } catch (ex) {
-          if (ex.number === undefined || ex.number === -0x7FF5EC54) {
+          if (ex.number === undefined || ex.number === -0x7ff5ec54) {
             classListPropDesc.enumerable = false;
-            objCtr.defineProperty(elemCtrProto, classListProp, classListPropDesc);
+            objCtr.defineProperty(
+              elemCtrProto,
+              classListProp,
+              classListPropDesc,
+            );
           }
         }
       }
@@ -1536,30 +1635,32 @@
   }
 
   // requestAnimationFrame / cancelAnimationFrame
-  (function() {
+  (function () {
     var lastTime = 0;
     var vendors = ['webkit', 'moz', 'ms', 'o'];
-    
+
     for (var x = 0; x < vendors.length && !global.requestAnimationFrame; ++x) {
-      global.requestAnimationFrame = global[vendors[x] + 'RequestAnimationFrame'];
-      global.cancelAnimationFrame = global[vendors[x] + 'CancelAnimationFrame'] || 
-                                    global[vendors[x] + 'CancelRequestAnimationFrame'];
+      global.requestAnimationFrame =
+        global[vendors[x] + 'RequestAnimationFrame'];
+      global.cancelAnimationFrame =
+        global[vendors[x] + 'CancelAnimationFrame'] ||
+        global[vendors[x] + 'CancelRequestAnimationFrame'];
     }
-    
+
     if (!global.requestAnimationFrame) {
-      global.requestAnimationFrame = function(callback) {
+      global.requestAnimationFrame = function (callback) {
         var currTime = Date.now();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-        var id = global.setTimeout(function() {
+        var id = global.setTimeout(function () {
           callback(currTime + timeToCall);
         }, timeToCall);
         lastTime = currTime + timeToCall;
         return id;
       };
     }
-    
+
     if (!global.cancelAnimationFrame) {
-      global.cancelAnimationFrame = function(id) {
+      global.cancelAnimationFrame = function (id) {
         clearTimeout(id);
       };
     }
@@ -1569,41 +1670,44 @@
   if (!global.performance) {
     global.performance = {};
   }
-  
+
   if (!global.performance.now) {
     var nowOffset = Date.now();
-    
-    if (global.performance.timing && global.performance.timing.navigationStart) {
+
+    if (
+      global.performance.timing &&
+      global.performance.timing.navigationStart
+    ) {
       nowOffset = global.performance.timing.navigationStart;
     }
-    
-    global.performance.now = function() {
+
+    global.performance.now = function () {
       return Date.now() - nowOffset;
     };
   }
 
   // Event listeners
-  (function() {
+  (function () {
     if (!global.addEventListener) {
-      global.addEventListener = function(type, listener, useCapture) {
+      global.addEventListener = function (type, listener, useCapture) {
         global.attachEvent('on' + type, listener);
       };
     }
-    
+
     if (!global.removeEventListener) {
-      global.removeEventListener = function(type, listener, useCapture) {
+      global.removeEventListener = function (type, listener, useCapture) {
         global.detachEvent('on' + type, listener);
       };
     }
-    
+
     if (document && !document.addEventListener) {
-      document.addEventListener = function(type, listener, useCapture) {
+      document.addEventListener = function (type, listener, useCapture) {
         document.attachEvent('on' + type, listener);
       };
     }
-    
+
     if (document && !document.removeEventListener) {
-      document.removeEventListener = function(type, listener, useCapture) {
+      document.removeEventListener = function (type, listener, useCapture) {
         document.detachEvent('on' + type, listener);
       };
     }
@@ -1612,22 +1716,22 @@
   // console
   if (!global.console) {
     global.console = {
-      log: function() {},
-      warn: function() {},
-      error: function() {},
-      info: function() {},
-      debug: function() {},
-      trace: function() {},
-      dir: function() {},
-      group: function() {},
-      groupCollapsed: function() {},
-      groupEnd: function() {},
-      time: function() {},
-      timeEnd: function() {},
-      assert: function() {},
-      clear: function() {},
-      count: function() {},
-      table: function() {}
+      log: function () {},
+      warn: function () {},
+      error: function () {},
+      info: function () {},
+      debug: function () {},
+      trace: function () {},
+      dir: function () {},
+      group: function () {},
+      groupCollapsed: function () {},
+      groupEnd: function () {},
+      time: function () {},
+      timeEnd: function () {},
+      assert: function () {},
+      clear: function () {},
+      count: function () {},
+      table: function () {},
     };
   }
 
@@ -1645,23 +1749,25 @@
       DOCUMENT_NODE: 9,
       DOCUMENT_TYPE_NODE: 10,
       DOCUMENT_FRAGMENT_NODE: 11,
-      NOTATION_NODE: 12
+      NOTATION_NODE: 12,
     };
   }
 
   // querySelectorAll and querySelector
   if (document && !document.querySelectorAll) {
-    document.querySelectorAll = function(selector) {
+    document.querySelectorAll = function (selector) {
       var doc = document;
       var head = doc.documentElement.firstChild;
       var styleTag = doc.createElement('style');
       head.appendChild(styleTag);
       doc._qsa = [];
-      
-      styleTag.styleSheet.cssText = selector + '{x-qsa:expression(document._qsa && document._qsa.push(this))}';
+
+      styleTag.styleSheet.cssText =
+        selector +
+        '{x-qsa:expression(document._qsa && document._qsa.push(this))}';
       global.scrollBy(0, 0);
       head.removeChild(styleTag);
-      
+
       var elements = [];
       while (doc._qsa.length) {
         var element = doc._qsa.shift();
@@ -1672,9 +1778,9 @@
       return elements;
     };
   }
-  
+
   if (document && !document.querySelector) {
-    document.querySelector = function(selector) {
+    document.querySelector = function (selector) {
       var elements = document.querySelectorAll(selector);
       return elements.length ? elements[0] : null;
     };
@@ -1683,15 +1789,18 @@
   // ==================== Utility Functions ====================
 
   // DOMContentLoaded helper
-  global.$ready = function(callback) {
+  global.$ready = function (callback) {
     if (typeof callback !== 'function') return;
-    
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+
+    if (
+      document.readyState === 'complete' ||
+      document.readyState === 'interactive'
+    ) {
       setTimeout(callback, 1);
     } else if (document.addEventListener) {
       document.addEventListener('DOMContentLoaded', callback);
     } else if (document.attachEvent) {
-      document.attachEvent('onreadystatechange', function() {
+      document.attachEvent('onreadystatechange', function () {
         if (document.readyState !== 'loading') {
           callback();
         }
@@ -1700,9 +1809,9 @@
   };
 
   // Event handler helpers
-  global.$on = function(target, event, handler, capture) {
+  global.$on = function (target, event, handler, capture) {
     if (!target || !event || !handler) return;
-    
+
     if (target.addEventListener) {
       target.addEventListener(event, handler, capture || false);
     } else if (target.attachEvent) {
@@ -1710,9 +1819,9 @@
     }
   };
 
-  global.$off = function(target, event, handler, capture) {
+  global.$off = function (target, event, handler, capture) {
     if (!target || !event || !handler) return;
-    
+
     if (target.removeEventListener) {
       target.removeEventListener(event, handler, capture || false);
     } else if (target.detachEvent) {
@@ -1721,23 +1830,23 @@
   };
 
   // Query selector helpers
-  global.$qs = function(selector, context) {
+  global.$qs = function (selector, context) {
     return (context || document).querySelector(selector);
   };
 
-  global.$qsa = function(selector, context) {
+  global.$qsa = function (selector, context) {
     var results = (context || document).querySelectorAll(selector);
     return Array.prototype.slice.call(results);
   };
 
   // Class manipulation helpers
-  global.$hasClass = function(el, className) {
+  global.$hasClass = function (el, className) {
     if (!el || !className) return false;
     if (el.classList) return el.classList.contains(className);
     return new RegExp('(^|\\s)' + className + '(\\s|$)').test(el.className);
   };
 
-  global.$addClass = function(el, className) {
+  global.$addClass = function (el, className) {
     if (!el || !className) return;
     if (el.classList) {
       el.classList.add(className);
@@ -1746,7 +1855,7 @@
     }
   };
 
-  global.$removeClass = function(el, className) {
+  global.$removeClass = function (el, className) {
     if (!el || !className) return;
     if (el.classList) {
       el.classList.remove(className);
@@ -1757,7 +1866,7 @@
     }
   };
 
-  global.$toggleClass = function(el, className) {
+  global.$toggleClass = function (el, className) {
     if (!el || !className) return;
     if (el.classList) {
       el.classList.toggle(className);
@@ -1769,13 +1878,13 @@
   };
 
   // CSS helper
-  global.$css = function(el, styles) {
+  global.$css = function (el, styles) {
     if (!el) return;
-    
+
     if (typeof styles === 'string') {
       return el.style[styles];
     }
-    
+
     for (var prop in styles) {
       if (styles.hasOwnProperty(prop)) {
         el.style[prop] = styles[prop];
@@ -1784,13 +1893,13 @@
   };
 
   // Attribute helper
-  global.$attr = function(el, name, value) {
+  global.$attr = function (el, name, value) {
     if (!el || !name) return;
-    
+
     if (value === undefined) {
       return el.getAttribute(name);
     }
-    
+
     if (value === null) {
       el.removeAttribute(name);
     } else {
@@ -1801,20 +1910,20 @@
   // JSON helpers (enhanced)
   if (typeof JSON !== 'object' || !JSON.parse || !JSON.stringify) {
     global.JSON = {
-      parse: function(text) {
+      parse: function (text) {
         if (typeof text !== 'string') {
           throw new TypeError('JSON.parse expects a string');
         }
         try {
-          return (new Function('return ' + text))();
+          return new Function('return ' + text)();
         } catch (e) {
           throw new SyntaxError('Invalid JSON: ' + e.message);
         }
       },
-      stringify: function(value, replacer, space) {
+      stringify: function (value, replacer, space) {
         var indent = '';
         var gap = '';
-        
+
         if (typeof space === 'number') {
           for (var i = 0; i < space; i++) {
             gap += ' ';
@@ -1822,18 +1931,18 @@
         } else if (typeof space === 'string') {
           gap = space;
         }
-        
+
         function str(key, holder) {
           var value = holder[key];
-          
+
           if (value && typeof value.toJSON === 'function') {
             value = value.toJSON(key);
           }
-          
+
           if (typeof replacer === 'function') {
             value = replacer.call(holder, key, value);
           }
-          
+
           switch (typeof value) {
             case 'string':
               return quote(value);
@@ -1846,20 +1955,27 @@
               if (!value) return 'null';
               indent += gap;
               var partial = [];
-              
+
               if (Array.isArray(value)) {
                 var len = value.length;
                 for (var i = 0; i < len; i++) {
                   partial[i] = str(i, value) || 'null';
                 }
-                var v = partial.length === 0 ? '[]' :
-                  gap ? '[\n' + indent + partial.join(',\n' + indent) + '\n' + 
-                  indent.slice(0, -gap.length) + ']' :
-                  '[' + partial.join(',') + ']';
+                var v =
+                  partial.length === 0
+                    ? '[]'
+                    : gap
+                      ? '[\n' +
+                        indent +
+                        partial.join(',\n' + indent) +
+                        '\n' +
+                        indent.slice(0, -gap.length) +
+                        ']'
+                      : '[' + partial.join(',') + ']';
                 indent = indent.slice(0, -gap.length);
                 return v;
               }
-              
+
               for (var k in value) {
                 if (Object.prototype.hasOwnProperty.call(value, k)) {
                   var v = str(k, value);
@@ -1868,18 +1984,26 @@
                   }
                 }
               }
-              
-              v = partial.length === 0 ? '{}' :
-                gap ? '{\n' + indent + partial.join(',\n' + indent) + '\n' +
-                indent.slice(0, -gap.length) + '}' :
-                '{' + partial.join(',') + '}';
+
+              v =
+                partial.length === 0
+                  ? '{}'
+                  : gap
+                    ? '{\n' +
+                      indent +
+                      partial.join(',\n' + indent) +
+                      '\n' +
+                      indent.slice(0, -gap.length) +
+                      '}'
+                    : '{' + partial.join(',') + '}';
               indent = indent.slice(0, -gap.length);
               return v;
           }
         }
-        
+
         function quote(string) {
-          var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+          var escapable =
+            /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
           var meta = {
             '\b': '\\b',
             '\t': '\\t',
@@ -1887,25 +2011,28 @@
             '\f': '\\f',
             '\r': '\\r',
             '"': '\\"',
-            '\\': '\\\\'
+            '\\': '\\\\',
           };
-          
+
           escapable.lastIndex = 0;
-          return escapable.test(string) ?
-            '"' + string.replace(escapable, function(a) {
-              var c = meta[a];
-              return typeof c === 'string' ? c :
-                '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
-            }) + '"' :
-            '"' + string + '"';
+          return escapable.test(string)
+            ? '"' +
+                string.replace(escapable, function (a) {
+                  var c = meta[a];
+                  return typeof c === 'string'
+                    ? c
+                    : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+                }) +
+                '"'
+            : '"' + string + '"';
         }
-        
-        return str('', {'': value});
-      }
+
+        return str('', { '': value });
+      },
     };
   }
 
-  global.$parseJSON = function(str) {
+  global.$parseJSON = function (str) {
     try {
       return JSON.parse(str);
     } catch (e) {
@@ -1914,7 +2041,7 @@
     }
   };
 
-  global.$toJSON = function(obj) {
+  global.$toJSON = function (obj) {
     try {
       return JSON.stringify(obj);
     } catch (e) {
@@ -1927,5 +2054,7 @@
   if (global.console && global.console.log) {
     console.log('polyfills v2.0.0 loaded successfully');
   }
-
-})(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : {});
+})(
+  typeof window !== 'undefined' ? window : this,
+  typeof document !== 'undefined' ? document : {},
+);

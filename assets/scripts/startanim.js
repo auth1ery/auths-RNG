@@ -1,7 +1,12 @@
-(function(){var s=document.createElement('script');s.src='legacy-polyfills.js';s.async=false;document.head.appendChild(s);})();
+(function () {
+  var s = document.createElement('script');
+  s.src = 'legacy-polyfills.js';
+  s.async = false;
+  document.head.appendChild(s);
+})();
 
-window.addEventListener("DOMContentLoaded", () => {
-  const style = document.createElement("style");
+window.addEventListener('DOMContentLoaded', () => {
+  const style = document.createElement('style');
   style.textContent = `
     .entry-container {
       position: fixed;
@@ -72,36 +77,36 @@ window.addEventListener("DOMContentLoaded", () => {
   `;
   document.head.appendChild(style);
 
-  const container = document.createElement("div");
-  container.className = "entry-container";
+  const container = document.createElement('div');
+  container.className = 'entry-container';
   container.innerHTML = `
     <div class="center-line"></div>
     <div class="tap-text">click/tap to wake up</div>
   `;
   document.body.appendChild(container);
 
-  const line = container.querySelector(".center-line");
-  const text = container.querySelector(".tap-text");
+  const line = container.querySelector('.center-line');
+  const text = container.querySelector('.tap-text');
 
   function startSequence() {
-    text.style.display = "none";
+    text.style.display = 'none';
 
-    line.classList.add("expand-horizontal");
+    line.classList.add('expand-horizontal');
 
     setTimeout(() => {
-      line.classList.add("expand-vertical");
+      line.classList.add('expand-vertical');
 
       setTimeout(() => {
-        line.classList.add("fade-line");
+        line.classList.add('fade-line');
 
         setTimeout(() => {
-          container.style.opacity = "0";
+          container.style.opacity = '0';
           setTimeout(() => container.remove(), 1200);
         }, 600);
       }, 800);
     }, 800);
   }
 
-  container.addEventListener("click", startSequence, { once: true });
-  container.addEventListener("touchstart", startSequence, { once: true });
+  container.addEventListener('click', startSequence, { once: true });
+  container.addEventListener('touchstart', startSequence, { once: true });
 });
