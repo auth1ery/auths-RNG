@@ -55,14 +55,13 @@
   }
   </script>
   
-  <script src="legacy-polyfills.js" defer></script>
-  
   <script src="//instant.page/5.2.0" type="module" integrity="sha384-jnZyxPjiipYXnSU0ygqeac2q7CVYMbh84q0uHVRRxEtvFPiQYbXWUorga2aqZJ0z" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/rellax/1.12.1/rellax.min.js" defer></script>
 
   
 
   <!--[if lt IE 9]>
+  <script src="legacy-polyfills.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
   <![endif]-->
 
@@ -174,8 +173,8 @@ if (navigator.userAgent.includes("Screenjesus")) {
 }
 </script>
 
-  <script src="startanim.js"></script>
-  <script src="screensaver.js"></script>
+  <script src="assets/scripts/startanim.js" defer></script>
+  <script src="assets/scripts/screensaver.js" defer></script>
   
   <button id="legacyShopBtn">shop</button>
   <button id="legacySettingsBtn">settings</button>
@@ -836,80 +835,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
   <a href="https://tamanotchi.world/29830c"><img src="https://tamanotchi.world/i/29830" alt="It's tamaNOTchi! Click to feed!"></a>
   
 <br>
-<br>
 
-<p>contributors:</p>
-<div id="contributors"></div>
-
-<style>
-#contributors{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-  gap:8px;
-  font-family:system-ui,-apple-system,Segoe UI,Roboto,monospace;
-}
-
-.contributor{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px;
-  background:#0a0a0a;
-  border:1px solid #1a1a1a;
-  border-radius:6px;
-  color:#e5e5e5;
-  text-decoration:none;
-  transition:background .15s,border-color .15s;
-}
-
-.contributor:hover{
-  background:#111;
-  border-color:#2a2a2a;
-}
-
-.contributor img{
-  width:20px;
-  height:20px;
-  border-radius:50%;
-}
-
-.name{
-  flex:1;
-  font-size:12px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-
-.count{
-  font-size:11px;
-  color:#777;
-}
-</style>
-
-<script>
-(async () => {
-  const res = await fetch("https://api.github.com/repos/auth1ery/auths-RNG/contributors?per_page=100");
-  const users = await res.json();
-
-  const root = document.getElementById("contributors");
-
-  users.forEach(u => {
-    const a = document.createElement("a");
-    a.className = "contributor";
-    a.href = u.html_url;
-    a.target = "_blank";
-
-    a.innerHTML = `
-      <img src="${u.avatar_url}">
-      <span class="name">${u.login}</span>
-      <span class="count">${u.contributions}</span>
-    `;
-
-    root.appendChild(a);
-  });
-})();
-</script>
   </div>
 </div>
 
@@ -928,7 +854,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
 
 <div class="swipe-indicator">swipe to navigate!!!</div>
 
-  <script src="main.js"></script>
+  <script src="assets/scripts/main.js" defer></script>
   
   <div id="cutsceneOverlay">
   <video id="cutsceneVideo" preload="auto"></video>
