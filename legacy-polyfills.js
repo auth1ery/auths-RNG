@@ -3,6 +3,7 @@
  * Comprehensive ES5/ES6+ polyfills for legacy browser support
  * @version 2.0.0
  * @license MIT
+ * yeah okay
  */
 
 (function (global, document) {
