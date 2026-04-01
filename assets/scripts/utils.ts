@@ -16,7 +16,7 @@ export function randomInt(min: number, max: number): number {
 
 export function debounce<T extends (...args: any[]) => void>(
   fn: T,
-  delay: number
+  delay: number,
 ): (...args: Parameters<T>) => void {
   let timer: ReturnType<typeof setTimeout>;
 
@@ -28,7 +28,7 @@ export function debounce<T extends (...args: any[]) => void>(
 
 export function throttle<T extends (...args: any[]) => void>(
   fn: T,
-  limit: number
+  limit: number,
 ): (...args: Parameters<T>) => void {
   let inThrottle = false;
 

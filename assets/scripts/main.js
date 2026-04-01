@@ -662,7 +662,7 @@ const rarities = [
   { name: 'Copper', chance: 1 / 6775 },
   { name: 'Zinc', chance: 1 / 6750 },
   { name: 'Gallium', chance: 1 / 6725 },
-  { name: 'plaf 67', chance: 1 / 6700},
+  { name: 'plaf 67', chance: 1 / 6700 },
   { name: 'Infamy', chance: 1 / 6700 },
   { name: 'Germanium', chance: 1 / 6675 },
   { name: 'Arsenic', chance: 1 / 6650 },
@@ -1543,44 +1543,42 @@ function updateItem(d) {
     liElement.classList.remove('sold-out');
   }
 
-  // Remove old handler by replacing element (prevents memory leaks)
-  liElement.ondblclick = null;
+  // Remove previous sell handler before adding a new one (prevents listener accumulation)
+  if (liElement._sellHandler) {
+    liElement.removeEventListener('dblclick', liElement._sellHandler);
+  }
 
-  // Add new handler
-  liElement.addEventListener(
-    'dblclick',
-    function sellHandler() {
-      const currentData = inventoryData.get(rarityObj.name);
-      if (!currentData) return;
+  liElement._sellHandler = function sellHandler() {
+    const currentData = inventoryData.get(rarityObj.name);
+    if (!currentData) return;
 
-      const soldData = soldOutRarities.get(key);
-      const alreadySold = soldData ? soldData.count : 0;
-      const availableToSell = currentData.count - alreadySold;
+    const soldData = soldOutRarities.get(key);
+    const alreadySold = soldData ? soldData.count : 0;
+    const availableToSell = currentData.count - alreadySold;
 
-      if (availableToSell <= 0) {
-        alert('all copies already sold out!');
-        return;
-      }
+    if (availableToSell <= 0) {
+      alert('all copies already sold out!');
+      return;
+    }
 
-      const pointsEarned = calculateRarityPoints(rarityObj) * availableToSell;
+    const pointsEarned = calculateRarityPoints(rarityObj) * availableToSell;
 
-      showConfirmModal(
-        'sell rarity?',
-        `sell ${availableToSell}x ${rarityObj.name} for ${pointsEarned} points? (you keep the rarity)`,
-        () => {
-          points += pointsEarned;
-          soldOutRarities.set(key, { count: currentData.count });
-          updatePointsDisplay();
-          updateShopUI();
-          saveAllData();
-          updateItem(currentData);
-          recalcLuckMultiplier();
-          updateLuckDisplay();
-        },
-      );
-    },
-    { once: false },
-  );
+    showConfirmModal(
+      'sell rarity?',
+      `sell ${availableToSell}x ${rarityObj.name} for ${pointsEarned} points? (you keep the rarity)`,
+      () => {
+        points += pointsEarned;
+        soldOutRarities.set(key, { count: currentData.count });
+        updatePointsDisplay();
+        updateShopUI();
+        saveAllData();
+        updateItem(currentData);
+        recalcLuckMultiplier();
+        updateLuckDisplay();
+      },
+    );
+  };
+  liElement.addEventListener('dblclick', liElement._sellHandler);
 }
 
 function getRandomRarity() {
@@ -1982,6 +1980,18 @@ rollBtn.addEventListener('click', () => {
   setTimeout(() => spinAndReveal(res), 100);
 });
 
+// Reset spinner state when returning to a hidden tab so roll speed doesnt glitch and ruin people's day like the doofus i am... wait no this isnt the-
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  if (!isCutscenePlaying && rollBtn.disabled) {
+    // a roll was mid-animation while tab was hidden? go clean that shit up
+    spinner.style.transition = 'none';
+    spinner.style.transform = 'translateY(0)';
+    spinner.innerHTML = '';
+    rollBtn.disabled = false;
+  }
+});
+
 if (sortSelect) {
   sortSelect.addEventListener('change', () => {
     renderSortedInventory(sortSelect.value);
@@ -2326,16 +2336,6 @@ if (buyDupeBtn) {
     }
   });
 }
-
-// Point printer passive generation
-setInterval(() => {
-  if (shopUpgrades.printer && shopUpgrades.printer > 0) {
-    points += shopUpgrades.printer;
-    updatePointsDisplay();
-  }
-}, 1000);
-updatePointsDisplay();
-updateShopUI();
 
 document.addEventListener('DOMContentLoaded', function () {
   const indexBtn = document.getElementById('indexBtn');
@@ -2709,12 +2709,12 @@ function showWellResult(won, amount) {
   if (won) {
     icon.textContent = '✨';
     text.textContent = 'the well grants your wish!';
-    amountEl.textContent = `+${amount} points`;
+    amountEl.textContent = `it gives you +${amount} points, go thank it!`;
     amountEl.style.color = '#4a4';
   } else {
     icon.textContent = '🌊';
     text.textContent = 'the well accepts your offering...';
-    amountEl.textContent = 'but nothing happens';
+    amountEl.textContent = 'but nothing happens.. whoops?';
     amountEl.style.color = '#888';
   }
 
