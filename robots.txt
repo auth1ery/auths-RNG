@@ -1,30 +1,23 @@
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 15
 
 User-agent: Applebot
 Allow: /
-Crawl-delay: 15
 
 User-agent: DuckAssistBot
 Allow: /
-Crawl-delay: 15
 
 User-agent: Yandex
 Allow: /
-Crawl-delay: 15
 
 User-agent: Baiduspider
 Allow: /
-Crawl-delay: 15
 
 User-agent: Sogou web spider
 Allow: /
-Crawl-delay: 15
 
 User-agent: Shenma
 Allow: /
-Crawl-delay: 15
 
 User-agent: ia_archiver
 Allow: /
@@ -40,4 +33,3 @@ Allow: /
 
 User-agent: *
 Disallow: /
-Crawl-delay: 15
