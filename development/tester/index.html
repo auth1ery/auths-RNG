@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tester dashboard</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #0e0e0e;
+        color: #dcdcdc;
+        font-family: monospace;
+        margin: 0;
+        padding: 28px;
+        line-height: 1.7;
+        font-size: 17px;
+      }
+
+      .container {
+        max-width: 540px;
+        margin: 0 auto;
+      }
+
+      img {
+        max-width: 120px;
+        height: auto;
+        display: block;
+        margin-bottom: 18px;
+        opacity: 0.8;
+        filter: grayscale(100%);
+      }
+
+      h1 {
+        font-size: 1.4rem;
+        font-weight: normal;
+        letter-spacing: 0.06em;
+        margin: 0 0 1.2em 0;
+      }
+
+      h2 {
+        font-size: 1rem;
+        font-weight: normal;
+        letter-spacing: 0.06em;
+        margin: 0 0 0.8em 0;
+        opacity: 0.5;
+        border-bottom: 1px solid #1e1e1e;
+        padding-bottom: 0.4em;
+      }
+
+      p {
+        margin: 0 0 1em 0;
+        opacity: 0.88;
+      }
+
+      .small {
+        font-size: 0.95em;
+        opacity: 0.65;
+      }
+
+      a {
+        color: #dcdcdc;
+        text-decoration: none;
+        border-bottom: 1px dotted #444;
+      }
+
+      a:hover {
+        opacity: 0.7;
+      }
+
+      section {
+        margin-bottom: 2.4em;
+      }
+
+      textarea {
+        width: 100%;
+        background: #141414;
+        color: #dcdcdc;
+        border: 1px solid #1e1e1e;
+        font-family: monospace;
+        font-size: 15px;
+        line-height: 1.6;
+        padding: 10px;
+        resize: vertical;
+        min-height: 120px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      textarea:focus {
+        border-color: #333;
+      }
+
+      input[type='text'],
+      input[type='email'] {
+        width: 100%;
+        background: #141414;
+        color: #dcdcdc;
+        border: 1px solid #1e1e1e;
+        font-family: monospace;
+        font-size: 15px;
+        padding: 8px 10px;
+        outline: none;
+        margin-bottom: 8px;
+        transition: border-color 0.2s;
+      }
+
+      input[type='text']:focus,
+      input[type='email']:focus {
+        border-color: #333;
+      }
+
+      button {
+        background: none;
+        border: 1px solid #2a2a2a;
+        color: #dcdcdc;
+        font-family: monospace;
+        font-size: 14px;
+        padding: 6px 14px;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition:
+          border-color 0.2s,
+          opacity 0.2s;
+      }
+
+      button:hover {
+        border-color: #444;
+        opacity: 0.8;
+      }
+
+      button:active {
+        opacity: 0.5;
+      }
+
+      .note-controls {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+        align-items: center;
+      }
+
+      .save-status {
+        font-size: 0.85em;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .save-status.visible {
+        opacity: 0.5;
+      }
+
+      .links-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .links-list li {
+        padding: 4px 0;
+        border-bottom: 1px solid #171717;
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+      }
+
+      .links-list li:last-child {
+        border-bottom: none;
+      }
+
+      .link-label {
+        opacity: 0.45;
+        font-size: 0.85em;
+        min-width: 90px;
+        flex-shrink: 0;
+      }
+
+      .msg-status {
+        margin-top: 10px;
+        font-size: 0.9em;
+        opacity: 0;
+        transition: opacity 0.3s;
+        min-height: 1.4em;
+      }
+
+      .msg-status.visible {
+        opacity: 0.6;
+      }
+
+      .divider {
+        border: none;
+        border-top: 1px solid #181818;
+        margin: 2em 0;
+      }
+
+      .badge {
+        display: inline-block;
+        font-size: 0.75em;
+        padding: 1px 6px;
+        border: 1px solid #252525;
+        opacity: 0.55;
+        vertical-align: middle;
+        margin-left: 6px;
+      }
+
+      .note-tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: 0;
+        border-bottom: 1px solid #1e1e1e;
+      }
+
+      .tab-btn {
+        border: none;
+        border-bottom: 1px solid transparent;
+        margin-bottom: -1px;
+        opacity: 0.4;
+        padding: 4px 12px;
+        font-size: 0.85em;
+      }
+
+      .tab-btn.active {
+        opacity: 1;
+        border-bottom: 1px solid #dcdcdc;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      textarea.tab-area {
+        border-top: none;
+      }
+
+      .timestamp {
+        font-size: 0.8em;
+        opacity: 0.35;
+        margin-left: auto;
+      }
+
+      .slider-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .slider-label {
+        font-size: 0.9em;
+        opacity: 0.7;
+        min-width: 160px;
+        flex-shrink: 0;
+      }
+
+      input[type='range'] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 2px;
+        background: #2a2a2a;
+        outline: none;
+        cursor: pointer;
+      }
+
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 12px;
+        height: 12px;
+        background: #dcdcdc;
+        cursor: pointer;
+      }
+
+      input[type='range']::-moz-range-thumb {
+        width: 12px;
+        height: 12px;
+        background: #dcdcdc;
+        cursor: pointer;
+        border: none;
+      }
+
+      .slider-val {
+        font-size: 0.9em;
+        opacity: 0.5;
+        min-width: 16px;
+        text-align: right;
+      }
+
+      .issues-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .issues-list li {
+        padding: 5px 0;
+        border-bottom: 1px solid #171717;
+        font-size: 0.95em;
+        opacity: 0.8;
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+      }
+
+      .issues-list li:last-child {
+        border-bottom: none;
+      }
+
+      .issue-tag {
+        font-size: 0.78em;
+        opacity: 0.45;
+        flex-shrink: 0;
+      }
+
+      .checklist-input-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .checklist-input-row input {
+        margin-bottom: 0;
+        flex: 1;
+      }
+
+      .checklist-items {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .checklist-items li {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        padding: 4px 0;
+        border-bottom: 1px solid #171717;
+        font-size: 0.95em;
+      }
+
+      .checklist-items li:last-child {
+        border-bottom: none;
+      }
+
+      .checklist-items li.done span.item-text {
+        opacity: 0.35;
+        text-decoration: line-through;
+      }
+
+      .checklist-items input[type='checkbox'] {
+        width: auto;
+        margin: 0;
+        cursor: pointer;
+        accent-color: #dcdcdc;
+        flex-shrink: 0;
+      }
+
+      .item-text {
+        flex: 1;
+        cursor: pointer;
+      }
+
+      .delete-item {
+        border: none;
+        padding: 0 4px;
+        font-size: 0.8em;
+        opacity: 0.25;
+        flex-shrink: 0;
+      }
+
+      .delete-item:hover {
+        opacity: 0.6;
+      }
+
+      pre#nightly-info {
+        font-family: monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        opacity: 0.6;
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>tester dashboard <span class="badge">PRIVATE! because yes</span></h1>
+      <p class="small">
+        hey! thanks for making auth's RNG better, everything here is just for
+        you!
+      </p>
+
+      <hr class="divider" />
+
+      <section>
+        <h2>notes</h2>
+        <p class="small">
+          saved locally in your browser, im not gonna read your notes unless you
+          tell me it. ctrl+s OR press the save button to save your notes
+        </p>
+        <div class="note-tabs">
+          <button class="tab-btn active" onclick="switchTab('general')">
+            general
+          </button>
+          <button class="tab-btn" onclick="switchTab('bugs')">bugs</button>
+          <button class="tab-btn" onclick="switchTab('ideas')">ideas</button>
+        </div>
+        <div id="tab-general" class="tab-content active">
+          <textarea
+            class="tab-area"
+            id="note-general"
+            placeholder="write anything..."
+          ></textarea>
+        </div>
+        <div id="tab-bugs" class="tab-content">
+          <textarea
+            class="tab-area"
+            id="note-bugs"
+            placeholder="what broke?"
+          ></textarea>
+        </div>
+        <div id="tab-ideas" class="tab-content">
+          <textarea
+            class="tab-area"
+            id="note-ideas"
+            placeholder="what could be better?"
+          ></textarea>
+        </div>
+        <div class="note-controls">
+          <button onclick="saveNotes()">save</button>
+          <button onclick="clearCurrentNote()">clear tab</button>
+          <span class="save-status" id="save-status">saved!!</span>
+          <span class="timestamp" id="save-timestamp"></span>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <h2>feedback</h2>
+        <p class="small">
+          rate these 1–5. saves automatically. hit "send feedback" to email me
+          your scores so i can do stuff yknow
+        </p>
+        <div class="slider-row">
+          <span class="slider-label">how fun is it?</span>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="s-fun"
+            oninput="onSlider('s-fun', 'v-fun')"
+          />
+          <span class="slider-val" id="v-fun">3</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">how grindy?</span>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="s-grind"
+            oninput="onSlider('s-grind', 'v-grind')"
+          />
+          <span class="slider-val" id="v-grind">3</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">how clear are the rarities?</span>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="s-clarity"
+            oninput="onSlider('s-clarity', 'v-clarity')"
+          />
+          <span class="slider-val" id="v-clarity">3</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-label">overall satisfaction</span>
+          <input
+            type="range"
+            min="1"
+            max="5"
+            value="3"
+            id="s-overall"
+            oninput="onSlider('s-overall', 'v-overall')"
+          />
+          <span class="slider-val" id="v-overall">3</span>
+        </div>
+        <div class="note-controls">
+          <button onclick="sendFeedback()">send feedback</button>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <h2>known issues</h2>
+        <p class="small">stuff i already know about, no need to report these</p>
+        <ul class="issues-list">
+          <li>
+            <span class="issue-tag">[bug]</span> memory leaks and continuous bugs as you stay in the browser
+          <li>
+            <span class="issue-tag">[bug]</span> localStorage issues like: local songs not being deleted successfully, save data imports falsely accusing the save data provided as "tampered"
+          </li>
+        </ul>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <h2>your checklist</h2>
+        <p class="small">make your own testing checklist. again, it's saved locally in your browser</p>
+        <div class="checklist-input-row">
+          <input
+            type="text"
+            id="checklist-input"
+            placeholder="add a task..."
+            onkeydown="checklistKeydown(event)"
+          />
+          <button onclick="addChecklistItem()">add</button>
+        </div>
+        <ul class="checklist-items" id="checklist-items"></ul>
+        <div class="note-controls" style="margin-top: 10px">
+          <button onclick="clearChecked()">clear done</button>
+        </div>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <h2>exclusive links!</h2>
+        <ul class="links-list">
+          <li>
+            <span class="link-label">live build</span>
+            <a href="https://authsrng.xyz" target="_blank">authsrng.xyz</a>
+          </li>
+          <li>
+            <span class="link-label">dev build</span>
+            <a href="https://nightly.authsrng.xyz" target="_blank"
+              >nightly.authsrng.xyz</a
+            >
+          </li>
+          <br />
+          <p class="small">this will update over time...</p>
+        </ul>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <h2>build info</h2>
+        <pre id="nightly-info">loading...</pre>
+      </section>
+
+      <hr class="divider" />
+
+      <section>
+        <h2>send a message</h2>
+        <p class="small">
+          goes straight to my email once you send! impressive technology right?
+        </p>
+        <input type="text" id="msg-name" placeholder="your name or handle" />
+        <input
+          type="email"
+          id="msg-email"
+          placeholder="your email (optional, if you want a reply)"
+        />
+        <textarea
+          id="msg-body"
+          placeholder="what's on your mind?"
+          style="min-height: 90px"
+        ></textarea>
+        <div class="note-controls">
+          <button onclick="sendMessage()">send</button>
+        </div>
+        <div class="msg-status" id="msg-status"></div>
+      </section>
+
+      <hr class="divider" />
+
+      <p class="small" style="margin-top: 2em">
+        don't SHARE THIS LINK PLEASEEEEEEEEEEEEEEEE
+      </p>
+    </div>
+
+    <script>
+      const NOTES_KEY = 'tester_notes_v1';
+      const NOTES_TS_KEY = 'tester_notes_ts_v1';
+      const SLIDERS_KEY = 'tester_sliders_v1';
+      const CHECKLIST_KEY = 'tester_checklist_v1';
+      const tabs = ['general', 'bugs', 'ideas'];
+      let currentTab = 'general';
+
+      function loadNotes() {
+        const saved = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
+        tabs.forEach(function (tab) {
+          const el = document.getElementById('note-' + tab);
+          if (el && saved[tab]) el.value = saved[tab];
+        });
+        const ts = localStorage.getItem(NOTES_TS_KEY);
+        if (ts) updateTimestamp(parseInt(ts, 10));
+      }
+
+      function saveNotes() {
+        const data = {};
+        tabs.forEach(function (tab) {
+          const el = document.getElementById('note-' + tab);
+          if (el) data[tab] = el.value;
+        });
+        localStorage.setItem(NOTES_KEY, JSON.stringify(data));
+        const now = Date.now();
+        localStorage.setItem(NOTES_TS_KEY, now);
+        updateTimestamp(now);
+        const status = document.getElementById('save-status');
+        status.classList.add('visible');
+        setTimeout(function () {
+          status.classList.remove('visible');
+        }, 1800);
+      }
+
+      function updateTimestamp(ts) {
+        const el = document.getElementById('save-timestamp');
+        if (!el || !ts) return;
+        const diff = Math.floor((Date.now() - ts) / 1000);
+        let label;
+        if (diff < 10) label = 'just now';
+        else if (diff < 60) label = diff + 's ago';
+        else if (diff < 3600) label = Math.floor(diff / 60) + 'm ago';
+        else if (diff < 86400) label = Math.floor(diff / 3600) + 'h ago';
+        else label = Math.floor(diff / 86400) + 'd ago';
+        el.textContent = 'last saved ' + label;
+      }
+
+      setInterval(function () {
+        const ts = localStorage.getItem(NOTES_TS_KEY);
+        if (ts) updateTimestamp(parseInt(ts, 10));
+      }, 30000);
+
+      function clearCurrentNote() {
+        const el = document.getElementById('note-' + currentTab);
+        if (el) el.value = '';
+        saveNotes();
+      }
+
+      function switchTab(tab) {
+        currentTab = tab;
+        tabs.forEach(function (t, i) {
+          document
+            .getElementById('tab-' + t)
+            .classList.toggle('active', t === tab);
+          document
+            .querySelectorAll('.tab-btn')
+            [i].classList.toggle('active', t === tab);
+        });
+      }
+
+      function onSlider(sliderId, valId) {
+        document.getElementById(valId).textContent =
+          document.getElementById(sliderId).value;
+        saveSliders();
+      }
+
+      function saveSliders() {
+        const data = {
+          fun: document.getElementById('s-fun').value,
+          grind: document.getElementById('s-grind').value,
+          clarity: document.getElementById('s-clarity').value,
+          overall: document.getElementById('s-overall').value,
+        };
+        localStorage.setItem(SLIDERS_KEY, JSON.stringify(data));
+      }
+
+      function loadSliders() {
+        const saved = JSON.parse(localStorage.getItem(SLIDERS_KEY) || '{}');
+        const map = {
+          fun: 's-fun',
+          grind: 's-grind',
+          clarity: 's-clarity',
+          overall: 's-overall',
+        };
+        const vmap = {
+          fun: 'v-fun',
+          grind: 'v-grind',
+          clarity: 'v-clarity',
+          overall: 'v-overall',
+        };
+        Object.keys(map).forEach(function (k) {
+          if (saved[k]) {
+            document.getElementById(map[k]).value = saved[k];
+            document.getElementById(vmap[k]).textContent = saved[k];
+          }
+        });
+      }
+
+      function sendFeedback() {
+        const fun = document.getElementById('s-fun').value;
+        const grind = document.getElementById('s-grind').value;
+        const clarity = document.getElementById('s-clarity').value;
+        const overall = document.getElementById('s-overall').value;
+        const subject = encodeURIComponent('tester feedback scores');
+        const body = encodeURIComponent(
+          'feedback scores:\n\nhow fun: ' +
+            fun +
+            '/5\nhow grindy: ' +
+            grind +
+            '/5\nrarity clarity: ' +
+            clarity +
+            '/5\noverall: ' +
+            overall +
+            '/5',
+        );
+        window.location.href =
+          'mailto:skunkolee@gmail.com?subject=' + subject + '&body=' + body;
+      }
+
+      function loadChecklist() {
+        const saved = JSON.parse(localStorage.getItem(CHECKLIST_KEY) || '[]');
+        saved.forEach(function (item) {
+          renderChecklistItem(item.text, item.done);
+        });
+      }
+
+      function saveChecklist() {
+        const items = [];
+        document.querySelectorAll('.checklist-items li').forEach(function (li) {
+          items.push({
+            text: li.querySelector('.item-text').textContent,
+            done: li.classList.contains('done'),
+          });
+        });
+        localStorage.setItem(CHECKLIST_KEY, JSON.stringify(items));
+      }
+
+      function renderChecklistItem(text, done) {
+        const li = document.createElement('li');
+        if (done) li.classList.add('done');
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = done;
+        cb.addEventListener('change', function () {
+          li.classList.toggle('done', cb.checked);
+          saveChecklist();
+        });
+
+        const span = document.createElement('span');
+        span.className = 'item-text';
+        span.textContent = text;
+        span.addEventListener('click', function () {
+          cb.checked = !cb.checked;
+          li.classList.toggle('done', cb.checked);
+          saveChecklist();
+        });
+
+        const del = document.createElement('button');
+        del.className = 'delete-item';
+        del.textContent = '×';
+        del.addEventListener('click', function () {
+          li.remove();
+          saveChecklist();
+        });
+
+        li.appendChild(cb);
+        li.appendChild(span);
+        li.appendChild(del);
+        document.getElementById('checklist-items').appendChild(li);
+      }
+
+      function addChecklistItem() {
+        const input = document.getElementById('checklist-input');
+        const text = input.value.trim();
+        if (!text) return;
+        renderChecklistItem(text, false);
+        input.value = '';
+        saveChecklist();
+      }
+
+      function checklistKeydown(e) {
+        if (e.key === 'Enter') addChecklistItem();
+      }
+
+      function clearChecked() {
+        document
+          .querySelectorAll('.checklist-items li.done')
+          .forEach(function (li) {
+            li.remove();
+          });
+        saveChecklist();
+      }
+
+      function sendMessage() {
+        const name = document.getElementById('msg-name').value.trim();
+        const email = document.getElementById('msg-email').value.trim();
+        const body = document.getElementById('msg-body').value.trim();
+        const status = document.getElementById('msg-status');
+
+        if (!body) {
+          status.textContent = 'write something first.';
+          status.classList.add('visible');
+          return;
+        }
+
+        const subject = encodeURIComponent(
+          'tester message' + (name ? ' from ' + name : ''),
+        );
+        const bodyLines = [];
+        if (name) bodyLines.push('from: ' + name);
+        if (email) bodyLines.push('reply to: ' + email);
+        bodyLines.push('');
+        bodyLines.push(body);
+        const bodyText = encodeURIComponent(bodyLines.join('\n'));
+
+        window.location.href =
+          'mailto:skunkolee@gmail.com?subject=' + subject + '&body=' + bodyText;
+
+        status.textContent = 'opening your mail app...';
+        status.classList.add('visible');
+
+        setTimeout(function () {
+          document.getElementById('msg-name').value = '';
+          document.getElementById('msg-email').value = '';
+          document.getElementById('msg-body').value = '';
+          status.textContent = 'sent (or tried to). thanks.';
+          setTimeout(function () {
+            status.classList.remove('visible');
+          }, 2500);
+        }, 1000);
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          saveNotes();
+        }
+      });
+
+      loadNotes();
+      loadSliders();
+      loadChecklist();
+
+      (async () => {
+        let el = document.getElementById('nightly-info');
+        try {
+          let [mainC, nightlyC, releases] = await Promise.all([
+            fetch(
+              'https://api.github.com/repos/auth1ery/auths-RNG/commits/main',
+            ).then((r) => (r.status === 403 ? { rate: 1 } : r.json())),
+            fetch(
+              'https://api.github.com/repos/auth1ery/auths-RNG/commits/nightly',
+            ).then((r) => (r.status === 403 ? { rate: 1 } : r.json())),
+            fetch(
+              'https://api.github.com/repos/auth1ery/auths-RNG/releases',
+            ).then((r) => (r.status === 403 ? { rate: 1 } : r.json())),
+          ]);
+
+          if (mainC.rate || nightlyC.rate || releases.rate) {
+            el.textContent = 'rate limited by github! try again in an hour';
+            return;
+          }
+
+          let fmt = (c) => {
+            let msg = c.commit.message.split('\n')[0];
+            let sha = c.sha.slice(0, 7);
+            let date = new Date(c.commit.author.date).toLocaleString();
+            return `${sha} • ${msg} • ${date}`;
+          };
+
+          let mainR = releases.find((r) => r.target_commitish === 'main');
+          let nightlyR = releases.find((r) => r.target_commitish === 'nightly');
+          let mainRDate = mainR
+            ? new Date(mainR.published_at).toLocaleString()
+            : 'none';
+          let nightlyRDate = nightlyR
+            ? new Date(nightlyR.published_at).toLocaleString()
+            : 'none';
+
+          el.textContent = `(nightly) branch: ${fmt(nightlyC)}\n(main) branch: ${fmt(mainC)}\nlast release on main: ${mainRDate}\nlast release on nightly: ${nightlyRDate}`;
+        } catch (e) {
+          el.textContent = '';
+        }
+      })();
+    </script>
+  </body>
+</html>
