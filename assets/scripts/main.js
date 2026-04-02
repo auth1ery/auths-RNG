@@ -642,6 +642,7 @@ const rarities = [
   { name: 'Phosphorus', chance: 1 / 7250 },
   { name: 'Sulfur', chance: 1 / 7225 },
   { name: 'Chemical', chance: 1 / 7200 },
+  //i should consider making a rarities.ts at this point.. oh and maybe cutscenemap.ts as well.. it'll save like fuckin 700 lines
   { name: 'Chlorine', chance: 1 / 7175 },
   { name: 'Argon', chance: 1 / 7150 },
   { name: 'Potassium', chance: 1 / 7125 },
@@ -1007,7 +1008,7 @@ const rarities = [
   { name: 'Common', chance: 1 / 2 },
 ];
 
-// Cutscene mapping
+// Cutscene mapping... god this part is messy as fuck lmao
 const cutsceneMap = {
   cat: 'assets/videos/cat.mp4',
   SUMMER: 'assets/videos/SUMMER.mp4',
