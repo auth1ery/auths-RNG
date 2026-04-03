@@ -16,6 +16,11 @@ main branch: https://authsrng.xyz (main stable site)
 
 nightly branch: https://nightly.authsrng.xyz (unstable testing branch, but contains the latest pre-versions)
 
+<img src="data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='200' height='30'>
+<text x='0' y='20' fill='red'>made with ♥ in canada 🇨🇦</text>
+</svg>">
+
 ---
 
 # about auth's RNG
