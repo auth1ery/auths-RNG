@@ -41,3 +41,6 @@ the earliest archive can be found on version `5.5`, which is when auth's RNG bec
 the `.github/workflows` part should NOT be changed or else they change how the development process work. if you do, i will hunt you down with a shovel
 
 refer to `documentation/CONTRIBUTING.md` for further instructions!
+
+> [!NOTE]
+> this repository is a bit of a mess, im sorry if contributing is horrible, im trying to keep as much things organized as possible
