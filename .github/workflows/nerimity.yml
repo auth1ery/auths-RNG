@@ -2,7 +2,7 @@ name: nerimity notify
 
 on:
   push:
-    branches: [ "**" ]
+    branches: ['**']
 
 jobs:
   discord:
