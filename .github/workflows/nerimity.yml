@@ -1,0 +1,16 @@
+name: nerimity notify
+
+on:
+  push:
+    branches: [ "**" ]
+
+jobs:
+  discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: send push to nerimity
+        run: |
+          curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{\"content\": \"push: ${{ github.repository }}@${{ github.ref_name }}\ncommit: ${{ github.sha }}\nurl: https://github.com/${{ github.repository }}/commit/${{ github.sha }}\nauthor: ${{ github.actor }}\nmessage: ${{ github.event.head_commit.message }}\"}" \
+            ${{ secrets.NERI_WEBHOOK }}
