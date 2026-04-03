@@ -156,6 +156,15 @@ el.textContent="";
   };
 </script>
 
+<script>
+
+// ccu heartbeat
+const _sid = Math.random().toString(36).slice(2);
+const _hb = () => fetch("/api/ccu?sid=" + _sid, { method: "POST" });
+_hb(); // ping immediately on load
+setInterval(_hb, 60_000); // then every 60 sec and stuff
+
+</script>
   <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" width="0" />
   
 <script>
