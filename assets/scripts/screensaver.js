@@ -120,7 +120,8 @@
     "guys i am NOT a femboy, i am TRANS",
     "please stop calling me gay or harrass me because im trans.. please...",
     "subway",
-    "imagine swearing lmao"
+    "imagine swearing lmao",
+    "HUHHHHHHHHHHHH????????????"
   ];
 
   let screensaver, textElem, idleTimer, messageTimer, typeInterval;
