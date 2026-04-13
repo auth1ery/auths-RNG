@@ -40,3 +40,5 @@ export function throttle<T extends (...args: any[]) => void>(
     }
   };
 }
+
+// might use typescript a bit more someday
