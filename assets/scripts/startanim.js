@@ -81,7 +81,7 @@ window.addEventListener('DOMContentLoaded', () => {
   container.className = 'entry-container';
   container.innerHTML = `
     <div class="center-line"></div>
-    <div class="tap-text">click/tap to wake up</div>
+    <div class="tap-text">click/tap to wake up...</div>
   `;
   document.body.appendChild(container);
 

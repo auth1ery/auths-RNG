@@ -722,14 +722,14 @@
     try {
       envelope = JSON.parse(decodeURIComponent(escape(atob(input.trim()))));
     } catch (_) {
-      return { error: 'invalid or corrupted data' };
+      return { error: 'invalid or corrupted data...' };
     }
     if (!envelope || !envelope.p || !envelope.h || !envelope.t)
       return { error: 'invalid format' };
     if (envelope.t !== expectedTag)
-      return { error: 'wrong type — expected ' + expectedTag };
+      return { error: 'wrong type! expected ' + expectedTag };
     if (simpleHash(envelope.p) !== envelope.h)
-      return { error: 'tampered or corrupted — blocked' };
+      return { error: 'tampered or corrupted! thats blocked' };
     try {
       return { bundle: JSON.parse(envelope.p) };
     } catch (_) {
