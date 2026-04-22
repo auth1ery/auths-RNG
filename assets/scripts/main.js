@@ -345,11 +345,11 @@ function showConfirmModal(title, text, onConfirm) {
 }
 
 let globalLuckMultiplier = 1;
+
 function recalcLuckMultiplier() {
-  globalLuckMultiplier = 1 + shopUpgrades.luck * 0.1 + anomaliesUsed * 0.5;
-
+  shopLuckMultiplier = 1 + shopUpgrades.luck * 0.1;
+  globalLuckMultiplier = shopLuckMultiplier + anomaliesUsed * 0.5;
   globalLuckMultiplier *= potionLuckMultiplier;
-
   updateLuckDisplay();
 }
 
@@ -1468,7 +1468,7 @@ function addToInventory(o) {
     }
   }
 
-  // Handle duplicate potion
+  // handle da duplicate potion
   if (duplicateRollsLeft > 0) {
     if (inventoryData.has(o.name)) {
       const d = inventoryData.get(o.name);
@@ -1481,33 +1481,37 @@ function addToInventory(o) {
   }
 }
 
-document.getElementById('buyMagnetBtn').addEventListener('click', () => {
-  const cost = 500 + shopUpgrades.magnet * 1000;
-  if (points >= cost && shopUpgrades.magnet < 5) {
+document.getElementById('buyLuckBtn').addEventListener('click', () => {
+  const cost = Math.floor(25 + shopUpgrades.luck * shopUpgrades.luck * 15);
+  if (points >= cost && shopUpgrades.luck < 100) {
     points -= cost;
-    shopUpgrades.magnet++;
+    shopUpgrades.luck++;
+    shopLuckMultiplier = 1 + shopUpgrades.luck * 0.1;
+    recalcLuckMultiplier();
     updatePointsDisplay();
     updateShopUI();
     saveAllData();
   }
 });
 
-document.getElementById('buyPrinterBtn').addEventListener('click', () => {
-  const cost = 1000 + shopUpgrades.printer * shopUpgrades.printer * 500;
-  if (points >= cost) {
+document.getElementById('buySpeedBtn').addEventListener('click', () => {
+  const cost = Math.floor(50 + shopUpgrades.speed * shopUpgrades.speed * 55);
+  if (points >= cost && shopUpgrades.speed < 3) {
     points -= cost;
-    shopUpgrades.printer++;
+    shopUpgrades.speed++;
+    rollSpeed = Math.max(0.25, 1.0 - shopUpgrades.speed * 0.2);
     updatePointsDisplay();
     updateShopUI();
     saveAllData();
   }
 });
 
-document.getElementById('buyDupeBtn').addEventListener('click', () => {
-  const cost = 800 + shopUpgrades.duplicate * shopUpgrades.duplicate * 400;
-  if (points >= cost && shopUpgrades.duplicate < 10) {
+document.getElementById('buyPointBtn').addEventListener('click', () => {
+  const cost = Math.floor(100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35);
+  if (points >= cost && shopUpgrades.pointMult < 10) {
     points -= cost;
-    shopUpgrades.duplicate++;
+    shopUpgrades.pointMult++;
+    pointDivisor = Math.max(1.0, 3.0 - shopUpgrades.pointMult * 0.2);
     updatePointsDisplay();
     updateShopUI();
     saveAllData();
@@ -1793,6 +1797,10 @@ function resetInventory() {
     localStorage.removeItem('weekly_lastClaim');
     localStorage.removeItem('weekly_streak');
     localStorage.removeItem(playtimeKey);
+    localStorage.removeItem('userSettings');
+    localStorage.removeItem('userSettings');
+    localStorage.removeItem('wishingWell');
+    localStorage.removeItem('gauntletData');
 
     inventoryData.clear();
     inventoryList.innerHTML = '';
@@ -1803,7 +1811,15 @@ function resetInventory() {
     points = 0;
     anomalies = 0;
     anomaliesUsed = 0;
-    shopUpgrades = { luck: 0, speed: 0, pointMult: 0 };
+    shopUpgrades = { luck: 0, speed: 0, pointMult: 0, magnet: 0, printer: 0, duplicate: 0 };
+    playerPotions = { luck2x:0, luck4x:0, luck10x:0, luck50x:0, luck100x:0, luck150x:0, luck250x:0, luck300x:0, duplicate:0 };
+    activePotions = [];
+    duplicateRollsLeft = 0;
+    potionLuckMultiplier = 1;
+    localStorage.removeItem(POTIONS_KEY);
+    localStorage.removeItem(ACTIVE_POTIONS_KEY);
+    updatePotionUI();
+    updateActivePotionsDisplay();
     soldOutRarities.clear();
     shopLuckMultiplier = 1.0;
     rollSpeed = 1.0;
@@ -2255,42 +2271,6 @@ function generateRunCard() {
 window.backgroundMusic = backgroundMusic;
 window.lunarMusic = lunarMusic;
 
-document.getElementById('buyLuckBtn').addEventListener('click', () => {
-  const cost = 50 + shopUpgrades.luck * 25;
-  if (points >= cost && shopUpgrades.luck < 100) {
-    points -= cost;
-    shopUpgrades.luck++;
-    shopLuckMultiplier = 1 + shopUpgrades.luck * 0.1;
-    recalcLuckMultiplier();
-    updatePointsDisplay();
-    updateShopUI();
-    saveAllData();
-  }
-});
-
-document.getElementById('buySpeedBtn').addEventListener('click', () => {
-  const cost = 100 + shopUpgrades.speed * 50;
-  if (points >= cost && shopUpgrades.speed < 3) {
-    points -= cost;
-    shopUpgrades.speed++;
-    rollSpeed = Math.max(0.25, 1.0 - shopUpgrades.speed * 0.2);
-    updatePointsDisplay();
-    updateShopUI();
-    saveAllData();
-  }
-});
-
-document.getElementById('buyPointBtn').addEventListener('click', () => {
-  const cost = 150 + shopUpgrades.pointMult * 75;
-  if (points >= cost && shopUpgrades.pointMult < 10) {
-    points -= cost;
-    shopUpgrades.pointMult++;
-    pointDivisor = Math.max(1.0, 3.0 - shopUpgrades.pointMult * 0.2);
-    updatePointsDisplay();
-    updateShopUI();
-    saveAllData();
-  }
-});
 
 const buyMagnetBtn = document.getElementById('buyMagnetBtn');
 if (buyMagnetBtn) {

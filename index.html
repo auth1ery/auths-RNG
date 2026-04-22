@@ -1181,7 +1181,7 @@ function handleSwipe() {
   let settingsMoved = false;
   
   const page2 = document.querySelector('#page-2');
-  const page4 = document.querySelector('#page-4');
+  const page5 = document.querySelector('#page-5');
   
   function moveShopToPopup() {
     if (shopMoved || !page2 || !legacyShopPopup) return;
@@ -1193,10 +1193,10 @@ function handleSwipe() {
   }
   
   function moveSettingsToPopup() {
-    if (settingsMoved || !page4 || !legacySettingsPopup) return;
+    if (settingsMoved || !page5 || !legacySettingsPopup) return;
     
-    while (page4.firstChild) {
-      legacySettingsPopup.appendChild(page4.firstChild);
+    while (page5.firstChild) {
+      legacySettingsPopup.appendChild(page5.firstChild);
     }
     settingsMoved = true;
   }
@@ -1209,9 +1209,9 @@ function handleSwipe() {
       shopMoved = false;
     }
     
-    if (legacySettingsPopup && page4) {
+    if (legacySettingsPopup && page5) {
       while (legacySettingsPopup.firstChild) {
-        page4.appendChild(legacySettingsPopup.firstChild);
+        page5.appendChild(legacySettingsPopup.firstChild);
       }
       settingsMoved = false;
     }
