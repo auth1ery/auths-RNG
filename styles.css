@@ -2028,3 +2028,85 @@ body.legacy-mode #legacySettingsBtn {
   margin-top: 6px;
   font-style: italic;
 }
+
+/* ── inventory styles ── */
+body[data-inv-style='comfy'] #inventoryList li { padding: 10px 12px; margin-bottom: 6px; }
+body[data-inv-style='card'] #inventoryList { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
+body[data-inv-style='card'] #inventoryList li { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 3px; padding: 8px; text-align: center; }
+
+/* ── blur panels ── */
+body.blur-panels .shop-item,
+body.blur-panels #inventoryList,
+body.blur-panels #luckDisplay,
+body.blur-panels #achievementsContainer,
+body.blur-panels .well-container,
+body.blur-panels #pointsDisplay {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.03) !important;
+}
+
+/* ── compact mode ── */
+body.compact-mode .page { padding: 20px 12px 80px !important; }
+body.compact-mode .shop-item { padding: 10px 12px; margin-bottom: 10px; }
+body.compact-mode #inventoryList li { padding: 3px 6px; margin-bottom: 2px; font-size: 0.85em; }
+body.compact-mode #achievementsContainer { padding: 8px; }
+body.compact-mode .potion-grid { grid-template-columns: 1fr 1fr 1fr; }
+
+/* ── reduce motion ── */
+body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+body.reduce-motion #spinner { transition: none !important; }
+
+/* ── high contrast ── */
+body.high-contrast {
+  --border-color: #aaa !important;
+  --text-color: #fff !important;
+  --bg-color: #000 !important;
+  --button-bg: #111 !important;
+  --panel-bg: #000 !important;
+  --overlay-bg: #000 !important;
+}
+[data-theme='white'].high-contrast {
+  --border-color: #444 !important;
+  --text-color: #000 !important;
+  --bg-color: #fff !important;
+}
+
+/* ── large targets ── */
+body.large-targets button { min-height: 44px; }
+body.large-targets button.small { min-height: 36px; }
+body.large-targets .page-dot { width: 14px; height: 14px; }
+body.large-targets .page-dot.active { width: 32px; }
+
+/* ── hide custom cursor ── */
+body.hide-cursor #custom-cursor { display: none !important; }
+body.hide-cursor, body.hide-cursor button { cursor: auto !important; }
+
+/* ── accent color ── */
+:root { --accent-color: #dcdcdc; }
+#inventoryList li.item-rare { border-left: 2px solid var(--accent-color); }
+body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
+
+/* ── rolls since rare display ── */
+#rollsSinceRare {
+  opacity: 0.5;
+  font-size: 0.85em;
+  margin-bottom: 0.3em;
+  color: var(--text-color);
+}
+
+/* ── spinner fade style ── */
+#spinner.fade-style { transition: none !important; }
+#spinner.fade-style .spin-item.result-item {
+  animation: fadeInResult 0.3s ease forwards;
+}
+@keyframes fadeInResult {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* why do i have the literal time to use EM DASHES OF ALL THINGS */

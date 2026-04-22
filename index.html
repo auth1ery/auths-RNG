@@ -386,6 +386,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
       </div>
       
       <p id="totalRolls" class="lazy">total rolls: 0</p>
+      <p id="rollsSinceRare" class="lazy" style="display:none;">rolls since last rare: 0</p>
       
       <div id="luckDisplay" class="lazy">
         <p id="luckMultiplier">luck multiplier: 1.0x</p>
@@ -773,6 +774,74 @@ if (navigator.userAgent.includes("Screenjesus")) {
 
     <label style="display: block; margin-top: 16px;">custom roll button text:</label>
     <input type="text" id="customRollText" placeholder="roll" maxlength="30" style="width: 100%; margin-top: 4px; padding: 8px;">
+
+    <hr class="sep" style="margin: 20px 0;">
+<div style="font-size: 0.72em; opacity: 0.45; margin-bottom: 10px; letter-spacing: 0.08em; text-transform: uppercase;">visual</div>
+
+<label style="display: block; margin-top: 12px;">inventory style:</label>
+<select id="inventoryStyle" style="width: 100%; margin-top: 4px;">
+  <option value="compact">compact (default)</option>
+  <option value="comfy">comfy</option>
+  <option value="card">card grid</option>
+</select>
+
+<label style="display: block; margin-top: 12px;">spinner style:</label>
+<select id="spinnerStyle" style="width: 100%; margin-top: 4px;">
+  <option value="slot">slot machine (default)</option>
+  <option value="fade">fade in place</option>
+  <option value="none">no animation</option>
+</select>
+
+<label style="display: block; margin-top: 12px;">roll button size:</label>
+<select id="rollBtnSize" style="width: 100%; margin-top: 4px;">
+  <option value="normal">normal (default)</option>
+  <option value="small">small</option>
+  <option value="large">large</option>
+  <option value="huge">huge</option>
+</select>
+
+<label style="display: block; margin-top: 12px;">accent color:</label>
+<input type="color" id="accentColor" value="#dcdcdc" style="width: 100%; margin-top: 4px; height: 36px;">
+<small class="helper">used for rare item highlights and borders</small>
+
+<label style="display: block; margin-top: 10px;"><input type="checkbox" id="blurPanels"> frosted glass panels</label>
+<label style="display: block; margin-top: 8px;"><input type="checkbox" id="hideCursor"> hide custom cursor</label>
+<label style="display: block; margin-top: 8px;"><input type="checkbox" id="hideLuckBreakdown"> hide luck breakdown text</label>
+<label style="display: block; margin-top: 8px;"><input type="checkbox" id="compactMode"> compact mode</label>
+
+<hr class="sep" style="margin: 20px 0;">
+<div style="font-size: 0.72em; opacity: 0.45; margin-bottom: 10px; letter-spacing: 0.08em; text-transform: uppercase;">accessibility</div>
+
+<label style="display: block; margin-top: 8px;"><input type="checkbox" id="reduceMotion"> reduce motion</label>
+<label style="display: block; margin-top: 8px;"><input type="checkbox" id="highContrast"> high contrast</label>
+<label style="display: block; margin-top: 8px;"><input type="checkbox" id="largeTargets"> larger click targets</label>
+
+<hr class="sep" style="margin: 20px 0;">
+<div style="font-size: 0.72em; opacity: 0.45; margin-bottom: 10px; letter-spacing: 0.08em; text-transform: uppercase;">gameplay</div>
+
+<label style="display: block; margin-top: 12px;">roll sound:</label>
+<select id="rollSound" style="width: 100%; margin-top: 4px;">
+  <option value="none">none (default)</option>
+  <option value="click">click</option>
+  <option value="whoosh">whoosh</option>
+  <option value="coin">coin</option>
+</select>
+
+<label style="display: block; margin-top: 16px;">"rare" threshold (1/X and rarer):</label>
+<input type="number" id="rareThreshold" min="0" value="1000" style="width: 100%; margin-top: 4px; padding: 8px;">
+<small class="helper">defines what counts as "rare" — used for highlights, confetti, and the rolls-since-rare counter</small>
+
+<label style="display: block; margin-top: 16px;">confetti threshold (1/X and rarer, 0 = off):</label>
+<input type="number" id="confettiThreshold" min="0" value="0" style="width: 100%; margin-top: 4px; padding: 8px;">
+<small class="helper">show confetti when you roll something rarer than 1/X</small>
+
+<label style="display: block; margin-top: 16px;">auto-sell threshold (sell rarities below 1/X, 0 = off):</label>
+<input type="number" id="autoSellThreshold" min="0" value="0" style="width: 100%; margin-top: 4px; padding: 8px;">
+<small class="helper">automatically sells any rarity with denominator below this value for points</small>
+
+<label style="display: block; margin-top: 16px;">cutscene threshold (only play cutscenes at 1/X and rarer, 0 = all):</label>
+<input type="number" id="cutsceneThreshold" min="0" value="0" style="width: 100%; margin-top: 4px; padding: 8px;">
+<small class="helper">rarities below this won't play their cutscene even if one exists</small>
 
 <div id="settingsTransferContainer" style="margin-top: 20px;">
       <div style="margin-bottom: 6px; opacity: 0.7;">settings transfer</div>
@@ -1964,6 +2033,98 @@ function handleSwipe() {
   setTimeout(renderGauntlets, 200);
 })();
 </script>
+
+<script> // TAGS </script>
+
+<style>
+#updatePopup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 10003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#updatePopup.hidden { display: none; }
+#updatePopupInner {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 28px;
+  max-width: 480px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  color: var(--text-color);
+}
+#updatePopupClose {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.4em;
+  opacity: 0.6;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+#updatePopupClose:hover { opacity: 1; }
+#updatePopupTag {
+  font-size: 1.3em;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+#updatePopupDate {
+  font-size: 0.8em;
+  opacity: 0.5;
+  margin-bottom: 16px;
+}
+#updatePopupBody {
+  font-size: 0.9em;
+  opacity: 0.8;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+</style>
+
+<div id="updatePopup" class="hidden">
+  <div id="updatePopupInner">
+    <button id="updatePopupClose">×</button>
+    <div id="updatePopupTag"></div>
+    <div id="updatePopupDate"></div>
+    <div id="updatePopupBody"></div>
+  </div>
+</div>
+
+<script>
+(async () => {
+  const SEEN_KEY = 'seenReleaseTag';
+  try {
+    const res = await fetch('https://api.github.com/repos/auth1ery/auths-RNG/releases/latest');
+    if (!res.ok) return;
+    const data = await res.json();
+    const tag = data.tag_name;
+    if (!tag || localStorage.getItem(SEEN_KEY) === tag) return;
+
+    document.getElementById('updatePopupTag').textContent = tag;
+    document.getElementById('updatePopupDate').textContent =
+      new Date(data.published_at).toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('updatePopupBody').textContent =
+      data.body || '(no release notes)';
+    document.getElementById('updatePopup').classList.remove('hidden');
+
+    document.getElementById('updatePopupClose').addEventListener('click', () => {
+      localStorage.setItem(SEEN_KEY, tag);
+      document.getElementById('updatePopup').classList.add('hidden');
+    });
+  } catch (e) {}
+})();
+</script>
+
 </body>
 
 </html>

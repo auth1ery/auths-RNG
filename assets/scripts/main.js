@@ -118,6 +118,117 @@ const potionData = {
   duplicate: { name: 'duplicate', rolls: 10, cost: 5000, emoji: '🎭' },
 };
 
+// ── roll sound ────────────────────────────────────────────────────────────
+function playRollSound() {
+  const sound = window.rollSoundSetting || 'none';
+  if (sound === 'none') return;
+  try {
+    const ctx =
+      window.audioContext ||
+      new (window.AudioContext || window.webkitAudioContext)();
+    window.audioContext = ctx;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    const t = ctx.currentTime;
+    if (sound === 'click') {
+      osc.frequency.setValueAtTime(600, t);
+      osc.frequency.exponentialRampToValueAtTime(300, t + 0.08);
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+      osc.start(t);
+      osc.stop(t + 0.08);
+    } else if (sound === 'whoosh') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(150, t);
+      osc.frequency.exponentialRampToValueAtTime(600, t + 0.25);
+      gain.gain.setValueAtTime(0.15, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t);
+      osc.stop(t + 0.25);
+    } else if (sound === 'coin') {
+      osc.frequency.setValueAtTime(1400, t);
+      osc.frequency.setValueAtTime(1800, t + 0.04);
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+      osc.start(t);
+      osc.stop(t + 0.18);
+    }
+  } catch (e) {}
+}
+
+// ── confetti ──────────────────────────────────────────────────────────────
+function triggerConfetti() {
+  if (document.body.classList.contains('reduce-motion')) return;
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText =
+    'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:99998;';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  const colors = [
+    '#ff6666',
+    '#66ff66',
+    '#6666ff',
+    '#ffff66',
+    '#ff66ff',
+    '#66ffff',
+    '#ffaa66',
+  ];
+  const pieces = Array.from({ length: 120 }, () => ({
+    x: Math.random() * canvas.width,
+    y: -10,
+    w: 8 + Math.random() * 8,
+    h: 4 + Math.random() * 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    rot: Math.random() * Math.PI * 2,
+    rotSpeed: (Math.random() - 0.5) * 0.15,
+    vx: (Math.random() - 0.5) * 5,
+    vy: 2 + Math.random() * 4,
+    alpha: 1,
+  }));
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    pieces.forEach((p) => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotSpeed;
+      if (p.y > canvas.height * 0.7) p.alpha -= 0.025;
+      if (p.alpha > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+    });
+    if (alive) requestAnimationFrame(draw);
+    else canvas.remove();
+  }
+  draw();
+}
+
+// ── rolls since last rare ─────────────────────────────────────────────────
+let rollsSinceLastRare = 0;
+function updateRollsSinceRare(rolledRarity) {
+  const thresh = window.rareThreshold || 1000;
+  const denom = Math.round(1 / rolledRarity.chance);
+  if (denom >= thresh) {
+    rollsSinceLastRare = 0;
+  } else {
+    rollsSinceLastRare++;
+  }
+  const el = document.getElementById('rollsSinceRare');
+  if (el && thresh > 0)
+    el.textContent = `rolls since last rare: ${rollsSinceLastRare}`;
+}
+
 function calculateRarityPoints(rarity) {
   const denom = Math.round(1 / rarity.chance);
   return Math.ceil(denom / pointDivisor);
@@ -1455,6 +1566,32 @@ function addToInventory(o) {
   inventoryList.scrollTop = inventoryList.scrollHeight;
   updateCollectedCounter();
 
+  // ── auto-sell ──────────────────────────────────────────────────────────
+  const autoSellThresh = window.autoSellThreshold || 0;
+  if (autoSellThresh > 0) {
+    const denom = Math.round(1 / o.chance);
+    if (denom < autoSellThresh) {
+      const earned = calculateRarityPoints(o);
+      const d = inventoryData.get(o.name);
+      if (d) {
+        soldOutRarities.set(o.name, { count: d.count });
+        points += earned;
+        updatePointsDisplay();
+        updateShopUI();
+        updateItem(d);
+        showAnomalyPopup(`auto-sold ${o.name} for ${earned} pts`);
+      }
+    }
+  }
+
+  // ── rare highlight ─────────────────────────────────────────────────────
+  const rareThresh = window.rareThreshold || 1000;
+  const d2 = inventoryData.get(o.name);
+  if (d2) {
+    const denom2 = Math.round(1 / o.chance);
+    d2.liElement.classList.toggle('item-rare', denom2 >= rareThresh);
+  }
+
   if (shopUpgrades.duplicate > 0) {
     const dupeChance = shopUpgrades.duplicate / 100;
     if (Math.random() < dupeChance) {
@@ -1507,7 +1644,9 @@ document.getElementById('buySpeedBtn').addEventListener('click', () => {
 });
 
 document.getElementById('buyPointBtn').addEventListener('click', () => {
-  const cost = Math.floor(100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35);
+  const cost = Math.floor(
+    100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35,
+  );
   if (points >= cost && shopUpgrades.pointMult < 10) {
     points -= cost;
     shopUpgrades.pointMult++;
@@ -1810,8 +1949,25 @@ function resetInventory() {
     points = 0;
     anomalies = 0;
     anomaliesUsed = 0;
-    shopUpgrades = { luck: 0, speed: 0, pointMult: 0, magnet: 0, printer: 0, duplicate: 0 };
-    playerPotions = { luck2x:0, luck4x:0, luck10x:0, luck50x:0, luck100x:0, luck150x:0, luck250x:0, luck300x:0, duplicate:0 };
+    shopUpgrades = {
+      luck: 0,
+      speed: 0,
+      pointMult: 0,
+      magnet: 0,
+      printer: 0,
+      duplicate: 0,
+    };
+    playerPotions = {
+      luck2x: 0,
+      luck4x: 0,
+      luck10x: 0,
+      luck50x: 0,
+      luck100x: 0,
+      luck150x: 0,
+      luck250x: 0,
+      luck300x: 0,
+      duplicate: 0,
+    };
     activePotions = [];
     duplicateRollsLeft = 0;
     potionLuckMultiplier = 1;
@@ -1899,6 +2055,41 @@ function checkMuteSettings() {
 }
 
 function spinAndReveal(res) {
+  const style = (window.spinnerStyleSetting || 'slot');
+  const reduceMotion = document.body.classList.contains('reduce-motion');
+  const effectiveStyle = (reduceMotion && style === 'slot') ? 'none' : style;
+
+  playRollSound();
+
+  if (totalRolls % 100 === 0) startLuckBoost();
+
+  // ── spinner style: none or fade ──────────────────────────────────────
+  if (effectiveStyle === 'none' || effectiveStyle === 'fade') {
+    spinner.innerHTML = '';
+    spinner.style.transition = 'none';
+    spinner.style.transform = 'translateY(0)';
+
+    const d = document.createElement('div');
+    d.className = 'spin-item' + (effectiveStyle === 'fade' ? ' result-item' : '');
+    d.textContent = res.name;
+    spinner.classList.toggle('fade-style', effectiveStyle === 'fade');
+    spinner.appendChild(d);
+
+    const delay = effectiveStyle === 'fade' ? 350 : 50;
+    setTimeout(() => {
+      spinner.classList.remove('fade-style');
+      totalRolls++;
+      updateTotalRolls();
+      addToInventory(res);
+      awardAnomalyIfEligible(res);
+      checkAchievements(res);
+      updateRollsSinceRare(res);
+      maybeFireConfettiAndCutscene(res);
+    }, delay);
+    return;
+  }
+
+  // ── spinner style: slot (default) ────────────────────────────────────
   spinner.innerHTML = '';
   const items = [];
   for (let i = 0; i < 50; i++) {
@@ -1912,69 +2103,52 @@ function spinAndReveal(res) {
     spinner.appendChild(d);
   });
 
-  if (totalRolls % 100 === 0) {
-    startLuckBoost();
-  }
-
-  const h = 48,
-    total = items.length,
-    scroll = h * (total - 1);
+  const h = 48, total = items.length, scroll = h * (total - 1);
   const duration = rollSpeed;
   spinner.style.transition = `transform ${duration}s ease-out`;
   spinner.style.transform = `translateY(-${scroll}px)`;
 
-  setTimeout(
-    () => {
-      totalRolls++;
-      updateTotalRolls();
-      addToInventory(res);
-      awardAnomalyIfEligible(res);
-      checkAchievements(res);
+  setTimeout(() => {
+    totalRolls++;
+    updateTotalRolls();
+    addToInventory(res);
+    awardAnomalyIfEligible(res);
+    checkAchievements(res);
+    updateRollsSinceRare(res);
+    maybeFireConfettiAndCutscene(res);
+  }, duration * 1000 + 1000);
+}
 
-      // Check if this rarity has a cutscene edeedded
-      if (cutsceneMap[res.name]) {
-        playCutscene(res.name, () => {
-          // after cutscene ends, handle music
-          const isMuted = checkMuteSettings();
+function maybeFireConfettiAndCutscene(res) {
+  const denom = Math.round(1 / res.chance);
+  const cutsceneThresh = window.cutsceneThreshold || 0;
+  const confettiThresh = window.confettiThreshold || 0;
 
-          if (res.name === 'Lunar') {
-            if (!isMuted) {
-              lunarMusic.currentTime = 0;
-              lunarMusic.play();
-            }
-            backgroundMusic.pause();
-          } else {
-            lunarMusic.pause();
-            if (!isMuted) {
-              backgroundMusic.play();
-            }
-          }
+  // confetti
+  if (confettiThresh > 0 && denom >= confettiThresh) triggerConfetti();
 
-          saveAllData();
-        });
-      } else {
-        // no cutscene, proceed normally
-        const isMuted = checkMuteSettings();
+  // cutscene — skip if rarity is below cutscene threshold
+  const hasCutscene = !!cutsceneMap[res.name];
+  const cutsceneAllowed = hasCutscene && (cutsceneThresh === 0 || denom >= cutsceneThresh);
 
-        if (res.name === 'Lunar') {
-          if (!isMuted) {
-            lunarMusic.currentTime = 0;
-            lunarMusic.play();
-          }
-          backgroundMusic.pause();
-        } else {
-          lunarMusic.pause();
-          if (!isMuted) {
-            backgroundMusic.play();
-          }
-        }
+  const afterReveal = () => {
+    const isMuted = checkMuteSettings();
+    if (res.name === 'Lunar') {
+      if (!isMuted) { lunarMusic.currentTime = 0; lunarMusic.play(); }
+      backgroundMusic.pause();
+    } else {
+      lunarMusic.pause();
+      if (!isMuted) backgroundMusic.play();
+    }
+    saveAllData();
+  };
 
-        rollBtn.disabled = false;
-        saveAllData();
-      }
-    },
-    duration * 1000 + 1000,
-  );
+  if (cutsceneAllowed) {
+    playCutscene(res.name, afterReveal);
+  } else {
+    afterReveal();
+    rollBtn.disabled = false;
+  }
 }
 
 const sortSelect = document.getElementById('sortSelect');
@@ -2269,7 +2443,6 @@ function generateRunCard() {
 
 window.backgroundMusic = backgroundMusic;
 window.lunarMusic = lunarMusic;
-
 
 const buyMagnetBtn = document.getElementById('buyMagnetBtn');
 if (buyMagnetBtn) {

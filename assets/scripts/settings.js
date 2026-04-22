@@ -413,6 +413,83 @@
     const crtNode = el('customRollText');
     if (crtNode) crtNode.value = settings.customRollText || '';
 
+    // bleh
+    document.body.dataset.invStyle = settings.inventoryStyle || 'compact';
+    document.body.classList.toggle('blur-panels', !!settings.blurPanels);
+    document.body.classList.toggle('compact-mode', !!settings.compactMode);
+    document.body.classList.toggle('reduce-motion', !!settings.reduceMotion);
+    document.body.classList.toggle('high-contrast', !!settings.highContrast);
+    document.body.classList.toggle('large-targets', !!settings.largeTargets);
+    document.body.classList.toggle('hide-cursor', !!settings.hideCursor);
+
+    const rollBtnEl = el('rollBtn');
+    if (rollBtnEl) {
+      const sizeMap = {
+        small: '0.85em',
+        normal: '1.1em',
+        large: '1.4em',
+        huge: '1.8em',
+      };
+      rollBtnEl.style.fontSize = sizeMap[settings.rollBtnSize] || '1.1em';
+    }
+
+    document.body.style.setProperty(
+      '--accent-color',
+      settings.accentColor || '#dcdcdc',
+    );
+
+    const breakdownEl = el('luckBreakdown');
+    if (breakdownEl)
+      breakdownEl.style.display = settings.hideLuckBreakdown ? 'none' : '';
+
+    // expose thresholds + sound globally for main.js
+    window.rollSoundSetting = settings.rollSound || 'none';
+    window.rareThreshold = settings.rareThreshold || 1000;
+    window.confettiThreshold = settings.confettiThreshold || 0;
+    window.autoSellThreshold = settings.autoSellThreshold || 0;
+    window.cutsceneThreshold = settings.cutsceneThreshold || 0;
+    window.spinnerStyleSetting = settings.spinnerStyle || 'slot';
+
+    // rolls since rare display
+    const rsrEl = el('rollsSinceRare');
+    if (rsrEl) rsrEl.style.display = settings.rareThreshold > 0 ? '' : 'none';
+
+    // sync new UI controls
+    const newSelectors = {
+      inventoryStyle: settings.inventoryStyle || 'compact',
+      spinnerStyle: settings.spinnerStyle || 'slot',
+      rollBtnSize: settings.rollBtnSize || 'normal',
+      rollSound: settings.rollSound || 'none',
+    };
+    for (const [id, val] of Object.entries(newSelectors)) {
+      const node = el(id);
+      if (node) node.value = val;
+    }
+    const newCheckboxes = {
+      blurPanels: !!settings.blurPanels,
+      hideCursor: !!settings.hideCursor,
+      hideLuckBreakdown: !!settings.hideLuckBreakdown,
+      compactMode: !!settings.compactMode,
+      reduceMotion: !!settings.reduceMotion,
+      highContrast: !!settings.highContrast,
+      largeTargets: !!settings.largeTargets,
+    };
+    for (const [id, checked] of Object.entries(newCheckboxes)) {
+      const node = el(id);
+      if (node) node.checked = checked;
+    }
+    const newNumbers = {
+      accentColor: settings.accentColor || '#dcdcdc',
+      rareThreshold: settings.rareThreshold || 1000,
+      confettiThreshold: settings.confettiThreshold || 0,
+      autoSellThreshold: settings.autoSellThreshold || 0,
+      cutsceneThreshold: settings.cutsceneThreshold || 0,
+    };
+    for (const [id, val] of Object.entries(newNumbers)) {
+      const node = el(id);
+      if (node) node.value = val;
+    }
+
     // Persist
     try {
       localStorage.setItem('userSettings', JSON.stringify(settings));
@@ -437,6 +514,31 @@
       bgPattern: (el('bgPattern') || {}).value || 'none',
       customRollText: (el('customRollText') || {}).value || '',
       legacyMode: !!(el('legacyMode') || {}).checked,
+      inventoryStyle: (el('inventoryStyle') || {}).value || 'compact',
+      spinnerStyle: (el('spinnerStyle') || {}).value || 'slot',
+      rollBtnSize: (el('rollBtnSize') || {}).value || 'normal',
+      accentColor: (el('accentColor') || {}).value || '#dcdcdc',
+      blurPanels: !!(el('blurPanels') || {}).checked,
+      hideCursor: !!(el('hideCursor') || {}).checked,
+      hideLuckBreakdown: !!(el('hideLuckBreakdown') || {}).checked,
+      compactMode: !!(el('compactMode') || {}).checked,
+      reduceMotion: !!(el('reduceMotion') || {}).checked,
+      highContrast: !!(el('highContrast') || {}).checked,
+      largeTargets: !!(el('largeTargets') || {}).checked,
+      rollSound: (el('rollSound') || {}).value || 'none',
+      rareThreshold: parseInt((el('rareThreshold') || {}).value || 1000, 10),
+      confettiThreshold: parseInt(
+        (el('confettiThreshold') || {}).value || 0,
+        10,
+      ),
+      autoSellThreshold: parseInt(
+        (el('autoSellThreshold') || {}).value || 0,
+        10,
+      ),
+      cutsceneThreshold: parseInt(
+        (el('cutsceneThreshold') || {}).value || 0,
+        10,
+      ),
     };
   }
 
@@ -455,9 +557,33 @@
     'devOverlay',
     'muteMusic',
     'legacyMode',
+    'inventoryStyle',
+    'spinnerStyle',
+    'rollBtnSize',
+    'rollSound'
   ];
-  const watchCheckboxIds = ['rgbBg', 'wackyText', 'chaosMode'];
-  const watchInputIds = ['textSize', 'customColor', 'customRollText'];
+  const watchCheckboxIds = [
+    'rgbBg',
+    'wackyText',
+    'chaosMode',
+    'blurPanels',
+    'hideCursor',
+    'hideLuckBreakdown',
+    'compactMode',
+    'reduceMotion',
+    'highContrast',
+    'largeTargets'
+  ];
+  const watchInputIds = [
+    'textSize',
+    'customColor',
+    'customRollText',
+    'accentColor',
+    'rareThreshold',
+    'confettiThreshold',
+    'autoSellThreshold',
+    'cutsceneThreshold'
+  ];
 
   function bindSettings() {
     watchIds.forEach((id) => {
