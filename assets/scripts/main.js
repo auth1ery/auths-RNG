@@ -1798,7 +1798,6 @@ function resetInventory() {
     localStorage.removeItem('weekly_streak');
     localStorage.removeItem(playtimeKey);
     localStorage.removeItem('userSettings');
-    localStorage.removeItem('userSettings');
     localStorage.removeItem('wishingWell');
     localStorage.removeItem('gauntletData');
 
