@@ -2183,3 +2183,206 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
     font-size: 0.75em;
   }
 }
+
+/* ── Notification Center ────────────────────────────────────────────────── */
+#notifBell {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  width: 42px;
+  height: 42px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05em;
+  z-index: 9998;
+  padding: 0;
+  opacity: 0.55;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+
+#notifBell:hover { opacity: 1; }
+
+#notifBell.has-unread {
+  opacity: 0.9;
+  border-color: var(--accent-color);
+}
+
+.notif-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #b33;
+  color: #fff;
+  font-size: 0.58em;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 9px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  font-family: monospace;
+  pointer-events: none;
+  border: 1px solid var(--bg-color);
+  line-height: 1;
+}
+
+.notif-badge.visible { display: flex; }
+
+#notifPanel {
+  position: fixed;
+  bottom: 68px;
+  left: 16px;
+  width: 300px;
+  max-height: 420px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  z-index: 9997;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  transform: translateY(8px) scale(0.97);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease;
+  overflow: hidden;
+}
+
+#notifPanel.open {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.notif-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 13px;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.notif-panel-title {
+  font-size: 0.82em;
+  opacity: 0.6;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  white-space: nowrap;
+}
+
+.notif-panel-btns {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.notif-panel-btns .small {
+  font-size: 0.72em;
+  padding: 3px 7px;
+  opacity: 0.65;
+}
+
+.notif-panel-btns .small:hover { opacity: 1; }
+
+#notifList {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+#notifList::-webkit-scrollbar { width: 4px; }
+#notifList::-webkit-scrollbar-track { background: transparent; }
+#notifList::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+
+.notif-empty {
+  padding: 28px 20px;
+  text-align: center;
+  font-size: 0.82em;
+  opacity: 0.35;
+}
+
+.notif-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-color);
+  gap: 8px;
+  transition: background 0.15s;
+  cursor: pointer;
+  position: relative;
+}
+
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: var(--button-hover); }
+
+.notif-item.notif-unread {
+  border-left: 2px solid var(--accent-color);
+  padding-left: 10px;
+}
+
+.notif-item.notif-read { opacity: 0.48; }
+.notif-item.notif-read:hover { opacity: 0.75; }
+
+.notif-body { flex: 1; min-width: 0; }
+
+.notif-text {
+  font-size: 0.81em;
+  color: var(--text-color);
+  word-break: break-word;
+  line-height: 1.45;
+}
+
+.notif-time {
+  font-size: 0.7em;
+  opacity: 0.38;
+  margin-top: 3px;
+  font-family: monospace;
+}
+
+.notif-actions {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+  padding-top: 1px;
+}
+
+.notif-item:hover .notif-actions { opacity: 1; }
+
+.notif-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-size: 0.82em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  opacity: 0.6;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.notif-btn:hover { opacity: 1; background: var(--button-hover); }
+
+.notif-del:hover { color: #ff6666; border-color: #ff6666; }
+.notif-check:hover { color: #66dd66; border-color: #66dd66; }
+
+@media (max-width: 767px) {
+  #notifPanel {
+    width: calc(100vw - 32px);
+    max-height: 55vh;
+  }
+}

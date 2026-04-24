@@ -990,6 +990,25 @@ if (navigator.userAgent.includes("Screenjesus")) {
 <div class="swipe-indicator">swipe to navigate!!!</div>
 
   <script src="assets/scripts/main.js" defer></script>
+
+  <!-- Notification Center -->
+<button id="notifBell" title="notifications" aria-label="open notifications">
+  🔔
+  <span id="notifBadge" class="notif-badge"></span>
+</button>
+
+<div id="notifPanel">
+  <div class="notif-panel-header">
+    <span class="notif-panel-title">notifications</span>
+    <div class="notif-panel-btns">
+      <button class="small" id="notifMarkAllRead">mark all read</button>
+      <button class="small" id="notifClearAll">clear all</button>
+    </div>
+  </div>
+  <div id="notifList"></div>
+  <div id="notifEmpty" class="notif-empty">all caught up! no notifications yet :)</div>
+</div>
+
   <script src="assets/scripts/settings.js" defer></script>
   
   <div id="cutsceneOverlay">

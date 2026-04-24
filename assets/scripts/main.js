@@ -40,6 +40,18 @@ let anomalies = 0;
 let anomaliesUsed = 0;
 
 const POTIONS_KEY = 'playerPotions';
+
+// ── Notification Center state ──────────────────────────────────────────
+const NOTIF_KEY = 'notifications';
+const NOTIF_MAX  = 200; // cap stored; badge shows 100+ beyond 99
+
+// load immediately so addNotification() works before initNotifCenter() runs
+let notifications = (() => {
+  try { return JSON.parse(localStorage.getItem(NOTIF_KEY) || '[]'); }
+  catch(_) { return []; }
+})();
+let notifPanelOpen = false;
+
 const ACTIVE_POTIONS_KEY = 'activePotions';
 
 let playerPotions = {
@@ -1817,6 +1829,174 @@ function showAnomalyPopup(text) {
   p.textContent = text;
   p.classList.add('show');
   setTimeout(() => p.classList.remove('show'), 1500);
+
+  // feed into notification center
+  addNotification(text);
+}
+
+// ── Notification Center ────────────────────────────────────────────────
+function addNotification(text) {
+  notifications.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+    text,
+    ts: Date.now(),
+    read: false,
+  });
+  // trim oldest if over cap
+  if (notifications.length > NOTIF_MAX) notifications.shift();
+  try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+  updateNotifBadge();
+  if (notifPanelOpen) renderNotifList();
+}
+
+function formatNotifTime(ts) {
+  const d   = new Date(ts);
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  const h   = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+  const ampm = h >= 12 ? 'pm' : 'am';
+  const time = `${h % 12 || 12}:${m}${ampm}`;
+
+  if (isToday) return time;
+
+  const days   = ['sun','mon','tue','wed','thu','fri','sat'];
+  const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  const diffDays = Math.floor((now - d) / 86400000);
+  if (diffDays < 7) return `${days[d.getDay()]} ${time}`;
+  return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear().toString().slice(2)} · ${time}`;
+}
+
+function updateNotifBadge() {
+  const badge = document.getElementById('notifBadge');
+  const bell  = document.getElementById('notifBell');
+  if (!badge) return;
+  const unread = notifications.filter(n => !n.read).length;
+  if (unread === 0) {
+    badge.textContent = '';
+    badge.classList.remove('visible');
+    bell && bell.classList.remove('has-unread');
+  } else {
+    badge.textContent = unread > 99 ? '100+' : String(unread);
+    badge.classList.add('visible');
+    bell && bell.classList.add('has-unread');
+  }
+}
+
+function renderNotifList() {
+  const list  = document.getElementById('notifList');
+  const empty = document.getElementById('notifEmpty');
+  if (!list) return;
+
+  if (notifications.length === 0) {
+    list.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  list.innerHTML = '';
+  // newest first
+  [...notifications].reverse().forEach(notif => {
+    const item = document.createElement('div');
+    item.className = 'notif-item ' + (notif.read ? 'notif-read' : 'notif-unread');
+
+    const body = document.createElement('div');
+    body.className = 'notif-body';
+
+    const txt = document.createElement('div');
+    txt.className = 'notif-text';
+    txt.textContent = notif.text;
+
+    const time = document.createElement('div');
+    time.className = 'notif-time';
+    time.textContent = formatNotifTime(notif.ts);
+
+    body.appendChild(txt);
+    body.appendChild(time);
+
+    const acts = document.createElement('div');
+    acts.className = 'notif-actions';
+
+    if (!notif.read) {
+      const readBtn = document.createElement('button');
+      readBtn.className = 'notif-btn notif-check';
+      readBtn.title = 'mark as read';
+      readBtn.textContent = '✓';
+      readBtn.onclick = e => { e.stopPropagation(); notifMarkRead(notif.id); };
+      acts.appendChild(readBtn);
+    }
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'notif-btn notif-del';
+    delBtn.title = 'delete';
+    delBtn.textContent = '×';
+    delBtn.onclick = e => { e.stopPropagation(); notifDelete(notif.id); };
+    acts.appendChild(delBtn);
+
+    item.appendChild(body);
+    item.appendChild(acts);
+    item.addEventListener('click', () => notifMarkRead(notif.id));
+    list.appendChild(item);
+  });
+}
+
+function notifMarkRead(id) {
+  const n = notifications.find(n => n.id === id);
+  if (n && !n.read) {
+    n.read = true;
+    try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+    updateNotifBadge();
+    renderNotifList();
+  }
+}
+
+function notifMarkAllRead() {
+  notifications.forEach(n => n.read = true);
+  try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+  updateNotifBadge();
+  renderNotifList();
+}
+
+function notifDelete(id) {
+  notifications = notifications.filter(n => n.id !== id);
+  try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+  updateNotifBadge();
+  renderNotifList();
+}
+
+function notifClearAll() {
+  notifications = [];
+  try { localStorage.removeItem(NOTIF_KEY); } catch(_) {}
+  updateNotifBadge();
+  renderNotifList();
+}
+
+function initNotifCenter() {
+  const bell       = document.getElementById('notifBell');
+  const panel      = document.getElementById('notifPanel');
+  const markAllBtn = document.getElementById('notifMarkAllRead');
+  const clearBtn   = document.getElementById('notifClearAll');
+  if (!bell || !panel) return;
+
+  bell.addEventListener('click', e => {
+    e.stopPropagation();
+    notifPanelOpen = !notifPanelOpen;
+    panel.classList.toggle('open', notifPanelOpen);
+    if (notifPanelOpen) renderNotifList();
+  });
+
+  document.addEventListener('click', e => {
+    if (!notifPanelOpen) return;
+    if (!panel.contains(e.target) && !bell.contains(e.target)) {
+      notifPanelOpen = false;
+      panel.classList.remove('open');
+    }
+  });
+
+  if (markAllBtn) markAllBtn.addEventListener('click', notifMarkAllRead);
+  if (clearBtn)   clearBtn.addEventListener('click',   notifClearAll);
+
+  updateNotifBadge();
 }
 
 function consumeAnomaly() {
@@ -2910,3 +3090,4 @@ if (isWellOnCooldown()) {
 // FINISH THIS SCRIPT A;READY
 window.setWellAmount = setWellAmount;
 window.closeWellResult = closeWellResult;
+initNotifCenter(); // YAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
