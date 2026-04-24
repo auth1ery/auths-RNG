@@ -2030,9 +2030,23 @@ body.legacy-mode #legacySettingsBtn {
 }
 
 /* ── inventory styles ── */
-body[data-inv-style='comfy'] #inventoryList li { padding: 10px 12px; margin-bottom: 6px; }
-body[data-inv-style='card'] #inventoryList { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 8px; }
-body[data-inv-style='card'] #inventoryList li { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 3px; padding: 8px; text-align: center; }
+body[data-inv-style='comfy'] #inventoryList li {
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+body[data-inv-style='card'] #inventoryList {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px;
+}
+body[data-inv-style='card'] #inventoryList li {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 8px;
+  text-align: center;
+}
 
 /* ── blur panels ── */
 body.blur-panels .shop-item,
@@ -2043,23 +2057,40 @@ body.blur-panels .well-container,
 body.blur-panels #pointsDisplay {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  background: rgba(255,255,255,0.03) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
 }
 
 /* ── compact mode ── */
-body.compact-mode .page { padding: 20px 12px 80px !important; }
-body.compact-mode .shop-item { padding: 10px 12px; margin-bottom: 10px; }
-body.compact-mode #inventoryList li { padding: 3px 6px; margin-bottom: 2px; font-size: 0.85em; }
-body.compact-mode #achievementsContainer { padding: 8px; }
-body.compact-mode .potion-grid { grid-template-columns: 1fr 1fr 1fr; }
+body.compact-mode .page {
+  padding: 20px 12px 80px !important;
+}
+body.compact-mode .shop-item {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+body.compact-mode #inventoryList li {
+  padding: 3px 6px;
+  margin-bottom: 2px;
+  font-size: 0.85em;
+}
+body.compact-mode #achievementsContainer {
+  padding: 8px;
+}
+body.compact-mode .potion-grid {
+  grid-template-columns: 1fr 1fr 1fr;
+}
 
 /* ── reduce motion ── */
-body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after {
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
 }
-body.reduce-motion #spinner { transition: none !important; }
+body.reduce-motion #spinner {
+  transition: none !important;
+}
 
 /* ── high contrast ── */
 body.high-contrast {
@@ -2077,19 +2108,39 @@ body.high-contrast {
 }
 
 /* ── large targets ── */
-body.large-targets button { min-height: 44px; }
-body.large-targets button.small { min-height: 36px; }
-body.large-targets .page-dot { width: 14px; height: 14px; }
-body.large-targets .page-dot.active { width: 32px; }
+body.large-targets button {
+  min-height: 44px;
+}
+body.large-targets button.small {
+  min-height: 36px;
+}
+body.large-targets .page-dot {
+  width: 14px;
+  height: 14px;
+}
+body.large-targets .page-dot.active {
+  width: 32px;
+}
 
 /* ── hide custom cursor ── */
-body.hide-cursor #custom-cursor { display: none !important; }
-body.hide-cursor, body.hide-cursor button { cursor: auto !important; }
+body.hide-cursor #custom-cursor {
+  display: none !important;
+}
+body.hide-cursor,
+body.hide-cursor button {
+  cursor: auto !important;
+}
 
 /* ── accent color ── */
-:root { --accent-color: #dcdcdc; }
-#inventoryList li.item-rare { border-left: 2px solid var(--accent-color); }
-body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
+:root {
+  --accent-color: #dcdcdc;
+}
+#inventoryList li.item-rare {
+  border-left: 2px solid var(--accent-color);
+}
+body.high-contrast #inventoryList li.item-rare {
+  border-left-width: 3px;
+}
 
 /* ── rolls since rare display ── */
 #rollsSinceRare {
@@ -2100,13 +2151,21 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
 }
 
 /* ── spinner fade style ── */
-#spinner.fade-style { transition: none !important; }
+#spinner.fade-style {
+  transition: none !important;
+}
 #spinner.fade-style .spin-item.result-item {
   animation: fadeInResult 0.3s ease forwards;
 }
 @keyframes fadeInResult {
-  from { opacity: 0; transform: scale(0.9); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* why do i have the literal time to use EM DASHES OF ALL THINGS */
@@ -2130,7 +2189,7 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   max-width: 480px;
   width: 90%;
   transition: bottom 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 -2px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -2201,10 +2260,14 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   z-index: 9998;
   padding: 0;
   opacity: 0.55;
-  transition: opacity 0.2s, border-color 0.2s;
+  transition:
+    opacity 0.2s,
+    border-color 0.2s;
 }
 
-#notifBell:hover { opacity: 1; }
+#notifBell:hover {
+  opacity: 1;
+}
 
 #notifBell.has-unread {
   opacity: 0.9;
@@ -2231,13 +2294,15 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   line-height: 1;
 }
 
-.notif-badge.visible { display: flex; }
+.notif-badge.visible {
+  display: flex;
+}
 
 #notifPanel {
   position: fixed;
   bottom: 68px;
   left: 16px;
-  width: 340px; 
+  width: 340px;
   max-height: 420px;
   background: var(--panel-bg);
   border: 1px solid var(--border-color);
@@ -2245,11 +2310,13 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   z-index: 9997;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   transform: translateY(8px) scale(0.97);
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.22s cubic-bezier(0.4,0,0.2,1), opacity 0.22s ease;
+  transition:
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.22s ease;
   overflow: hidden;
 }
 
@@ -2267,7 +2334,7 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
   gap: 8px;
-  flex-wrap: wrap;     /* prevents buttons from getting clipped */
+  flex-wrap: wrap; /* prevents buttons from getting clipped */
   row-gap: 6px;
 }
 
@@ -2291,7 +2358,9 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   opacity: 0.65;
 }
 
-.notif-panel-btns .small:hover { opacity: 1; }
+.notif-panel-btns .small:hover {
+  opacity: 1;
+}
 
 #notifList {
   overflow-y: auto;
@@ -2299,9 +2368,16 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   min-height: 0;
 }
 
-#notifList::-webkit-scrollbar { width: 4px; }
-#notifList::-webkit-scrollbar-track { background: transparent; }
-#notifList::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 2px; }
+#notifList::-webkit-scrollbar {
+  width: 4px;
+}
+#notifList::-webkit-scrollbar-track {
+  background: transparent;
+}
+#notifList::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
 
 .notif-empty {
   padding: 28px 20px;
@@ -2322,18 +2398,29 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   position: relative;
 }
 
-.notif-item:last-child { border-bottom: none; }
-.notif-item:hover { background: var(--button-hover); }
+.notif-item:last-child {
+  border-bottom: none;
+}
+.notif-item:hover {
+  background: var(--button-hover);
+}
 
 .notif-item.notif-unread {
   border-left: 2px solid var(--accent-color);
   padding-left: 10px;
 }
 
-.notif-item.notif-read { opacity: 0.48; }
-.notif-item.notif-read:hover { opacity: 0.75; }
+.notif-item.notif-read {
+  opacity: 0.48;
+}
+.notif-item.notif-read:hover {
+  opacity: 0.75;
+}
 
-.notif-body { flex: 1; min-width: 0; }
+.notif-body {
+  flex: 1;
+  min-width: 0;
+}
 
 .notif-text {
   font-size: 0.81em;
@@ -2358,7 +2445,9 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   padding-top: 1px;
 }
 
-.notif-item:hover .notif-actions { opacity: 1; }
+.notif-item:hover .notif-actions {
+  opacity: 1;
+}
 
 .notif-btn {
   background: none;
@@ -2377,10 +2466,19 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   flex-shrink: 0;
 }
 
-.notif-btn:hover { opacity: 1; background: var(--button-hover); }
+.notif-btn:hover {
+  opacity: 1;
+  background: var(--button-hover);
+}
 
-.notif-del:hover { color: #ff6666; border-color: #ff6666; }
-.notif-check:hover { color: #66dd66; border-color: #66dd66; }
+.notif-del:hover {
+  color: #ff6666;
+  border-color: #ff6666;
+}
+.notif-check:hover {
+  color: #66dd66;
+  border-color: #66dd66;
+}
 
 @media (max-width: 767px) {
   #notifPanel {

@@ -639,19 +639,6 @@ if (navigator.userAgent.includes("Screenjesus")) {
   </div>
 </div>
 
-      <div id="confirmModal">
-  <div class="modal-content">
-    <h3 id="modalTitle"></h3>
-    <p id="modalText"></p>
-    <div class="modal-buttons">
-      <button id="modalConfirm">confirm</button>
-      <button id="modalCancel">cancel</button>
-    </div>
-  </div>
-</div>
-
-    </div>
-    
 <div class="page" id="page-3">
   <h2 style="margin-top: 0;">gauntlets</h2>
   <p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 12px;">collect all rarities in a tier to claim a reward!</p>
@@ -1023,6 +1010,18 @@ if (navigator.userAgent.includes("Screenjesus")) {
 
   <div id="anomalyPopup"></div>
   
+
+<div id="confirmModal">
+  <div class="modal-content">
+    <h3 id="modalTitle"></h3>
+    <p id="modalText"></p>
+    <div class="modal-buttons">
+      <button id="modalConfirm">confirm</button>
+      <button id="modalCancel">cancel</button>
+    </div>
+  </div>
+</div>
+
   <div id="luckBoostOverlay">
   <div id="luckTimer">60</div>
   <div id="luckFooter">4x luck</div>
@@ -1612,6 +1611,24 @@ function handleSwipe() {
   }
   function saveData(d) { localStorage.setItem(GAUNTLET_KEY, JSON.stringify(d)); }
 
+  function checkRotationChange() {
+  const d = loadData();
+  const current = rotIdx();
+  if (d.lastSeenRot === undefined) {
+    // first ever load, just store it silently
+    d.lastSeenRot = current;
+    saveData(d);
+    return;
+  }
+  if (d.lastSeenRot !== current) {
+    d.lastSeenRot = current;
+    saveData(d);
+    if (typeof addNotification === 'function') {
+      addNotification('🌐 the global gauntlet rotation changed! new rarities are available.');
+    }
+  }
+}
+
   function seededRand(s) { const x = Math.sin(s + 1.23456789)*10000; return x - Math.floor(x); }
   function rotIdx()       { return Math.floor(Date.now() / (2*24*60*60*1000)); }
 
@@ -1834,7 +1851,8 @@ function handleSwipe() {
 
   window.renderGauntlets = renderGauntlets;
 
-  // refresh every 4 s (timers + post-roll sync)
+  // refresh every 4 s (timers + post-roll sync) as well as check the rotation change.
+  checkRotationChange(); // run once on load
   setInterval(renderGauntlets, 4000);
   setTimeout(renderGauntlets, 200);
 })();

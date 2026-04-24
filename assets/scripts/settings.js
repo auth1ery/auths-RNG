@@ -4,7 +4,9 @@
 (function () {
   'use strict';
 
-  function el(id) { return document.getElementById(id); }
+  function el(id) {
+    return document.getElementById(id);
+  }
 
   // ── State ──────────────────────────────────────────────────────────────
   let particles = [];
@@ -23,9 +25,9 @@
   let _activeMusicKey = null; // e.g. 'default', 'custom_0', or '__muted__'
 
   const musicLinks = {
-    default:   'assets/audio/welcomecity.mp3',
-    levelup:   'assets/audio/wavelocity.mp3',
-    nocturne:  'assets/audio/nocturne.mp3',
+    default: 'assets/audio/welcomecity.mp3',
+    levelup: 'assets/audio/wavelocity.mp3',
+    nocturne: 'assets/audio/nocturne.mp3',
     moonlight: 'assets/audio/moonlight.mp3',
   };
 
@@ -48,21 +50,29 @@
 
   function showPendingBar() {
     const bar = el('settingsPendingBar');
-    if (bar) { bar.classList.add('show'); hasPendingChanges = true; }
+    if (bar) {
+      bar.classList.add('show');
+      hasPendingChanges = true;
+    }
   }
 
   function hidePendingBar() {
     const bar = el('settingsPendingBar');
-    if (bar) { bar.classList.remove('show'); hasPendingChanges = false; }
+    if (bar) {
+      bar.classList.remove('show');
+      hasPendingChanges = false;
+    }
   }
 
   function saveChanges() {
     const current = getCurrentSettings();
     applyVisuals(current);
-    applyMusic(current);        // ← music only touches audio on explicit save
+    applyMusic(current); // ← music only touches audio on explicit save
     syncUIToSettings(current);
     savedSettings = current;
-    try { localStorage.setItem('userSettings', JSON.stringify(current)); } catch(_) {}
+    try {
+      localStorage.setItem('userSettings', JSON.stringify(current));
+    } catch (_) {}
     hidePendingBar();
   }
 
@@ -76,15 +86,27 @@
   function applyBackgroundPattern(pattern) {
     const body = document.body;
     body.style.backgroundImage = '';
-    body.style.backgroundSize  = '';
+    body.style.backgroundSize = '';
     if (pattern === 'none') return;
     const isLight = body.getAttribute('data-theme') === 'white';
     const c = isLight ? '0,0,0' : '220,220,220';
     const p = {
-      dots:     [`radial-gradient(circle,rgba(${c},0.1) 1px,transparent 1px)`, '20px 20px'],
-      grid:     [`linear-gradient(rgba(${c},0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(${c},0.05) 1px,transparent 1px)`, '20px 20px'],
-      waves:    [`repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(${c},0.03) 10px,rgba(${c},0.03) 20px)`, ''],
-      diagonal: [`repeating-linear-gradient(45deg,transparent,transparent 15px,rgba(${c},0.05) 15px,rgba(${c},0.05) 16px)`, ''],
+      dots: [
+        `radial-gradient(circle,rgba(${c},0.1) 1px,transparent 1px)`,
+        '20px 20px',
+      ],
+      grid: [
+        `linear-gradient(rgba(${c},0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(${c},0.05) 1px,transparent 1px)`,
+        '20px 20px',
+      ],
+      waves: [
+        `repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(${c},0.03) 10px,rgba(${c},0.03) 20px)`,
+        '',
+      ],
+      diagonal: [
+        `repeating-linear-gradient(45deg,transparent,transparent 15px,rgba(${c},0.05) 15px,rgba(${c},0.05) 16px)`,
+        '',
+      ],
     };
     if (p[pattern]) {
       body.style.backgroundImage = p[pattern][0];
@@ -99,23 +121,33 @@
 
   // ── Seasonal particles ────────────────────────────────────────────────
   function startSeasonalParticles(season, density) {
-    if (particleInterval) { clearInterval(particleInterval); particleInterval = null; }
+    if (particleInterval) {
+      clearInterval(particleInterval);
+      particleInterval = null;
+    }
     particles = [];
     const canvas = el('seasonCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (!['winter','spring','summer','fall'].includes(season)) return;
-    const emojiMap = { winter:'❄️', spring:'🌸', summer:'☀️', fall:'🍁' };
+    if (!['winter', 'spring', 'summer', 'fall'].includes(season)) return;
+    const emojiMap = { winter: '❄️', spring: '🌸', summer: '☀️', fall: '🍁' };
     const emoji = emojiMap[season];
-    const w = (canvas.width  = window.innerWidth);
+    const w = (canvas.width = window.innerWidth);
     const h = (canvas.height = window.innerHeight);
-    const maxP = { low:50, medium:200, high:400 }[density] || 200;
+    const maxP = { low: 50, medium: 200, high: 400 }[density] || 200;
 
     function addParticle() {
       if (particles.length >= maxP) return;
-      particles.push({ x:Math.random()*w, y:-20, speed:1+Math.random()*2,
-        drift:(Math.random()-0.5)*1.2, size:14, char:emoji, alpha:0.4+Math.random()*0.3 });
+      particles.push({
+        x: Math.random() * w,
+        y: -20,
+        speed: 1 + Math.random() * 2,
+        drift: (Math.random() - 0.5) * 1.2,
+        size: 14,
+        char: emoji,
+        alpha: 0.4 + Math.random() * 0.3,
+      });
     }
     function startInterval() {
       if (particleInterval) clearInterval(particleInterval);
@@ -126,21 +158,26 @@
     if (!visibilitySeasonListenerAdded) {
       document.addEventListener('visibilitychange', () => {
         const sel = el('seasonSelect');
-        if (document.hidden) { if (particleInterval) { clearInterval(particleInterval); particleInterval = null; } }
-        else if (sel && sel.value !== 'none') startInterval();
+        if (document.hidden) {
+          if (particleInterval) {
+            clearInterval(particleInterval);
+            particleInterval = null;
+          }
+        } else if (sel && sel.value !== 'none') startInterval();
       });
       visibilitySeasonListenerAdded = true;
     }
 
     (function loop() {
       ctx.clearRect(0, 0, w, h);
-      particles.forEach(p => {
-        p.y += p.speed; p.x += p.drift;
+      particles.forEach((p) => {
+        p.y += p.speed;
+        p.x += p.drift;
         ctx.globalAlpha = p.alpha;
         ctx.font = p.size + 'px sans-serif';
         ctx.fillText(p.char, p.x, p.y);
       });
-      particles = particles.filter(p => p.y < h + 30);
+      particles = particles.filter((p) => p.y < h + 30);
       requestAnimationFrame(loop);
     })();
   }
@@ -162,41 +199,85 @@
     devToggleBtn.textContent = devCollapsed ? 'show dev' : 'hide dev';
   });
 
-  let frameCount = 0, lastFPSUpdate = performance.now(), currentFPS = 0;
+  let frameCount = 0,
+    lastFPSUpdate = performance.now(),
+    currentFPS = 0;
 
   function startDevOverlay(settings) {
     const panel = el('devOverlayPanel');
     if (!panel) return;
-    clearInterval(devInterval); devInterval = null;
-    if (!settings.dev) { panel.style.display = 'none'; devToggleBtn.style.display = 'none'; return; }
-    panel.style.display = 'block'; devToggleBtn.style.display = 'block';
-    (function countFrame() { frameCount++; const now = performance.now(); if (now - lastFPSUpdate >= 1000) { currentFPS = Math.round(frameCount*1000/(now-lastFPSUpdate)); frameCount = 0; lastFPSUpdate = now; } requestAnimationFrame(countFrame); })();
+    clearInterval(devInterval);
+    devInterval = null;
+    if (!settings.dev) {
+      panel.style.display = 'none';
+      devToggleBtn.style.display = 'none';
+      return;
+    }
+    panel.style.display = 'block';
+    devToggleBtn.style.display = 'block';
+    (function countFrame() {
+      frameCount++;
+      const now = performance.now();
+      if (now - lastFPSUpdate >= 1000) {
+        currentFPS = Math.round((frameCount * 1000) / (now - lastFPSUpdate));
+        frameCount = 0;
+        lastFPSUpdate = now;
+      }
+      requestAnimationFrame(countFrame);
+    })();
     devInterval = setInterval(() => {
       const memInfo = performance.memory
-        ? { used: Math.round(performance.memory.usedJSHeapSize/1024/1024), limit: Math.round(performance.memory.jsHeapSizeLimit/1024/1024) }
+        ? {
+            used: Math.round(performance.memory.usedJSHeapSize / 1024 / 1024),
+            limit: Math.round(performance.memory.jsHeapSizeLimit / 1024 / 1024),
+          }
         : null;
-      const totalEl   = document.getElementsByTagName('*').length;
-      const clickable = document.querySelectorAll('button,a,[onclick],input,select').length;
-      const navT      = performance.getEntriesByType('navigation')[0];
-      const loadTime  = navT ? Math.round(navT.loadEventEnd - navT.fetchStart) : 0;
-      let lsSize = 0, lsKeys = [];
-      try { for (const key in localStorage) { if (!Object.prototype.hasOwnProperty.call(localStorage, key)) continue; const s = localStorage[key].length + key.length; lsSize += s; lsKeys.push({key,size:s}); } lsKeys.sort((a,b)=>b.size-a.size); } catch(_) {}
+      const totalEl = document.getElementsByTagName('*').length;
+      const clickable = document.querySelectorAll(
+        'button,a,[onclick],input,select',
+      ).length;
+      const navT = performance.getEntriesByType('navigation')[0];
+      const loadTime = navT
+        ? Math.round(navT.loadEventEnd - navT.fetchStart)
+        : 0;
+      let lsSize = 0,
+        lsKeys = [];
+      try {
+        for (const key in localStorage) {
+          if (!Object.prototype.hasOwnProperty.call(localStorage, key))
+            continue;
+          const s = localStorage[key].length + key.length;
+          lsSize += s;
+          lsKeys.push({ key, size: s });
+        }
+        lsKeys.sort((a, b) => b.size - a.size);
+      } catch (_) {}
       const fps = currentFPS;
       panel.textContent = [
         `── PERFORMANCE ──`,
-        `FPS: ${fps}  FrameTime: ${fps?(1000/fps).toFixed(1):'?'}ms  Load: ${loadTime}ms`,
-        memInfo ? `Memory: ${memInfo.used}MB / ${memInfo.limit}MB  (${((memInfo.used/memInfo.limit)*100).toFixed(1)}%)` : '',
-        `Particles: ${particles.length}  Intervals: ${[particleInterval,devInterval,rgbInterval,wackyInterval].filter(Boolean).length}`,
-        ``, `── DOM ──`,
+        `FPS: ${fps}  FrameTime: ${fps ? (1000 / fps).toFixed(1) : '?'}ms  Load: ${loadTime}ms`,
+        memInfo
+          ? `Memory: ${memInfo.used}MB / ${memInfo.limit}MB  (${((memInfo.used / memInfo.limit) * 100).toFixed(1)}%)`
+          : '',
+        `Particles: ${particles.length}  Intervals: ${[particleInterval, devInterval, rgbInterval, wackyInterval].filter(Boolean).length}`,
+        ``,
+        `── DOM ──`,
         `Elements: ${totalEl}  Interactive: ${clickable}`,
-        ``, `── STORAGE ──`,
-        `LocalStorage: ${(lsSize/1024).toFixed(2)}KB (${((lsSize/(5*1024*1024))*100).toFixed(1)}%)  Keys: ${lsKeys.length}`,
-        lsKeys.slice(0,3).map(i=>`  ${i.key}: ${(i.size/1024).toFixed(2)}KB`).join('  '),
-        ``, `── SYSTEM ──`,
-        `${window.innerWidth}x${window.innerHeight}  DPR:${window.devicePixelRatio}  Online:${navigator.onLine?'yes':'NO'}`,
-        `Theme:${settings.theme||'black'}  Season:${settings.season||'none'}`,
-        `Music: ${_activeMusicKey || 'none'} (pending: ${hasPendingChanges?'yes':'no'})`,
-      ].filter(l=>l!==undefined).join('\n');
+        ``,
+        `── STORAGE ──`,
+        `LocalStorage: ${(lsSize / 1024).toFixed(2)}KB (${((lsSize / (5 * 1024 * 1024)) * 100).toFixed(1)}%)  Keys: ${lsKeys.length}`,
+        lsKeys
+          .slice(0, 3)
+          .map((i) => `  ${i.key}: ${(i.size / 1024).toFixed(2)}KB`)
+          .join('  '),
+        ``,
+        `── SYSTEM ──`,
+        `${window.innerWidth}x${window.innerHeight}  DPR:${window.devicePixelRatio}  Online:${navigator.onLine ? 'yes' : 'NO'}`,
+        `Theme:${settings.theme || 'black'}  Season:${settings.season || 'none'}`,
+        `Music: ${_activeMusicKey || 'none'} (pending: ${hasPendingChanges ? 'yes' : 'no'})`,
+      ]
+        .filter((l) => l !== undefined)
+        .join('\n');
     }, 500);
   }
 
@@ -205,14 +286,20 @@
   // The _activeMusicKey guard means even if called twice with same settings,
   // it is a no-op — no more tidal waves.
   function applyMusic(settings) {
-    const newKey = settings.muted ? '__muted__' : (settings.music || 'default');
+    const newKey = settings.muted ? '__muted__' : settings.music || 'default';
     if (newKey === _activeMusicKey) return; // nothing changed — bail out entirely
     _activeMusicKey = newKey;
 
     if (settings.muted) {
-      if (window.backgroundMusic) { window.backgroundMusic.pause(); window.backgroundMusic.volume = 0; }
-      if (window.lunarMusic)      { window.lunarMusic.pause(); window.lunarMusic.volume = 0; }
-      if (window.stopCustomAudio)   window.stopCustomAudio();
+      if (window.backgroundMusic) {
+        window.backgroundMusic.pause();
+        window.backgroundMusic.volume = 0;
+      }
+      if (window.lunarMusic) {
+        window.lunarMusic.pause();
+        window.lunarMusic.volume = 0;
+      }
+      if (window.stopCustomAudio) window.stopCustomAudio();
       return;
     }
 
@@ -220,29 +307,35 @@
 
     const musicKey = settings.music || 'default';
     if (musicKey.startsWith('custom_')) {
-      if (window.backgroundMusic) { window.backgroundMusic.pause(); window.backgroundMusic.src = ''; window.backgroundMusic.load(); }
+      if (window.backgroundMusic) {
+        window.backgroundMusic.pause();
+        window.backgroundMusic.src = '';
+        window.backgroundMusic.load();
+      }
       try {
         const tracks = JSON.parse(localStorage.getItem('customMusic') || '[]');
-        const idx    = parseInt(musicKey.replace('custom_', ''), 10);
+        const idx = parseInt(musicKey.replace('custom_', ''), 10);
         if (tracks[idx] && window.playCustomAudio) {
           window.playCustomAudio(tracks[idx].data, 0.3, true).catch(() => {
             _activeMusicKey = null; // allow retry on next save
             if (window.stopCustomAudio) window.stopCustomAudio();
             if (window.backgroundMusic) {
-              window.backgroundMusic.src    = musicLinks.default;
+              window.backgroundMusic.src = musicLinks.default;
               window.backgroundMusic.volume = 0.3;
-              window.backgroundMusic.loop   = true;
+              window.backgroundMusic.loop = true;
               window.backgroundMusic.play().catch(() => {});
             }
           });
         }
-      } catch(e) { console.error('custom music error:', e); }
+      } catch (e) {
+        console.error('custom music error:', e);
+      }
     } else {
       if (window.stopCustomAudio) window.stopCustomAudio();
       if (window.backgroundMusic) {
-        window.backgroundMusic.src    = musicLinks[musicKey] || musicLinks.default;
+        window.backgroundMusic.src = musicLinks[musicKey] || musicLinks.default;
         window.backgroundMusic.volume = 0.3;
-        window.backgroundMusic.loop   = true;
+        window.backgroundMusic.loop = true;
         window.backgroundMusic.play().catch(() => {});
       }
     }
@@ -258,7 +351,10 @@
       document.body.style.removeProperty('--bg-color');
     } else if (settings.theme === 'custom') {
       document.body.removeAttribute('data-theme');
-      document.body.style.setProperty('--bg-color', settings.customHex || '#0e0e0e');
+      document.body.style.setProperty(
+        '--bg-color',
+        settings.customHex || '#0e0e0e',
+      );
       document.body.style.setProperty('--text-color', '#dcdcdc');
     } else {
       document.body.removeAttribute('data-theme');
@@ -267,13 +363,18 @@
 
     document.body.style.fontSize = (settings.textSize || 16) + 'px';
 
-    const fontMap = { serif:"serif", mono:"monospace", dyslexic:"'OpenDyslexic', sans-serif" };
+    const fontMap = {
+      serif: 'serif',
+      mono: 'monospace',
+      dyslexic: "'OpenDyslexic', sans-serif",
+    };
     document.body.style.fontFamily = fontMap[settings.font] || 'monospace';
 
-    clearInterval(rgbInterval); rgbInterval = null;
+    clearInterval(rgbInterval);
+    rgbInterval = null;
     if (settings.rgb || settings.chaos) {
       rgbInterval = setInterval(() => {
-        const h = Math.floor(Math.random()*360);
+        const h = Math.floor(Math.random() * 360);
         const l = settings.theme === 'white' ? 90 : 15;
         document.body.style.backgroundColor = `hsl(${h},70%,${l}%)`;
         applyBackgroundPattern(settings.bgPattern || 'none');
@@ -282,41 +383,57 @@
       document.body.style.backgroundColor = '';
     }
 
-    clearInterval(wackyInterval); wackyInterval = null;
+    clearInterval(wackyInterval);
+    wackyInterval = null;
     if (settings.wacky || settings.chaos) {
-      wackyInterval = setInterval(() => { document.body.style.fontSize = Math.floor(Math.random()*10)+16+'px'; }, 200);
+      wackyInterval = setInterval(() => {
+        document.body.style.fontSize =
+          Math.floor(Math.random() * 10) + 16 + 'px';
+      }, 200);
     }
 
     applyBackgroundPattern(settings.bgPattern || 'none');
     applyCustomRollText(settings.customRollText || '');
     startDevOverlay(settings);
-    startSeasonalParticles(settings.season || 'none', settings.particleDensity || 'medium');
+    startSeasonalParticles(
+      settings.season || 'none',
+      settings.particleDensity || 'medium',
+    );
 
     document.body.dataset.invStyle = settings.inventoryStyle || 'compact';
-    document.body.classList.toggle('blur-panels',     !!settings.blurPanels);
-    document.body.classList.toggle('compact-mode',    !!settings.compactMode);
-    document.body.classList.toggle('reduce-motion',   !!settings.reduceMotion);
-    document.body.classList.toggle('high-contrast',   !!settings.highContrast);
-    document.body.classList.toggle('large-targets',   !!settings.largeTargets);
-    document.body.classList.toggle('hide-cursor',     !!settings.hideCursor);
+    document.body.classList.toggle('blur-panels', !!settings.blurPanels);
+    document.body.classList.toggle('compact-mode', !!settings.compactMode);
+    document.body.classList.toggle('reduce-motion', !!settings.reduceMotion);
+    document.body.classList.toggle('high-contrast', !!settings.highContrast);
+    document.body.classList.toggle('large-targets', !!settings.largeTargets);
+    document.body.classList.toggle('hide-cursor', !!settings.hideCursor);
 
     const rollBtnEl = el('rollBtn');
     if (rollBtnEl) {
-      const sizeMap = { small:'0.85em', normal:'1.1em', large:'1.4em', huge:'1.8em' };
+      const sizeMap = {
+        small: '0.85em',
+        normal: '1.1em',
+        large: '1.4em',
+        huge: '1.8em',
+      };
       rollBtnEl.style.fontSize = sizeMap[settings.rollBtnSize] || '1.1em';
     }
 
-    document.body.style.setProperty('--accent-color', settings.accentColor || '#dcdcdc');
+    document.body.style.setProperty(
+      '--accent-color',
+      settings.accentColor || '#dcdcdc',
+    );
 
     const breakdownEl = el('luckBreakdown');
-    if (breakdownEl) breakdownEl.style.display = settings.hideLuckBreakdown ? 'none' : '';
+    if (breakdownEl)
+      breakdownEl.style.display = settings.hideLuckBreakdown ? 'none' : '';
 
     // Expose globals for main.js — these are safe to update live
-    window.rollSoundSetting    = settings.rollSound    || 'none';
-    window.rareThreshold       = settings.rareThreshold    || 1000;
-    window.confettiThreshold   = settings.confettiThreshold || 0;
-    window.autoSellThreshold   = settings.autoSellThreshold || 0;
-    window.cutsceneThreshold   = settings.cutsceneThreshold || 0;
+    window.rollSoundSetting = settings.rollSound || 'none';
+    window.rareThreshold = settings.rareThreshold || 1000;
+    window.confettiThreshold = settings.confettiThreshold || 0;
+    window.autoSellThreshold = settings.autoSellThreshold || 0;
+    window.cutsceneThreshold = settings.cutsceneThreshold || 0;
     window.spinnerStyleSetting = settings.spinnerStyle || 'slot';
 
     const rsrEl = el('rollsSinceRare');
@@ -326,70 +443,106 @@
   // ── syncUIToSettings ──────────────────────────────────────────────────
   function syncUIToSettings(settings) {
     const selects = {
-      themeSelect: settings.theme || 'black', musicSelect: settings.music || 'default',
-      fontSelect: settings.font || 'default', seasonSelect: settings.season || 'none',
-      particleDensity: settings.particleDensity || 'medium', bgPattern: settings.bgPattern || 'none',
-      inventoryStyle: settings.inventoryStyle || 'compact', spinnerStyle: settings.spinnerStyle || 'slot',
-      rollBtnSize: settings.rollBtnSize || 'normal', rollSound: settings.rollSound || 'none',
+      themeSelect: settings.theme || 'black',
+      musicSelect: settings.music || 'default',
+      fontSelect: settings.font || 'default',
+      seasonSelect: settings.season || 'none',
+      particleDensity: settings.particleDensity || 'medium',
+      bgPattern: settings.bgPattern || 'none',
+      inventoryStyle: settings.inventoryStyle || 'compact',
+      spinnerStyle: settings.spinnerStyle || 'slot',
+      rollBtnSize: settings.rollBtnSize || 'normal',
+      rollSound: settings.rollSound || 'none',
     };
-    for (const [id, val] of Object.entries(selects)) { const n = el(id); if (n) n.value = val; }
+    for (const [id, val] of Object.entries(selects)) {
+      const n = el(id);
+      if (n) n.value = val;
+    }
 
     const checks = {
-      rgbBg: !!settings.rgb, wackyText: !!settings.wacky, chaosMode: !!settings.chaos,
-      muteMusic: !!settings.muted, devOverlay: !!settings.dev, legacyMode: !!settings.legacyMode,
-      blurPanels: !!settings.blurPanels, hideCursor: !!settings.hideCursor,
-      hideLuckBreakdown: !!settings.hideLuckBreakdown, compactMode: !!settings.compactMode,
-      reduceMotion: !!settings.reduceMotion, highContrast: !!settings.highContrast,
+      rgbBg: !!settings.rgb,
+      wackyText: !!settings.wacky,
+      chaosMode: !!settings.chaos,
+      muteMusic: !!settings.muted,
+      devOverlay: !!settings.dev,
+      legacyMode: !!settings.legacyMode,
+      blurPanels: !!settings.blurPanels,
+      hideCursor: !!settings.hideCursor,
+      hideLuckBreakdown: !!settings.hideLuckBreakdown,
+      compactMode: !!settings.compactMode,
+      reduceMotion: !!settings.reduceMotion,
+      highContrast: !!settings.highContrast,
       largeTargets: !!settings.largeTargets,
     };
-    for (const [id, checked] of Object.entries(checks)) { const n = el(id); if (n) n.checked = checked; }
+    for (const [id, checked] of Object.entries(checks)) {
+      const n = el(id);
+      if (n) n.checked = checked;
+    }
 
     const ccNode = el('customColor');
-    if (ccNode) { ccNode.value = settings.customHex || '#0e0e0e'; ccNode.style.display = settings.theme === 'custom' ? 'block' : 'none'; }
+    if (ccNode) {
+      ccNode.value = settings.customHex || '#0e0e0e';
+      ccNode.style.display = settings.theme === 'custom' ? 'block' : 'none';
+    }
 
     const vals = {
-      textSize: settings.textSize || 16, customRollText: settings.customRollText || '',
-      accentColor: settings.accentColor || '#dcdcdc', rareThreshold: settings.rareThreshold || 1000,
-      confettiThreshold: settings.confettiThreshold || 0, autoSellThreshold: settings.autoSellThreshold || 0,
+      textSize: settings.textSize || 16,
+      customRollText: settings.customRollText || '',
+      accentColor: settings.accentColor || '#dcdcdc',
+      rareThreshold: settings.rareThreshold || 1000,
+      confettiThreshold: settings.confettiThreshold || 0,
+      autoSellThreshold: settings.autoSellThreshold || 0,
       cutsceneThreshold: settings.cutsceneThreshold || 0,
     };
-    for (const [id, val] of Object.entries(vals)) { const n = el(id); if (n) n.value = val; }
+    for (const [id, val] of Object.entries(vals)) {
+      const n = el(id);
+      if (n) n.value = val;
+    }
   }
 
   // ── getCurrentSettings ────────────────────────────────────────────────
   function getCurrentSettings() {
     return {
-      theme:              (el('themeSelect')       ||{}).value   || 'black',
-      customHex:          (el('customColor')        ||{}).value   || '#0e0e0e',
-      textSize:           parseInt((el('textSize')  ||{}).value   || 16, 10),
-      rgb:                !!(el('rgbBg')            ||{}).checked,
-      wacky:              !!(el('wackyText')         ||{}).checked,
-      chaos:              !!(el('chaosMode')         ||{}).checked,
-      music:              (el('musicSelect')         ||{}).value   || 'default',
-      font:               (el('fontSelect')          ||{}).value   || 'default',
-      season:             (el('seasonSelect')        ||{}).value   || 'none',
-      dev:                !!(el('devOverlay')        ||{}).checked,
-      muted:              !!(el('muteMusic')         ||{}).checked,
-      particleDensity:    (el('particleDensity')     ||{}).value   || 'medium',
-      bgPattern:          (el('bgPattern')           ||{}).value   || 'none',
-      customRollText:     (el('customRollText')      ||{}).value   || '',
-      legacyMode:         !!(el('legacyMode')        ||{}).checked,
-      inventoryStyle:     (el('inventoryStyle')      ||{}).value   || 'compact',
-      spinnerStyle:       (el('spinnerStyle')        ||{}).value   || 'slot',
-      rollBtnSize:        (el('rollBtnSize')          ||{}).value   || 'normal',
-      accentColor:        (el('accentColor')          ||{}).value   || '#dcdcdc',
-      blurPanels:         !!(el('blurPanels')         ||{}).checked,
-      hideCursor:         !!(el('hideCursor')         ||{}).checked,
-      hideLuckBreakdown:  !!(el('hideLuckBreakdown')  ||{}).checked,
-      compactMode:        !!(el('compactMode')        ||{}).checked,
-      reduceMotion:       !!(el('reduceMotion')       ||{}).checked,
-      highContrast:       !!(el('highContrast')       ||{}).checked,
-      largeTargets:       !!(el('largeTargets')       ||{}).checked,
-      rollSound:          (el('rollSound')            ||{}).value   || 'none',
-      rareThreshold:      parseInt((el('rareThreshold')      ||{}).value || 1000, 10),
-      confettiThreshold:  parseInt((el('confettiThreshold')  ||{}).value || 0,    10),
-      autoSellThreshold:  parseInt((el('autoSellThreshold')  ||{}).value || 0,    10),
-      cutsceneThreshold:  parseInt((el('cutsceneThreshold')  ||{}).value || 0,    10),
+      theme: (el('themeSelect') || {}).value || 'black',
+      customHex: (el('customColor') || {}).value || '#0e0e0e',
+      textSize: parseInt((el('textSize') || {}).value || 16, 10),
+      rgb: !!(el('rgbBg') || {}).checked,
+      wacky: !!(el('wackyText') || {}).checked,
+      chaos: !!(el('chaosMode') || {}).checked,
+      music: (el('musicSelect') || {}).value || 'default',
+      font: (el('fontSelect') || {}).value || 'default',
+      season: (el('seasonSelect') || {}).value || 'none',
+      dev: !!(el('devOverlay') || {}).checked,
+      muted: !!(el('muteMusic') || {}).checked,
+      particleDensity: (el('particleDensity') || {}).value || 'medium',
+      bgPattern: (el('bgPattern') || {}).value || 'none',
+      customRollText: (el('customRollText') || {}).value || '',
+      legacyMode: !!(el('legacyMode') || {}).checked,
+      inventoryStyle: (el('inventoryStyle') || {}).value || 'compact',
+      spinnerStyle: (el('spinnerStyle') || {}).value || 'slot',
+      rollBtnSize: (el('rollBtnSize') || {}).value || 'normal',
+      accentColor: (el('accentColor') || {}).value || '#dcdcdc',
+      blurPanels: !!(el('blurPanels') || {}).checked,
+      hideCursor: !!(el('hideCursor') || {}).checked,
+      hideLuckBreakdown: !!(el('hideLuckBreakdown') || {}).checked,
+      compactMode: !!(el('compactMode') || {}).checked,
+      reduceMotion: !!(el('reduceMotion') || {}).checked,
+      highContrast: !!(el('highContrast') || {}).checked,
+      largeTargets: !!(el('largeTargets') || {}).checked,
+      rollSound: (el('rollSound') || {}).value || 'none',
+      rareThreshold: parseInt((el('rareThreshold') || {}).value || 1000, 10),
+      confettiThreshold: parseInt(
+        (el('confettiThreshold') || {}).value || 0,
+        10,
+      ),
+      autoSellThreshold: parseInt(
+        (el('autoSellThreshold') || {}).value || 0,
+        10,
+      ),
+      cutsceneThreshold: parseInt(
+        (el('cutsceneThreshold') || {}).value || 0,
+        10,
+      ),
     };
   }
 
@@ -403,94 +556,151 @@
   // ── Event binding ─────────────────────────────────────────────────────
   function bindSettings() {
     const selectIds = [
-      'themeSelect','musicSelect','fontSelect','seasonSelect','particleDensity',
-      'bgPattern','devOverlay','muteMusic','legacyMode','inventoryStyle',
-      'spinnerStyle','rollBtnSize','rollSound',
+      'themeSelect',
+      'musicSelect',
+      'fontSelect',
+      'seasonSelect',
+      'particleDensity',
+      'bgPattern',
+      'devOverlay',
+      'muteMusic',
+      'legacyMode',
+      'inventoryStyle',
+      'spinnerStyle',
+      'rollBtnSize',
+      'rollSound',
     ];
     const checkboxIds = [
-      'rgbBg','wackyText','chaosMode','blurPanels','hideCursor',
-      'hideLuckBreakdown','compactMode','reduceMotion','highContrast','largeTargets',
+      'rgbBg',
+      'wackyText',
+      'chaosMode',
+      'blurPanels',
+      'hideCursor',
+      'hideLuckBreakdown',
+      'compactMode',
+      'reduceMotion',
+      'highContrast',
+      'largeTargets',
     ];
     const inputIds = [
-      'textSize','customColor','customRollText','accentColor',
-      'rareThreshold','confettiThreshold','autoSellThreshold','cutsceneThreshold',
+      'textSize',
+      'customColor',
+      'customRollText',
+      'accentColor',
+      'rareThreshold',
+      'confettiThreshold',
+      'autoSellThreshold',
+      'cutsceneThreshold',
     ];
 
-    selectIds.forEach(id   => { const n = el(id); if (n) n.addEventListener('change', onChange); });
-    checkboxIds.forEach(id => { const n = el(id); if (n) n.addEventListener('change', onChange); });
-    inputIds.forEach(id    => { const n = el(id); if (n) n.addEventListener('input',  onChange); });
+    selectIds.forEach((id) => {
+      const n = el(id);
+      if (n) n.addEventListener('change', onChange);
+    });
+    checkboxIds.forEach((id) => {
+      const n = el(id);
+      if (n) n.addEventListener('change', onChange);
+    });
+    inputIds.forEach((id) => {
+      const n = el(id);
+      if (n) n.addEventListener('input', onChange);
+    });
 
     const themeNode = el('themeSelect');
-    if (themeNode) themeNode.addEventListener('change', () => {
-      const cc = el('customColor');
-      if (cc) cc.style.display = themeNode.value === 'custom' ? 'block' : 'none';
-    });
+    if (themeNode)
+      themeNode.addEventListener('change', () => {
+        const cc = el('customColor');
+        if (cc)
+          cc.style.display = themeNode.value === 'custom' ? 'block' : 'none';
+      });
   }
 
   // ── Web Audio API (custom music) ──────────────────────────────────────
-  window.audioContext     = null;
+  window.audioContext = null;
   window.customAudioSource = null;
-  window.customAudioGain  = null;
+  window.customAudioGain = null;
 
   window.playCustomAudio = function (base64Data, volume, loop) {
     return new Promise((resolve, reject) => {
       try {
-        if (window.customAudioSource) { try { window.customAudioSource.stop(); } catch(_) {} window.customAudioSource = null; }
-        if (!window.audioContext) window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        if (window.customAudioSource) {
+          try {
+            window.customAudioSource.stop();
+          } catch (_) {}
+          window.customAudioSource = null;
+        }
+        if (!window.audioContext)
+          window.audioContext = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
         const b64 = base64Data.split(',')[1];
         const bin = atob(b64);
         const buf = new Uint8Array(bin.length);
         for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
-        window.audioContext.decodeAudioData(buf.buffer, (buffer) => {
-          const src = window.audioContext.createBufferSource();
-          src.buffer = buffer;
-          src.loop   = loop;
-          if (!window.customAudioGain) {
-            window.customAudioGain = window.audioContext.createGain();
-            window.customAudioGain.connect(window.audioContext.destination);
-          }
-          window.customAudioGain.gain.value = volume;
-          src.connect(window.customAudioGain);
-          src.start(0);
-          window.customAudioSource = src;
-          resolve();
-        }, reject);
-      } catch(e) { reject(e); }
+        window.audioContext.decodeAudioData(
+          buf.buffer,
+          (buffer) => {
+            const src = window.audioContext.createBufferSource();
+            src.buffer = buffer;
+            src.loop = loop;
+            if (!window.customAudioGain) {
+              window.customAudioGain = window.audioContext.createGain();
+              window.customAudioGain.connect(window.audioContext.destination);
+            }
+            window.customAudioGain.gain.value = volume;
+            src.connect(window.customAudioGain);
+            src.start(0);
+            window.customAudioSource = src;
+            resolve();
+          },
+          reject,
+        );
+      } catch (e) {
+        reject(e);
+      }
     });
   };
 
   window.stopCustomAudio = function () {
     if (window.customAudioSource) {
-      try { window.customAudioSource.stop(); } catch(_) {}
+      try {
+        window.customAudioSource.stop();
+      } catch (_) {}
       window.customAudioSource = null;
     }
   };
 
   // ── Custom music upload UI ─────────────────────────────────────────────
   function loadCustomMusicUI() {
-    const musicSel    = el('musicSelect');
+    const musicSel = el('musicSelect');
     const listWrapper = el('customMusicList');
-    const listEl      = el('customTracksList');
+    const listEl = el('customTracksList');
     if (!musicSel) return;
     try {
       const saved = JSON.parse(localStorage.getItem('customMusic') || '[]');
-      Array.from(musicSel.options).forEach(o => { if (o.value.startsWith('custom_')) o.remove(); });
+      Array.from(musicSel.options).forEach((o) => {
+        if (o.value.startsWith('custom_')) o.remove();
+      });
       saved.forEach((track, i) => {
         const opt = document.createElement('option');
         opt.value = 'custom_' + i;
         opt.textContent = track.name + ' (custom)';
         musicSel.appendChild(opt);
       });
-      if (listWrapper) listWrapper.style.display = saved.length ? 'block' : 'none';
+      if (listWrapper)
+        listWrapper.style.display = saved.length ? 'block' : 'none';
       if (listEl) renderCustomTracksList(saved, listEl, musicSel);
-    } catch(e) { console.error('custom music UI error:', e); }
+    } catch (e) {
+      console.error('custom music UI error:', e);
+    }
   }
 
   function renderCustomTracksList(tracks, container, musicSel) {
     container.innerHTML = '';
     tracks.forEach((track, i) => {
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:6px 8px;margin-bottom:4px;background:var(--overlay-bg);border:1px solid var(--border-color);border-radius:2px;';
+      row.style.cssText =
+        'display:flex;justify-content:space-between;align-items:center;padding:6px 8px;margin-bottom:4px;background:var(--overlay-bg);border:1px solid var(--border-color);border-radius:2px;';
       const name = document.createElement('span');
       name.textContent = track.name;
       name.style.fontSize = '0.85em';
@@ -498,15 +708,20 @@
       del.textContent = 'delete';
       del.className = 'small';
       del.onclick = () => {
-        const saved     = JSON.parse(localStorage.getItem('customMusic') || '[]');
+        const saved = JSON.parse(localStorage.getItem('customMusic') || '[]');
         const deletedId = 'custom_' + i;
         saved.splice(i, 1);
         localStorage.setItem('customMusic', JSON.stringify(saved));
         if (_activeMusicKey === deletedId) _activeMusicKey = null; // allow music to restart
         loadCustomMusicUI();
-        if (musicSel && musicSel.value === deletedId) { musicSel.value = 'default'; onChange(); }
+        if (musicSel && musicSel.value === deletedId) {
+          musicSel.value = 'default';
+          onChange();
+        }
       };
-      row.appendChild(name); row.appendChild(del); container.appendChild(row);
+      row.appendChild(name);
+      row.appendChild(del);
+      container.appendChild(row);
     });
   }
 
@@ -516,77 +731,144 @@
     upload.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      if (file.size > 10*1024*1024) { alert('file too large! max 10MB'); upload.value = ''; return; }
-      if (!file.type.startsWith('audio/')) { alert('please upload an audio file'); upload.value = ''; return; }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('file too large! max 10MB');
+        upload.value = '';
+        return;
+      }
+      if (!file.type.startsWith('audio/')) {
+        alert('please upload an audio file');
+        upload.value = '';
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (ev) => {
         try {
           const saved = JSON.parse(localStorage.getItem('customMusic') || '[]');
-          saved.push({ name: file.name.replace(/\.[^/.]+$/, ''), data: ev.target.result });
+          saved.push({
+            name: file.name.replace(/\.[^/.]+$/, ''),
+            data: ev.target.result,
+          });
           localStorage.setItem('customMusic', JSON.stringify(saved));
-          loadCustomMusicUI(); upload.value = ''; alert('track uploaded!');
-        } catch(err) {
-          alert(err.name === 'QuotaExceededError' ? 'storage full! delete some tracks first.' : 'error: ' + err.message);
+          loadCustomMusicUI();
+          upload.value = '';
+          alert('track uploaded!');
+        } catch (err) {
+          alert(
+            err.name === 'QuotaExceededError'
+              ? 'storage full! delete some tracks first.'
+              : 'error: ' + err.message,
+          );
           upload.value = '';
         }
       };
-      reader.onerror = () => { alert('error reading file'); upload.value = ''; };
+      reader.onerror = () => {
+        alert('error reading file');
+        upload.value = '';
+      };
       reader.readAsDataURL(file);
     });
   }
 
   // ── Save / settings transfer ──────────────────────────────────────────
   const SAVE_KEYS = [
-    'rarityInventory','totalRolls','achievementsUnlocked','anomalies','anomaliesUsed',
-    'shopPoints','shopUpgrades','soldOutRarities','playerPotions','activePotions',
-    'wishingWell','luckBoostState','totalPlaytime',
-    'daily_lastClaim','daily_streak','weekly_lastClaim','weekly_streak',
+    'rarityInventory',
+    'totalRolls',
+    'achievementsUnlocked',
+    'anomalies',
+    'anomaliesUsed',
+    'shopPoints',
+    'shopUpgrades',
+    'soldOutRarities',
+    'playerPotions',
+    'activePotions',
+    'wishingWell',
+    'luckBoostState',
+    'totalPlaytime',
+    'daily_lastClaim',
+    'daily_streak',
+    'weekly_lastClaim',
+    'weekly_streak',
   ];
 
   function simpleHash(str) {
     let h = 0;
-    for (let i = 0; i < str.length; i++) { h = (h<<5)-h+str.charCodeAt(i); h |= 0; }
-    return (h>>>0).toString(16).padStart(8,'0');
+    for (let i = 0; i < str.length; i++) {
+      h = (h << 5) - h + str.charCodeAt(i);
+      h |= 0;
+    }
+    return (h >>> 0).toString(16).padStart(8, '0');
   }
 
   function bundleSaveKeys() {
     const obj = {};
-    SAVE_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v !== null) obj[k] = v; });
+    SAVE_KEYS.forEach((k) => {
+      const v = localStorage.getItem(k);
+      if (v !== null) obj[k] = v;
+    });
     return obj;
   }
 
   function encode(bundle, tag) {
-    const payload  = JSON.stringify(bundle);
-    const envelope = JSON.stringify({ p:payload, h:simpleHash(payload), t:tag });
+    const payload = JSON.stringify(bundle);
+    const envelope = JSON.stringify({
+      p: payload,
+      h: simpleHash(payload),
+      t: tag,
+    });
     return btoa(unescape(encodeURIComponent(envelope)));
   }
 
   function decode(input, expectedTag) {
     let envelope;
-    try { envelope = JSON.parse(decodeURIComponent(escape(atob(input.trim())))); }
-    catch(_) { return { error:'invalid or corrupted data...' }; }
-    if (!envelope?.p || !envelope?.h || !envelope?.t) return { error:'invalid format' };
-    if (envelope.t !== expectedTag) return { error:'wrong type! expected ' + expectedTag };
-    if (simpleHash(envelope.p) !== envelope.h) return { error:'tampered or corrupted! blocked' };
-    try { return { bundle: JSON.parse(envelope.p) }; }
-    catch(_) { return { error:'payload not valid json' }; }
+    try {
+      envelope = JSON.parse(decodeURIComponent(escape(atob(input.trim()))));
+    } catch (_) {
+      return { error: 'invalid or corrupted data...' };
+    }
+    if (!envelope?.p || !envelope?.h || !envelope?.t)
+      return { error: 'invalid format' };
+    if (envelope.t !== expectedTag)
+      return { error: 'wrong type! expected ' + expectedTag };
+    if (simpleHash(envelope.p) !== envelope.h)
+      return { error: 'tampered or corrupted! blocked' };
+    try {
+      return { bundle: JSON.parse(envelope.p) };
+    } catch (_) {
+      return { error: 'payload not valid json' };
+    }
   }
 
-  function getCodeText(elId) { return (el(elId)||{}).textContent || ''; }
+  function getCodeText(elId) {
+    return (el(elId) || {}).textContent || '';
+  }
 
   function copyText(text, label) {
-    navigator.clipboard.writeText(text).then(() => alert(label + ' copied!')).catch(() => {
-      const ta = Object.assign(document.createElement('textarea'), {value:text});
-      ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta); alert(label + ' copied!');
-    });
+    navigator.clipboard
+      .writeText(text)
+      .then(() => alert(label + ' copied!'))
+      .catch(() => {
+        const ta = Object.assign(document.createElement('textarea'), {
+          value: text,
+        });
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert(label + ' copied!');
+      });
   }
 
   function downloadText(text, filename) {
     const a = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(new Blob([text], {type:'text/plain'})), download: filename,
+      href: URL.createObjectURL(new Blob([text], { type: 'text/plain' })),
+      download: filename,
     });
-    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
   }
 
   function adjustHeight(codeEl) {
@@ -596,17 +878,24 @@
   }
 
   function refreshCode(codeElId, getBundle, tag) {
-    const codeEl = el(codeElId); if (!codeEl) return;
+    const codeEl = el(codeElId);
+    if (!codeEl) return;
     const bundle = getBundle();
-    codeEl.textContent = Object.keys(bundle).length ? encode(bundle, tag) : '(no data)';
+    codeEl.textContent = Object.keys(bundle).length
+      ? encode(bundle, tag)
+      : '(no data)';
     adjustHeight(codeEl);
   }
 
   function setupShowMore(codeElId, btnElId) {
-    const codeEl = el(codeElId), btn = el(btnElId);
+    const codeEl = el(codeElId),
+      btn = el(btnElId);
     if (!codeEl || !btn) return () => {};
     let expanded = false;
-    const check = () => { btn.style.display = codeEl.scrollHeight > codeEl.clientHeight+4 ? 'inline-block' : 'none'; };
+    const check = () => {
+      btn.style.display =
+        codeEl.scrollHeight > codeEl.clientHeight + 4 ? 'inline-block' : 'none';
+    };
     btn.addEventListener('click', () => {
       expanded = !expanded;
       codeEl.style.maxHeight = expanded ? 'none' : '3.5em';
@@ -617,88 +906,193 @@
   }
 
   function bindTransfer() {
-    const checkSave     = setupShowMore('saveTransferCode',     'showMoreSaveBtn');
-    const checkSettings = setupShowMore('settingsTransferCode', 'showMoreSettingsBtn');
+    const checkSave = setupShowMore('saveTransferCode', 'showMoreSaveBtn');
+    const checkSettings = setupShowMore(
+      'settingsTransferCode',
+      'showMoreSettingsBtn',
+    );
 
     function refreshSave() {
       refreshCode('saveTransferCode', bundleSaveKeys, 'save');
       checkSave();
     }
     function refreshSettingsCode() {
-      refreshCode('settingsTransferCode', () => { const r = localStorage.getItem('userSettings'); return r ? {userSettings:r} : {}; }, 'settings');
+      refreshCode(
+        'settingsTransferCode',
+        () => {
+          const r = localStorage.getItem('userSettings');
+          return r ? { userSettings: r } : {};
+        },
+        'settings',
+      );
       checkSettings();
     }
 
     const actions = [
-      ['exportSaveBtn',      () => { refreshSave();         const t = getCodeText('saveTransferCode');     if (!t.startsWith('(')) copyText(t, 'save data'); else alert('no save data'); }],
-      ['downloadSaveBtn',    () => { refreshSave();         const t = getCodeText('saveTransferCode');     if (!t.startsWith('(')) downloadText(t,'authsrng_save.txt'); else alert('no save data'); }],
-      ['refreshSaveBtn',     refreshSave],
-      ['importSaveBtn', () => {
-        const input = prompt('paste your save data export:');
-        if (!input?.trim()) return;
-        const result = decode(input, 'save');
-        if (result.error) { alert(result.error); return; }
-        Object.keys(result.bundle).forEach(k => localStorage.setItem(k, result.bundle[k]));
-        alert('save imported! reloading...');
-        setTimeout(() => location.reload(), 500);
-      }],
-      ['exportSettingsBtn',  () => { refreshSettingsCode(); const t = getCodeText('settingsTransferCode'); if (!t.startsWith('(')) copyText(t, 'settings'); else alert('no settings'); }],
-      ['downloadSettingsBtn',() => { refreshSettingsCode(); const t = getCodeText('settingsTransferCode'); if (!t.startsWith('(')) downloadText(t,'authsrng_settings.txt'); else alert('no settings'); }],
+      [
+        'exportSaveBtn',
+        () => {
+          refreshSave();
+          const t = getCodeText('saveTransferCode');
+          if (!t.startsWith('(')) copyText(t, 'save data');
+          else alert('no save data');
+        },
+      ],
+      [
+        'downloadSaveBtn',
+        () => {
+          refreshSave();
+          const t = getCodeText('saveTransferCode');
+          if (!t.startsWith('(')) downloadText(t, 'authsrng_save.txt');
+          else alert('no save data');
+        },
+      ],
+      ['refreshSaveBtn', refreshSave],
+      [
+        'importSaveBtn',
+        () => {
+          const input = prompt('paste your save data export:');
+          if (!input?.trim()) return;
+          const result = decode(input, 'save');
+          if (result.error) {
+            alert(result.error);
+            return;
+          }
+          Object.keys(result.bundle).forEach((k) =>
+            localStorage.setItem(k, result.bundle[k]),
+          );
+          alert('save imported! reloading...');
+          setTimeout(() => location.reload(), 500);
+        },
+      ],
+      [
+        'exportSettingsBtn',
+        () => {
+          refreshSettingsCode();
+          const t = getCodeText('settingsTransferCode');
+          if (!t.startsWith('(')) copyText(t, 'settings');
+          else alert('no settings');
+        },
+      ],
+      [
+        'downloadSettingsBtn',
+        () => {
+          refreshSettingsCode();
+          const t = getCodeText('settingsTransferCode');
+          if (!t.startsWith('(')) downloadText(t, 'authsrng_settings.txt');
+          else alert('no settings');
+        },
+      ],
       ['refreshSettingsBtn', refreshSettingsCode],
-      ['importSettingsBtn', () => {
-        const input = prompt('paste your settings export:');
-        if (!input?.trim()) return;
-        const result = decode(input, 'settings');
-        if (result.error) { alert(result.error); return; }
-        if (result.bundle.userSettings) localStorage.setItem('userSettings', result.bundle.userSettings);
-        try { const s = JSON.parse(result.bundle.userSettings); applyVisuals(s); applyMusic(s); syncUIToSettings(s); savedSettings = s; } catch(_) {}
-        alert('settings imported! reloading...');
-        setTimeout(() => location.reload(), 500);
-      }],
+      [
+        'importSettingsBtn',
+        () => {
+          const input = prompt('paste your settings export:');
+          if (!input?.trim()) return;
+          const result = decode(input, 'settings');
+          if (result.error) {
+            alert(result.error);
+            return;
+          }
+          if (result.bundle.userSettings)
+            localStorage.setItem('userSettings', result.bundle.userSettings);
+          try {
+            const s = JSON.parse(result.bundle.userSettings);
+            applyVisuals(s);
+            applyMusic(s);
+            syncUIToSettings(s);
+            savedSettings = s;
+          } catch (_) {}
+          alert('settings imported! reloading...');
+          setTimeout(() => location.reload(), 500);
+        },
+      ],
     ];
 
-    actions.forEach(([id, fn]) => { const n = el(id); if (n) n.addEventListener('click', fn); });
+    actions.forEach(([id, fn]) => {
+      const n = el(id);
+      if (n) n.addEventListener('click', fn);
+    });
     refreshSave();
     refreshSettingsCode();
   }
 
   // ── Legacy mode content mover ─────────────────────────────────────────
   function bindLegacyMode() {
-    const legacyShopBtn      = el('legacyShopBtn');
-    const legacySettingsBtn  = el('legacySettingsBtn');
-    const legacyShopPopup    = el('legacyShopPopup');
+    const legacyShopBtn = el('legacyShopBtn');
+    const legacySettingsBtn = el('legacySettingsBtn');
+    const legacyShopPopup = el('legacyShopPopup');
     const legacySettingsPopup = el('legacySettingsPopup');
-    const shopPage    = document.querySelector('#page-2');
+    const shopPage = document.querySelector('#page-2');
     const settingsPage = document.querySelector('#page-5');
-    if (!legacyShopBtn || !legacySettingsBtn || !legacyShopPopup || !legacySettingsPopup) return;
+    if (
+      !legacyShopBtn ||
+      !legacySettingsBtn ||
+      !legacyShopPopup ||
+      !legacySettingsPopup
+    )
+      return;
 
-    let shopMoved = false, settingsMoved = false;
-    function moveToPopup(page, popup, flag)    { if (!page||!popup||flag) return true;  while(page.firstChild) popup.appendChild(page.firstChild); return true; }
-    function restoreFromPopup(page, popup, flag) { if (!page||!popup||!flag) return false; while(popup.firstChild) page.appendChild(popup.firstChild); return false; }
+    let shopMoved = false,
+      settingsMoved = false;
+    function moveToPopup(page, popup, flag) {
+      if (!page || !popup || flag) return true;
+      while (page.firstChild) popup.appendChild(page.firstChild);
+      return true;
+    }
+    function restoreFromPopup(page, popup, flag) {
+      if (!page || !popup || !flag) return false;
+      while (popup.firstChild) page.appendChild(popup.firstChild);
+      return false;
+    }
 
     function syncLegacyState() {
       const isLegacy = document.body.classList.contains('legacy-mode');
       if (isLegacy) {
-        shopMoved    = moveToPopup(shopPage,     legacyShopPopup,    shopMoved);
-        settingsMoved = moveToPopup(settingsPage, legacySettingsPopup, settingsMoved);
+        shopMoved = moveToPopup(shopPage, legacyShopPopup, shopMoved);
+        settingsMoved = moveToPopup(
+          settingsPage,
+          legacySettingsPopup,
+          settingsMoved,
+        );
       } else {
-        shopMoved     = restoreFromPopup(shopPage,     legacyShopPopup,     shopMoved);
-        settingsMoved = restoreFromPopup(settingsPage, legacySettingsPopup, settingsMoved);
+        shopMoved = restoreFromPopup(shopPage, legacyShopPopup, shopMoved);
+        settingsMoved = restoreFromPopup(
+          settingsPage,
+          legacySettingsPopup,
+          settingsMoved,
+        );
         legacyShopPopup.classList.remove('open');
         legacySettingsPopup.classList.remove('open');
       }
     }
 
-    new MutationObserver(mutations => { mutations.forEach(m => { if (m.attributeName === 'class') syncLegacyState(); }); })
-      .observe(document.body, { attributes: true });
+    new MutationObserver((mutations) => {
+      mutations.forEach((m) => {
+        if (m.attributeName === 'class') syncLegacyState();
+      });
+    }).observe(document.body, { attributes: true });
 
     if (document.body.classList.contains('legacy-mode')) syncLegacyState();
 
-    legacyShopBtn.addEventListener('click',     e => { e.stopPropagation(); legacyShopPopup.classList.toggle('open');    legacySettingsPopup.classList.remove('open'); });
-    legacySettingsBtn.addEventListener('click', e => { e.stopPropagation(); legacySettingsPopup.classList.toggle('open'); legacyShopPopup.classList.remove('open'); });
-    document.addEventListener('click', e => {
-      if (!legacyShopPopup.contains(e.target)     && e.target !== legacyShopBtn)     legacyShopPopup.classList.remove('open');
-      if (!legacySettingsPopup.contains(e.target) && e.target !== legacySettingsBtn) legacySettingsPopup.classList.remove('open');
+    legacyShopBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      legacyShopPopup.classList.toggle('open');
+      legacySettingsPopup.classList.remove('open');
+    });
+    legacySettingsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      legacySettingsPopup.classList.toggle('open');
+      legacyShopPopup.classList.remove('open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!legacyShopPopup.contains(e.target) && e.target !== legacyShopBtn)
+        legacyShopPopup.classList.remove('open');
+      if (
+        !legacySettingsPopup.contains(e.target) &&
+        e.target !== legacySettingsBtn
+      )
+        legacySettingsPopup.classList.remove('open');
     });
   }
 
@@ -712,21 +1106,47 @@
     bindLegacyMode();
 
     let loaded = {};
-    try { loaded = JSON.parse(localStorage.getItem('userSettings') || '{}'); } catch(_) {}
+    try {
+      loaded = JSON.parse(localStorage.getItem('userSettings') || '{}');
+    } catch (_) {}
 
     const defaults = {
-      theme:'black', customHex:'#0e0e0e', textSize:16, rgb:false, wacky:false, chaos:false,
-      music:'default', font:'default', season:'none', dev:false, muted:false,
-      particleDensity:'medium', bgPattern:'none', customRollText:'', legacyMode:false,
-      inventoryStyle:'compact', spinnerStyle:'slot', rollBtnSize:'normal', accentColor:'#dcdcdc',
-      blurPanels:false, hideCursor:false, hideLuckBreakdown:false, compactMode:false,
-      reduceMotion:false, highContrast:false, largeTargets:false, rollSound:'none',
-      rareThreshold:1000, confettiThreshold:0, autoSellThreshold:0, cutsceneThreshold:0,
+      theme: 'black',
+      customHex: '#0e0e0e',
+      textSize: 16,
+      rgb: false,
+      wacky: false,
+      chaos: false,
+      music: 'default',
+      font: 'default',
+      season: 'none',
+      dev: false,
+      muted: false,
+      particleDensity: 'medium',
+      bgPattern: 'none',
+      customRollText: '',
+      legacyMode: false,
+      inventoryStyle: 'compact',
+      spinnerStyle: 'slot',
+      rollBtnSize: 'normal',
+      accentColor: '#dcdcdc',
+      blurPanels: false,
+      hideCursor: false,
+      hideLuckBreakdown: false,
+      compactMode: false,
+      reduceMotion: false,
+      highContrast: false,
+      largeTargets: false,
+      rollSound: 'none',
+      rareThreshold: 1000,
+      confettiThreshold: 0,
+      autoSellThreshold: 0,
+      cutsceneThreshold: 0,
     };
 
     savedSettings = { ...defaults, ...loaded };
     applyVisuals(savedSettings);
-    applyMusic(savedSettings);   // called ONCE on load — sets _activeMusicKey
+    applyMusic(savedSettings); // called ONCE on load — sets _activeMusicKey
     syncUIToSettings(savedSettings);
   }
 
@@ -737,12 +1157,14 @@
   }
 
   // Expose globals
-  window.applySettings = function(settings) {
+  window.applySettings = function (settings) {
     applyVisuals(settings);
     applyMusic(settings);
     syncUIToSettings(settings);
     savedSettings = settings;
-    try { localStorage.setItem('userSettings', JSON.stringify(settings)); } catch(_) {}
+    try {
+      localStorage.setItem('userSettings', JSON.stringify(settings));
+    } catch (_) {}
   };
   window.getCurrentSettings = getCurrentSettings;
 })();
