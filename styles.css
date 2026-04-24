@@ -2237,7 +2237,7 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   position: fixed;
   bottom: 68px;
   left: 16px;
-  width: 300px;
+  width: 340px; 
   max-height: 420px;
   background: var(--panel-bg);
   border: 1px solid var(--border-color);
@@ -2267,6 +2267,8 @@ body.high-contrast #inventoryList li.item-rare { border-left-width: 3px; }
   border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
   gap: 8px;
+  flex-wrap: wrap;     /* prevents buttons from getting clipped */
+  row-gap: 6px;
 }
 
 .notif-panel-title {

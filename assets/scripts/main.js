@@ -43,12 +43,15 @@ const POTIONS_KEY = 'playerPotions';
 
 // ── Notification Center state ──────────────────────────────────────────
 const NOTIF_KEY = 'notifications';
-const NOTIF_MAX  = 200; // cap stored; badge shows 100+ beyond 99
+const NOTIF_MAX = 200; // cap stored; badge shows 100+ beyond 99
 
 // load immediately so addNotification() works before initNotifCenter() runs
 let notifications = (() => {
-  try { return JSON.parse(localStorage.getItem(NOTIF_KEY) || '[]'); }
-  catch(_) { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(NOTIF_KEY) || '[]');
+  } catch (_) {
+    return [];
+  }
 })();
 let notifPanelOpen = false;
 
@@ -1844,23 +1847,39 @@ function addNotification(text) {
   });
   // trim oldest if over cap
   if (notifications.length > NOTIF_MAX) notifications.shift();
-  try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+  try {
+    localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
+  } catch (_) {}
   updateNotifBadge();
   if (notifPanelOpen) renderNotifList();
 }
 
 function formatNotifTime(ts) {
-  const d   = new Date(ts);
+  const d = new Date(ts);
   const now = new Date();
   const isToday = d.toDateString() === now.toDateString();
-  const h   = d.getHours(), m = String(d.getMinutes()).padStart(2,'0');
+  const h = d.getHours(),
+    m = String(d.getMinutes()).padStart(2, '0');
   const ampm = h >= 12 ? 'pm' : 'am';
   const time = `${h % 12 || 12}:${m}${ampm}`;
 
   if (isToday) return time;
 
-  const days   = ['sun','mon','tue','wed','thu','fri','sat'];
-  const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+  const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+  const months = [
+    'jan',
+    'feb',
+    'mar',
+    'apr',
+    'may',
+    'jun',
+    'jul',
+    'aug',
+    'sep',
+    'oct',
+    'nov',
+    'dec',
+  ];
   const diffDays = Math.floor((now - d) / 86400000);
   if (diffDays < 7) return `${days[d.getDay()]} ${time}`;
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear().toString().slice(2)} · ${time}`;
@@ -1868,9 +1887,9 @@ function formatNotifTime(ts) {
 
 function updateNotifBadge() {
   const badge = document.getElementById('notifBadge');
-  const bell  = document.getElementById('notifBell');
+  const bell = document.getElementById('notifBell');
   if (!badge) return;
-  const unread = notifications.filter(n => !n.read).length;
+  const unread = notifications.filter((n) => !n.read).length;
   if (unread === 0) {
     badge.textContent = '';
     badge.classList.remove('visible');
@@ -1883,7 +1902,7 @@ function updateNotifBadge() {
 }
 
 function renderNotifList() {
-  const list  = document.getElementById('notifList');
+  const list = document.getElementById('notifList');
   const empty = document.getElementById('notifEmpty');
   if (!list) return;
 
@@ -1896,9 +1915,10 @@ function renderNotifList() {
 
   list.innerHTML = '';
   // newest first
-  [...notifications].reverse().forEach(notif => {
+  [...notifications].reverse().forEach((notif) => {
     const item = document.createElement('div');
-    item.className = 'notif-item ' + (notif.read ? 'notif-read' : 'notif-unread');
+    item.className =
+      'notif-item ' + (notif.read ? 'notif-read' : 'notif-unread');
 
     const body = document.createElement('div');
     body.className = 'notif-body';
@@ -1922,7 +1942,10 @@ function renderNotifList() {
       readBtn.className = 'notif-btn notif-check';
       readBtn.title = 'mark as read';
       readBtn.textContent = '✓';
-      readBtn.onclick = e => { e.stopPropagation(); notifMarkRead(notif.id); };
+      readBtn.onclick = (e) => {
+        e.stopPropagation();
+        notifMarkRead(notif.id);
+      };
       acts.appendChild(readBtn);
     }
 
@@ -1930,7 +1953,10 @@ function renderNotifList() {
     delBtn.className = 'notif-btn notif-del';
     delBtn.title = 'delete';
     delBtn.textContent = '×';
-    delBtn.onclick = e => { e.stopPropagation(); notifDelete(notif.id); };
+    delBtn.onclick = (e) => {
+      e.stopPropagation();
+      notifDelete(notif.id);
+    };
     acts.appendChild(delBtn);
 
     item.appendChild(body);
@@ -1941,52 +1967,61 @@ function renderNotifList() {
 }
 
 function notifMarkRead(id) {
-  const n = notifications.find(n => n.id === id);
+  const n = notifications.find((n) => n.id === id);
   if (n && !n.read) {
     n.read = true;
-    try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+    try {
+      localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
+    } catch (_) {}
     updateNotifBadge();
     renderNotifList();
   }
 }
 
 function notifMarkAllRead() {
-  notifications.forEach(n => n.read = true);
-  try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+  notifications.forEach((n) => (n.read = true));
+  try {
+    localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
+  } catch (_) {}
   updateNotifBadge();
   renderNotifList();
 }
 
 function notifDelete(id) {
-  notifications = notifications.filter(n => n.id !== id);
-  try { localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications)); } catch(_) {}
+  notifications = notifications.filter((n) => n.id !== id);
+  try {
+    localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
+  } catch (_) {}
   updateNotifBadge();
   renderNotifList();
 }
 
 function notifClearAll() {
   notifications = [];
-  try { localStorage.removeItem(NOTIF_KEY); } catch(_) {}
+  try {
+    localStorage.removeItem(NOTIF_KEY);
+  } catch (_) {}
   updateNotifBadge();
   renderNotifList();
 }
 
 function initNotifCenter() {
-  const bell       = document.getElementById('notifBell');
-  const panel      = document.getElementById('notifPanel');
+  const bell = document.getElementById('notifBell');
+  const panel = document.getElementById('notifPanel');
   const markAllBtn = document.getElementById('notifMarkAllRead');
-  const clearBtn   = document.getElementById('notifClearAll');
+  const clearBtn = document.getElementById('notifClearAll');
   if (!bell || !panel) return;
 
-  bell.addEventListener('click', e => {
+  bell.addEventListener('click', (e) => {
     e.stopPropagation();
     notifPanelOpen = !notifPanelOpen;
     panel.classList.toggle('open', notifPanelOpen);
     if (notifPanelOpen) renderNotifList();
   });
 
-  document.addEventListener('click', e => {
+  document.addEventListener('click', (e) => {
     if (!notifPanelOpen) return;
+    if (!e.isTrusted) return; // ignore programmatic clicks (auto-roll, etc.)
     if (!panel.contains(e.target) && !bell.contains(e.target)) {
       notifPanelOpen = false;
       panel.classList.remove('open');
@@ -1994,7 +2029,7 @@ function initNotifCenter() {
   });
 
   if (markAllBtn) markAllBtn.addEventListener('click', notifMarkAllRead);
-  if (clearBtn)   clearBtn.addEventListener('click',   notifClearAll);
+  if (clearBtn) clearBtn.addEventListener('click', notifClearAll);
 
   updateNotifBadge();
 }
@@ -2235,9 +2270,9 @@ function checkMuteSettings() {
 }
 
 function spinAndReveal(res) {
-  const style = (window.spinnerStyleSetting || 'slot');
+  const style = window.spinnerStyleSetting || 'slot';
   const reduceMotion = document.body.classList.contains('reduce-motion');
-  const effectiveStyle = (reduceMotion && style === 'slot') ? 'none' : style;
+  const effectiveStyle = reduceMotion && style === 'slot' ? 'none' : style;
 
   playRollSound();
 
@@ -2250,7 +2285,8 @@ function spinAndReveal(res) {
     spinner.style.transform = 'translateY(0)';
 
     const d = document.createElement('div');
-    d.className = 'spin-item' + (effectiveStyle === 'fade' ? ' result-item' : '');
+    d.className =
+      'spin-item' + (effectiveStyle === 'fade' ? ' result-item' : '');
     d.textContent = res.name;
     spinner.classList.toggle('fade-style', effectiveStyle === 'fade');
     spinner.appendChild(d);
@@ -2283,20 +2319,25 @@ function spinAndReveal(res) {
     spinner.appendChild(d);
   });
 
-  const h = 48, total = items.length, scroll = h * (total - 1);
+  const h = 48,
+    total = items.length,
+    scroll = h * (total - 1);
   const duration = rollSpeed;
   spinner.style.transition = `transform ${duration}s ease-out`;
   spinner.style.transform = `translateY(-${scroll}px)`;
 
-  setTimeout(() => {
-    totalRolls++;
-    updateTotalRolls();
-    addToInventory(res);
-    awardAnomalyIfEligible(res);
-    checkAchievements(res);
-    updateRollsSinceRare(res);
-    maybeFireConfettiAndCutscene(res);
-  }, duration * 1000 + 1000);
+  setTimeout(
+    () => {
+      totalRolls++;
+      updateTotalRolls();
+      addToInventory(res);
+      awardAnomalyIfEligible(res);
+      checkAchievements(res);
+      updateRollsSinceRare(res);
+      maybeFireConfettiAndCutscene(res);
+    },
+    duration * 1000 + 1000,
+  );
 }
 
 function maybeFireConfettiAndCutscene(res) {
@@ -2309,12 +2350,16 @@ function maybeFireConfettiAndCutscene(res) {
 
   // cutscene — skip if rarity is below cutscene threshold
   const hasCutscene = !!cutsceneMap[res.name];
-  const cutsceneAllowed = hasCutscene && (cutsceneThresh === 0 || denom >= cutsceneThresh);
+  const cutsceneAllowed =
+    hasCutscene && (cutsceneThresh === 0 || denom >= cutsceneThresh);
 
   const afterReveal = () => {
     const isMuted = checkMuteSettings();
     if (res.name === 'Lunar') {
-      if (!isMuted) { lunarMusic.currentTime = 0; lunarMusic.play(); }
+      if (!isMuted) {
+        lunarMusic.currentTime = 0;
+        lunarMusic.play();
+      }
       backgroundMusic.pause();
     } else {
       lunarMusic.pause();
