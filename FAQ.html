@@ -426,7 +426,7 @@
 
           now paste this into the console and press enter:<br /><br />
 
-          <pre><code>copy(JSON.stringify(Object.fromEntries(
+          <strong><pre><code>copy(JSON.stringify(Object.fromEntries(
   ['rarityInventory','totalRolls','achievementsUnlocked','anomalies',
    'anomaliesUsed','shopPoints','shopUpgrades','soldOutRarities',
    'playerPotions','activePotions','wishingWell','luckBoostState',
@@ -434,7 +434,7 @@
    'weekly_streak','gauntletData']
   .filter(k => localStorage.getItem(k) !== null)
   .map(k => [k, localStorage.getItem(k)])
-)));</code></pre>
+)));</code></pre></strong>
 
           your save data is now copied to your clipboard. now open the
           <strong>new site</strong>, open the console there (same steps as
@@ -442,9 +442,9 @@
           following, but replace <code>PASTE_HERE</code> with what you just
           copied:<br /><br />
 
-          <pre><code>Object.entries(JSON.parse(`PASTE_HERE`))
+          <strong><pre><code>Object.entries(JSON.parse(`PASTE_HERE`))
   .forEach(([k,v]) => localStorage.setItem(k,v));
-location.reload();</code></pre>
+location.reload();</code></pre></strong>
 
           the page will reload and your save should be fully restored. if it
           still doesn't work, report it in the discord or nerimity server.
