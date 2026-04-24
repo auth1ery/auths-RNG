@@ -397,8 +397,9 @@
         </div>
         <div class="answer">
           if the normal save transfer in settings isn't working, there's a
-          manual method involving the browser console. theres no other way. don't worry, it's easier than
-          it sounds and we'll walk you through every step!<br /><br />
+          manual method involving the browser console. theres no other way.
+          don't worry, it's easier than it sounds and we'll walk you through
+          every step!<br /><br />
 
           open the browser console on the <strong>old site</strong> (press F12,
           click the "Console" tab - or right click anywhere on the page, click
@@ -407,7 +408,7 @@
           <strong>before you paste anything</strong>, type exactly this into the
           console and press enter:<br /><br />
 
-          <code>allow pasting</code><br /><br />
+          <pre><code>allow pasting</code></pre>
 
           some browsers block pasting into the console by default. this unlocks
           it. you might not see anything happen after typing it, that's
@@ -425,9 +426,15 @@
 
           now paste this into the console and press enter:<br /><br />
 
-          <code
-            >copy(JSON.stringify(Object.fromEntries(['rarityInventory','totalRolls','achievementsUnlocked','anomalies','anomaliesUsed','shopPoints','shopUpgrades','soldOutRarities','playerPotions','activePotions','wishingWell','luckBoostState','totalPlaytime','daily_lastClaim','daily_streak','weekly_lastClaim','weekly_streak','gauntletData'].filter(k=>localStorage.getItem(k)!==null).map(k=>[k,localStorage.getItem(k)]))));</code
-          ><br /><br />
+          <pre><code>copy(JSON.stringify(Object.fromEntries(
+  ['rarityInventory','totalRolls','achievementsUnlocked','anomalies',
+   'anomaliesUsed','shopPoints','shopUpgrades','soldOutRarities',
+   'playerPotions','activePotions','wishingWell','luckBoostState',
+   'totalPlaytime','daily_lastClaim','daily_streak','weekly_lastClaim',
+   'weekly_streak','gauntletData']
+  .filter(k => localStorage.getItem(k) !== null)
+  .map(k => [k, localStorage.getItem(k)])
+)));</code></pre>
 
           your save data is now copied to your clipboard. now open the
           <strong>new site</strong>, open the console there (same steps as
@@ -435,9 +442,9 @@
           following, but replace <code>PASTE_HERE</code> with what you just
           copied:<br /><br />
 
-          <code
-            >Object.entries(JSON.parse(`PASTE_HERE`)).forEach(([k,v])=>localStorage.setItem(k,v));location.reload();</code
-          ><br /><br />
+          <pre><code>Object.entries(JSON.parse(`PASTE_HERE`))
+  .forEach(([k,v]) => localStorage.setItem(k,v));
+location.reload();</code></pre>
 
           the page will reload and your save should be fully restored. if it
           still doesn't work, report it in the discord or nerimity server.
