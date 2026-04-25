@@ -755,6 +755,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
     
     <label style="display: block; margin-top: 8px;"><input type="checkbox" id="muteMusic"> mute music</label>
     <label style="display: block; margin-top: 8px;"><input type="checkbox" id="legacyMode"> legacy layout</label>
+    <label style="display: block; margin-top: 8px;"><input type="checkbox" id="rawNumbers"> raw numbers (no abbreviation)</label>
 
     <hr class="sep" style="margin: 20px 0;">
 
@@ -860,6 +861,8 @@ if (navigator.userAgent.includes("Screenjesus")) {
 <label style="display: block; margin-top: 16px;">cutscene threshold (only play cutscenes at 1/X and rarer, 0 = all):</label>
 <input type="number" id="cutsceneThreshold" min="0" value="0" style="width: 100%; margin-top: 4px; padding: 8px;">
 <small class="helper">rarities below this won't play their cutscene even if one exists</small>
+
+<hr class="sep" style="margin: 20px 0;">
 
 <div id="settingsTransferContainer" style="margin-top: 20px;">
       <div style="margin-bottom: 6px; opacity: 0.7;">settings transfer</div>
