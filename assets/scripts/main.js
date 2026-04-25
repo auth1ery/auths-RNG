@@ -16,6 +16,14 @@ const POINTS_KEY = 'shopPoints';
 const SHOP_UPGRADES_KEY = 'shopUpgrades';
 const SOLD_OUT_KEY = 'soldOutRarities';
 
+window.formatNum = function(n) {
+  if (window.rawNumbers) return String(Math.round(n));
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+  return String(Math.round(n));
+};
+
 let points = 0;
 let shopUpgrades = {
   luck: 0,
@@ -271,7 +279,7 @@ function calculateRarityPoints(rarity) {
 }
 
 function updatePointsDisplay() {
-  document.getElementById('pointsValue').textContent = points;
+  document.getElementById('pointsValue').textContent = formatNum(points);
 }
 
 function updateShopUI() {
@@ -280,57 +288,47 @@ function updateShopUI() {
   document.getElementById('pointLevel').textContent = shopUpgrades.pointMult;
 
   const luckCost = Math.floor(25 + shopUpgrades.luck * shopUpgrades.luck * 15);
-  const speedCost = Math.floor(
-    50 + shopUpgrades.speed * shopUpgrades.speed * 55,
-  );
-  const pointCost = Math.floor(
-    100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35,
-  );
+  const speedCost = Math.floor(50 + shopUpgrades.speed * shopUpgrades.speed * 55);
+  const pointCost = Math.floor(100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35);
 
-  // Update button text to show costs
   const luckBtn = document.getElementById('buyLuckBtn');
   const speedBtn = document.getElementById('buySpeedBtn');
   const pointBtn = document.getElementById('buyPointBtn');
 
-  if (luckBtn) luckBtn.textContent = `buy luck upgrade (${luckCost} pts)`;
-  if (speedBtn) speedBtn.textContent = `buy speed upgrade (${speedCost} pts)`;
-  if (pointBtn) pointBtn.textContent = `buy points upgrade (${pointCost} pts)`;
+  if (luckBtn)  luckBtn.textContent  = `buy luck upgrade (${formatNum(luckCost)} pts)`;
+  if (speedBtn) speedBtn.textContent = `buy speed upgrade (${formatNum(speedCost)} pts)`;
+  if (pointBtn) pointBtn.textContent = `buy points upgrade (${formatNum(pointCost)} pts)`;
 
-  // Disable buttons if can't afford or maxed out
-  if (luckBtn) luckBtn.disabled = points < luckCost || shopUpgrades.luck >= 100;
-  if (speedBtn)
-    speedBtn.disabled = points < speedCost || shopUpgrades.speed >= 3;
-  if (pointBtn)
-    pointBtn.disabled = points < pointCost || shopUpgrades.pointMult >= 10;
+  if (luckBtn)  luckBtn.disabled  = points < luckCost  || shopUpgrades.luck >= 100;
+  if (speedBtn) speedBtn.disabled = points < speedCost || shopUpgrades.speed >= 3;
+  if (pointBtn) pointBtn.disabled = points < pointCost || shopUpgrades.pointMult >= 10;
 
-  const magnetLevelEl = document.getElementById('magnetLevel');
+  const magnetLevelEl  = document.getElementById('magnetLevel');
   const printerLevelEl = document.getElementById('printerLevel');
-  const dupeLevelEl = document.getElementById('dupeLevel');
+  const dupeLevelEl    = document.getElementById('dupeLevel');
 
-  if (magnetLevelEl) magnetLevelEl.textContent = shopUpgrades.magnet || 0;
+  if (magnetLevelEl)  magnetLevelEl.textContent  = shopUpgrades.magnet || 0;
   if (printerLevelEl) printerLevelEl.textContent = shopUpgrades.printer || 0;
-  if (dupeLevelEl) dupeLevelEl.textContent = shopUpgrades.duplicate || 0;
+  if (dupeLevelEl)    dupeLevelEl.textContent    = shopUpgrades.duplicate || 0;
 
-  const magnetCost = 500 + (shopUpgrades.magnet || 0) * 1000;
-  const printerCost =
-    1000 + (shopUpgrades.printer || 0) * (shopUpgrades.printer || 0) * 500;
-  const dupeCost =
-    800 + (shopUpgrades.duplicate || 0) * (shopUpgrades.duplicate || 0) * 400;
+  const magnetCost  = 500  + (shopUpgrades.magnet || 0) * 1000;
+  const printerCost = 1000 + (shopUpgrades.printer || 0) * (shopUpgrades.printer || 0) * 500;
+  const dupeCost    = 800  + (shopUpgrades.duplicate || 0) * (shopUpgrades.duplicate || 0) * 400;
 
-  const magnetBtn = document.getElementById('buyMagnetBtn');
+  const magnetBtn  = document.getElementById('buyMagnetBtn');
   const printerBtn = document.getElementById('buyPrinterBtn');
-  const dupeBtn = document.getElementById('buyDupeBtn');
+  const dupeBtn    = document.getElementById('buyDupeBtn');
 
   if (magnetBtn) {
-    magnetBtn.textContent = `upgrade (${magnetCost} pts)`;
+    magnetBtn.textContent = `upgrade (${formatNum(magnetCost)} pts)`;
     magnetBtn.disabled = points < magnetCost || (shopUpgrades.magnet || 0) >= 5;
   }
   if (printerBtn) {
-    printerBtn.textContent = `upgrade (${printerCost} pts)`;
+    printerBtn.textContent = `upgrade (${formatNum(printerCost)} pts)`;
     printerBtn.disabled = points < printerCost;
   }
   if (dupeBtn) {
-    dupeBtn.textContent = `upgrade (${dupeCost} pts)`;
+    dupeBtn.textContent = `upgrade (${formatNum(dupeCost)} pts)`;
     dupeBtn.disabled = points < dupeCost || (shopUpgrades.duplicate || 0) >= 10;
   }
 }
@@ -354,7 +352,7 @@ function buyPotion(potionType) {
     saveAllData();
     showAnomalyPopup(`bought ${data.emoji} ${data.name}!`);
   } else {
-    alert(`need ${data.cost} points!`);
+    alert(`need ${formatNum(data.cost)} points!`);
   }
 }
 
@@ -1615,7 +1613,7 @@ function addToInventory(o) {
         updatePointsDisplay();
         updateShopUI();
         updateItem(d);
-        showAnomalyPopup(`auto-sold ${o.name} for ${earned} pts`);
+        showAnomalyPopup(`auto-sold ${o.name} for ${formatNum(earned)} pts`);
       }
     }
   }
@@ -1721,12 +1719,11 @@ function updateItem(d) {
     liElement.classList.remove('sold-out');
   }
 
-  // Remove previous sell handler before adding a new one (prevents listener accumulation)
-  if (liElement._sellHandler) {
-    liElement.removeEventListener('dblclick', liElement._sellHandler);
-  }
-
-  liElement._sellHandler = function sellHandler() {
+    // Remove previous sell handler before adding a new one (prevents listener accumulation)
+    if (liElement._sellHandler) {
+      liElement.removeEventListener('dblclick', liElement._sellHandler);
+    }
+    liElement._sellHandler = function sellHandler() {
     const currentData = inventoryData.get(rarityObj.name);
     if (!currentData) return;
 
@@ -1743,7 +1740,7 @@ function updateItem(d) {
 
     showConfirmModal(
       'sell rarity?',
-      `sell ${availableToSell}x ${rarityObj.name} for ${pointsEarned} points? (you keep the rarity)`,
+      `sell ${availableToSell}x ${rarityObj.name} for ${formatNum(pointsEarned)} points? (you keep the rarity)`,
       () => {
         points += pointsEarned;
         soldOutRarities.set(key, { count: currentData.count });
@@ -2962,55 +2959,50 @@ function formatWellTime(ms) {
   return `${seconds}s`;
 }
 
-// Update well UI
 function updateWellUI() {
-  const status = document.getElementById('wellStatus');
-  const timer = document.getElementById('wellTimer');
-  const throwBtn = document.getElementById('throwWellBtn');
-  const totalThrown = document.getElementById('wellTotalThrown');
+  const status        = document.getElementById('wellStatus');
+  const timer         = document.getElementById('wellTimer');
+  const throwBtn      = document.getElementById('throwWellBtn');
+  const totalThrown   = document.getElementById('wellTotalThrown');
   const totalReceived = document.getElementById('wellTotalReceived');
-  const timesThrown = document.getElementById('wellTimesThrown');
-  const successRate = document.getElementById('wellSuccessRate');
+  const timesThrown   = document.getElementById('wellTimesThrown');
+  const successRate   = document.getElementById('wellSuccessRate');
 
   if (!status || !timer || !throwBtn) return;
 
   if (isWellOnCooldown()) {
     const remaining = getRemainingCooldown();
-    throwBtn.disabled = true;
-    status.textContent = 'the well is recovering its magic...';
-    timer.textContent = `available in: ${formatWellTime(remaining)}`;
+    throwBtn.disabled    = true;
+    status.textContent   = 'the well is recovering its magic...';
+    timer.textContent    = `available in: ${formatWellTime(remaining)}`;
   } else {
-    throwBtn.disabled = false;
+    throwBtn.disabled  = false;
     status.textContent = 'ready to accept your offering';
-    timer.textContent = '';
+    timer.textContent  = '';
   }
 
-  // Update stats
-  if (totalThrown) totalThrown.textContent = wellData.totalThrown;
-  if (totalReceived) totalReceived.textContent = wellData.totalReceived;
-  if (timesThrown) timesThrown.textContent = wellData.timesThrown;
+  if (totalThrown)   totalThrown.textContent   = formatNum(wellData.totalThrown);
+  if (totalReceived) totalReceived.textContent = formatNum(wellData.totalReceived);
+  if (timesThrown)   timesThrown.textContent   = formatNum(wellData.timesThrown);
   if (successRate) {
-    const rate =
-      wellData.timesThrown > 0
-        ? Math.round((wellData.successes / wellData.timesThrown) * 100)
-        : 0;
+    const rate = wellData.timesThrown > 0
+      ? Math.round((wellData.successes / wellData.timesThrown) * 100)
+      : 0;
     successRate.textContent = `${rate}%`;
   }
 }
 
-// Throw points into well
 function throwIntoWell() {
   const input = document.getElementById('wellInput');
   const amount = parseInt(input.value) || 0;
 
-  // Validation
   if (amount <= 0) {
     alert('you must throw at least 1 point!');
     return;
   }
 
   if (amount > points) {
-    alert(`you only have ${points} points!`);
+    alert(`you only have ${formatNum(points)} points!`);
     return;
   }
 
@@ -3019,17 +3011,12 @@ function throwIntoWell() {
     return;
   }
 
-  // Deduct points
   points -= amount;
   updatePointsDisplay();
-
-  // Ripple animation
   createWellRipple();
 
-  // 40% chance to win
   const won = Beacon.float() < 0.4;
 
-  // Update stats
   wellData.lastThrow = Date.now();
   wellData.totalThrown += amount;
   wellData.timesThrown++;
@@ -3047,17 +3034,13 @@ function throwIntoWell() {
     showWellResult(false, amount);
   }
 
-  // Save everything
   saveWellData();
   saveAllData();
   updateWellUI();
-
-  // Clear input
   input.value = '';
-
-  // Start cooldown timer
   startWellCooldownTimer();
 }
+
 
 // Create ripple animation
 function createWellRipple() {
@@ -3075,23 +3058,23 @@ function createWellRipple() {
 
 // Show result modal
 function showWellResult(won, amount) {
-  const modal = document.getElementById('wellResultModal');
-  const icon = document.getElementById('wellResultIcon');
-  const text = document.getElementById('wellResultText');
+  const modal    = document.getElementById('wellResultModal');
+  const icon     = document.getElementById('wellResultIcon');
+  const text     = document.getElementById('wellResultText');
   const amountEl = document.getElementById('wellResultAmount');
 
   if (!modal || !icon || !text || !amountEl) return;
 
   if (won) {
-    icon.textContent = '✨';
-    text.textContent = 'the well grants your wish!';
-    amountEl.textContent = `it gives you +${amount} points, go thank it!`;
-    amountEl.style.color = '#4a4';
+    icon.textContent      = '✨';
+    text.textContent      = 'the well grants your wish!';
+    amountEl.textContent  = `it gives you +${formatNum(amount)} points, go thank it!`;
+    amountEl.style.color  = '#4a4';
   } else {
-    icon.textContent = '🌊';
-    text.textContent = 'the well accepts your offering...';
-    amountEl.textContent = 'but nothing happens.. whoops?';
-    amountEl.style.color = '#888';
+    icon.textContent      = '🌊';
+    text.textContent      = 'the well accepts your offering...';
+    amountEl.textContent  = 'but nothing happens.. whoops?';
+    amountEl.style.color  = '#888';
   }
 
   modal.classList.add('show');
