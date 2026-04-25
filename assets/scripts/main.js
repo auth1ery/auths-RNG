@@ -394,12 +394,10 @@ function usePotion(potionType) {
 function recalcPotionLuck() {
   potionLuckMultiplier = 1;
   activePotions = activePotions.filter((p) => p.endTime > Date.now());
-
   activePotions.forEach((p) => {
-    potionLuckMultiplier *= p.multiplier;
+    potionLuckMultiplier += (p.multiplier - 1);
   });
-
-  updateLuckDisplay();
+  recalcLuckMultiplier();
 }
 
 function updateActivePotionsDisplay() {
