@@ -1615,7 +1615,7 @@ function addToInventory(o) {
 
   if (shopUpgrades.duplicate > 0) {
     const dupeChance = shopUpgrades.duplicate / 100;
-    if (Math.random() < dupeChance) {
+    if (Beacon.float() < dupeChance) {
       // Add another copy!
       if (inventoryData.has(o.name)) {
         const d = inventoryData.get(o.name);
@@ -3003,7 +3003,7 @@ function throwIntoWell() {
   createWellRipple();
 
   // 40% chance to win
-  const won = Math.random() < 0.4;
+  const won = Beacon.float() < 0.4;
 
   // Update stats
   wellData.lastThrow = Date.now();
@@ -3111,4 +3111,4 @@ if (isWellOnCooldown()) {
 // FINISH THIS SCRIPT A;READY
 window.setWellAmount = setWellAmount;
 window.closeWellResult = closeWellResult;
-initNotifCenter(); // YAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+document.addEventListener('DOMContentLoaded', () => initNotifCenter());// YAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
