@@ -1519,7 +1519,7 @@ function saveAllData() {
       duplicateLeft: duplicateRollsLeft,
     })
   );
-  GameRNG.save();
+  Beacon.save();
 }
 
 function loadAllData() {
@@ -1740,7 +1740,7 @@ function updateItem(d) {
 }
 
 function getRandomRarity() {
-  return GameRoller.roll(rarities, globalLuckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
+  return Beacon.roll(rarities, globalLuckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
 }
 
 function checkAchievements(currentRarity) {
@@ -2119,6 +2119,7 @@ function resetInventory() {
     localStorage.removeItem('userSettings');
     localStorage.removeItem('wishingWell');
     localStorage.removeItem('gauntletData');
+    localStorage.removeItem('_beacon_v2');
 
     inventoryData.clear();
     inventoryList.innerHTML = '';
@@ -2348,13 +2349,18 @@ rollBtn.addEventListener('click', () => {
   rollBtn.disabled = true;
   spinner.style.transition = 'none';
   spinner.style.transform = 'translateY(0)';
-  const res = getRandomRarity();
+
+  const result = getRandomRarity();
+  const res = result.rarity;
+
+  if (result.wasPity) showAnomalyPopup('pity triggered!');
+  if (result.isHotPulse) rollBtn.classList.add('hot-pulse');
+  else rollBtn.classList.remove('hot-pulse');
 
   const isMuted = checkMuteSettings();
   if (!isMuted && backgroundMusic.paused && res.name !== 'Lunar') {
     backgroundMusic.play().catch(() => {});
   }
-
   setTimeout(() => spinAndReveal(res), 100);
 });
 
