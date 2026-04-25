@@ -1518,8 +1518,8 @@ function saveAllData() {
       active: activePotions,
       duplicateLeft: duplicateRollsLeft,
     }),
-    GameRNG.save();
   );
+  GameRNG.save();
 }
 
 function loadAllData() {
