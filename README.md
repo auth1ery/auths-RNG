@@ -2,9 +2,11 @@
 the repository for the web game, auth's RNG!
 
 ![Version](https://img.shields.io/github/v/release/auth1ery/auths-RNG)
-![Stars](https://img.shields.io/github/stars/auth1ery/auths-RNG)
-![Forks](https://img.shields.io/github/forks/auth1ery/auths-RNG)
-![Watchers](https://img.shields.io/github/watchers/auth1ery/auths-RNG)
+![Repo Size](https://img.shields.io/github/repo-size/auth1ery/auths-RNG)
+![Last Commit](https://img.shields.io/github/last-commit/auth1ery/auths-RNG)
+![License](https://img.shields.io/github/license/auth1ery/auths-RNG)
+![Code Size](https://img.shields.io/github/languages/code-size/auth1ery/auths-RNG)
+![Lines](https://img.shields.io/tokei/lines/github/auth1ery/auths-RNG)
 
 <p align="center">
   <img src="assets/repo1.png" width="30%" />
