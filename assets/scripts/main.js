@@ -66,6 +66,8 @@ let playerPotions = {
   luck150x: 0,
   luck250x: 0,
   luck300x: 0,
+  luck800x: 0,
+  luck1500x: 0,
   duplicate: 0,
 };
 
@@ -2098,7 +2100,12 @@ pointDivisor = Math.max(1.0, 3.0 - shopUpgrades.pointMult * 0.2);
 const savedPotions = localStorage.getItem(POTIONS_KEY);
 if (savedPotions) {
   try {
-    playerPotions = JSON.parse(savedPotions);
+    const loaded = JSON.parse(savedPotions);
+    // merge into defaults so missing/NaN keys fall back to 0
+    for (const key of Object.keys(playerPotions)) {
+      const v = loaded[key];
+      playerPotions[key] = (typeof v === 'number' && !isNaN(v)) ? v : 0;
+    }
   } catch {}
 }
 
@@ -2169,6 +2176,8 @@ function resetInventory() {
       luck150x: 0,
       luck250x: 0,
       luck300x: 0,
+      luck800x: 0,
+      luck1500x: 0,
       duplicate: 0,
     };
     activePotions = [];
