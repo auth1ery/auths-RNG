@@ -1584,7 +1584,8 @@ function addToInventory(o) {
     updateItem(inventoryData.get(o.name));
     inventoryList.appendChild(li);
   }
-  inventoryList.scrollTop = inventoryList.scrollHeight;
+  const isNearBottom = inventoryList.scrollHeight - inventoryList.scrollTop - inventoryList.clientHeight < 60;
+  if (isNearBottom) inventoryList.scrollTop = inventoryList.scrollHeight;
   updateCollectedCounter();
 
   // ── auto-sell ──────────────────────────────────────────────────────────
@@ -2038,6 +2039,7 @@ function consumeAllAnomalies() {
 }
 
 function renderSortedInventory(mode) {
+  const savedScroll = inventoryList.scrollTop;
   inventoryList.innerHTML = '';
 
   let items = Array.from(inventoryData.values());
@@ -2055,6 +2057,7 @@ function renderSortedInventory(mode) {
   }
 
   items.forEach((d) => inventoryList.appendChild(d.liElement));
+  inventoryList.scrollTop = savedScroll; 
 }
 
 const savedPoints = localStorage.getItem(POINTS_KEY);
