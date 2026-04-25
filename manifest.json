@@ -16,5 +16,9 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "dir": "auto",
+  "lang": "en",
+  "orientation": "portrait",
+  "categories": ["entertainment", "games"]
 }

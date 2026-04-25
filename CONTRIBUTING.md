@@ -45,15 +45,20 @@ if you find a bug or have a feature request, feel free to open an issue. please 
 
 ## code of conduct
 
-- **be respectful** to others. we all have different experiences, and it's important to be kind and understanding.
-- **no spam or offensive content**. keep all communication professional and on-topic.
-- **be constructive** when giving feedback. offer suggestions and alternatives when necessary.
-- **be a normal human being** and have common sense.
+see CODE_OF_CONDUCT.md
 
 ## license
 
 by contributing to this project, you agree that your contributions will be licensed under the same license as the project. see the LICENSE file for more details.
 
-## p.s.
+## for using AI
 
-don't use AI thanks
+see documentation/CLAUDE.md
+
+## how to style the feature
+
+see documentation/STYLES.md
+
+---
+
+for more information, see the documentation/ folder

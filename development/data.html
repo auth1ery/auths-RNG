@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light dark">
+<meta name="google" value="notranslate">
+
+<title>Index of auths-RNG</title>
+
+<style>
+h1 {
+  border-bottom: 1px solid #c0c0c0;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  white-space: nowrap;
+}
+table { border-collapse: collapse; width: 100%; }
+th { cursor: pointer; text-align: left; }
+td.detailsColumn {
+  padding-inline-start: 2em;
+  text-align: end;
+  white-space: nowrap;
+}
+a.icon {
+  padding-inline-start: 1.5em;
+  text-decoration: none;
+}
+a.file {
+  color: inherit;
+}
+a.dir {
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1 id="header">Index of auth1ery/auths-RNG</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th class="detailsColumn">Type</th>
+      <th class="detailsColumn">Path</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<script>
+const owner = "auth1ery";
+const repo = "auths-RNG";
+
+function addRow(name, type, path) {
+  const tbody = document.getElementById("tbody");
+  const row = document.createElement("tr");
+
+  const nameCell = document.createElement("td");
+  const link = document.createElement("a");
+
+  link.innerText = name;
+  link.href = "https://github.com/" + owner + "/" + repo + "/tree/main/" + path;
+  link.className = type === "tree" ? "icon dir" : "icon file";
+
+  nameCell.appendChild(link);
+
+  const typeCell = document.createElement("td");
+  typeCell.className = "detailsColumn";
+  typeCell.innerText = type;
+
+  const pathCell = document.createElement("td");
+  pathCell.className = "detailsColumn";
+  pathCell.innerText = path;
+
+  row.appendChild(nameCell);
+  row.appendChild(typeCell);
+  row.appendChild(pathCell);
+
+  tbody.appendChild(row);
+}
+
+async function loadBranches() {
+  const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/branches`);
+  const branches = await res.json();
+
+  for (const b of branches) {
+    await loadTree(b.name);
+  }
+}
+
+async function loadTree(branch) {
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`
+  );
+
+  const data = await res.json();
+
+  if (!data.tree) return;
+
+  addRow("📁 " + branch, "tree", branch);
+
+  for (const item of data.tree) {
+    addRow(item.path.split("/").pop(), item.type, branch + "/" + item.path);
+  }
+}
+
+loadBranches();
+</script>
+
+</body>
+</html>
