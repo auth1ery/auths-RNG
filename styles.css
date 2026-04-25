@@ -62,24 +62,6 @@
   }
 }
 
-@keyframes rgb {
-  0% {
-    color: #ff6666;
-  }
-
-  33% {
-    color: #66ff66;
-  }
-
-  66% {
-    color: #6666ff;
-  }
-
-  100% {
-    color: #ff6666;
-  }
-}
-
 @keyframes flash {
   0%,
   50%,
