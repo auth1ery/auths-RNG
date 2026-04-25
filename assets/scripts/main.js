@@ -480,6 +480,7 @@ let globalLuckMultiplier = 1;
 function recalcLuckMultiplier() {
   shopLuckMultiplier = 1 + shopUpgrades.luck * 0.1;
   globalLuckMultiplier = shopLuckMultiplier + anomaliesUsed * 0.5;
+  if (luckBoostActive) globalLuckMultiplier *= 4;
   globalLuckMultiplier *= potionLuckMultiplier;
   updateLuckDisplay();
 }
@@ -2181,8 +2182,8 @@ function resetInventory() {
 function startLuckBoost() {
   luckBoostActive = true;
   luckBoostEndTime = Date.now() + 60000;
-  updateLuckDisplay();
-
+  recalcLuckMultiplier();
+  
   document.getElementById('luckBoostOverlay').style.display = 'flex';
 
   localStorage.setItem(
@@ -2213,7 +2214,7 @@ function updateLuckTimer() {
 function endLuckBoost() {
   luckBoostActive = false;
   luckBoostEndTime = 0;
-  updateLuckDisplay();
+  recalcLuckMultiplier();
 
   document.getElementById('luckBoostOverlay').style.display = 'none';
 
