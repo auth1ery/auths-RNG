@@ -1517,7 +1517,7 @@ function saveAllData() {
     JSON.stringify({
       active: activePotions,
       duplicateLeft: duplicateRollsLeft,
-    }),
+    })
   );
   GameRNG.save();
 }
