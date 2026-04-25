@@ -130,6 +130,20 @@ const potionData = {
     cost: 150000,
     emoji: '💎',
   },
+  luck800x: {
+    name: 'HEAVENLY LUCK',
+    mult: 800,
+    duration: 20000,
+    cost: 500000,
+    emoji: '☁️',
+  },
+  luck1500x: {
+    name: 'RAW LUCK',
+    mult: 1500,
+    duration: 30000,
+    cost: 1500000,
+    emoji: '🍀',
+  },
   duplicate: { name: 'duplicate', rolls: 10, cost: 5000, emoji: '🎭' },
 };
 
