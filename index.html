@@ -625,7 +625,26 @@ if (navigator.userAgent.includes("Screenjesus")) {
       <button class="small" onclick="usePotion('luck300x')" style="margin-top: 4px;">use</button>
     </div>
 
-    <!-- Duplicate Potion -->
+    <div class="potion-item" data-potion="luck800x">
+      <div class="potion-emoji">☁️</div>
+      <div class="potion-name">HEAVENLY LUCK</div>
+      <div class="potion-effect">20 seconds</div>
+      <div class="potion-cost">500,000 pts</div>
+      <div class="potion-owned">owned: <span id="potion-luck800x-count">0</span></div>
+      <button class="small" onclick="buyPotion('luck800x')">buy</button>
+      <button class="small" onclick="usePotion('luck800x')" style="margin-top: 4px;">use</button>
+    </div>
+
+    <div class="potion-item" data-potion="luck1500x">
+      <div class="potion-emoji">🍀</div>
+      <div class="potion-name">RAW LUCK</div>
+      <div class="potion-effect">30 seconds</div>
+      <div class="potion-cost">1,500,000 pts</div>
+      <div class="potion-owned">owned: <span id="potion-luck1500x-count">0</span></div>
+      <button class="small" onclick="buyPotion('luck1500x')">buy</button>
+      <button class="small" onclick="usePotion('luck1500x')" style="margin-top: 4px;">use</button>
+    </div>
+
     <div class="potion-item" data-potion="duplicate">
       <div class="potion-emoji">🎭</div>
       <div class="potion-name">duplicate</div>
