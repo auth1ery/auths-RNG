@@ -879,9 +879,11 @@ if (navigator.userAgent.includes("Screenjesus")) {
 
   <script>
     const rankedBtn = document.getElementById('rankedModeBtn');
-    rankedBtn.addEventListener('click', function() {
-      window.location.href = 'ranked.html';
-    });
+    if (rankedBtn) {
+      rankedBtn.addEventListener('click', function() {
+        window.location.href = 'ranked.html';
+      });
+    }
   </script>
 
   <div id="resetContainer" class="lazy">
