@@ -1518,6 +1518,7 @@ function saveAllData() {
       active: activePotions,
       duplicateLeft: duplicateRollsLeft,
     }),
+    GameRNG.save();
   );
 }
 
@@ -1739,43 +1740,7 @@ function updateItem(d) {
 }
 
 function getRandomRarity() {
-  let totalWeight = 0;
-  rarities.forEach((r) => {
-    const denom = Math.round(1 / r.chance);
-    const isNoticeable = denom >= 100;
-
-    let mult = 1;
-    if (luckBoostActive && isNoticeable) mult *= 4;
-    if (isNoticeable) mult *= globalLuckMultiplier;
-
-    // Rarity magnet - boost uncollected rarities
-    if (shopUpgrades.magnet > 0 && !inventoryData.has(r.name) && isNoticeable) {
-      mult *= 1 + shopUpgrades.magnet * 0.1;
-    }
-
-    totalWeight += r.chance * mult;
-  });
-
-  let rand = Math.random() * totalWeight;
-
-  for (const o of rarities) {
-    const denom = Math.round(1 / o.chance);
-    const isNoticeable = denom >= 100;
-    let mult = 1;
-    if (luckBoostActive && isNoticeable) mult *= 4;
-    if (isNoticeable) mult *= globalLuckMultiplier;
-
-    // Rarity magnet
-    if (shopUpgrades.magnet > 0 && !inventoryData.has(o.name) && isNoticeable) {
-      mult *= 1 + shopUpgrades.magnet * 0.1;
-    }
-
-    const effectiveChance = o.chance * mult;
-    rand -= effectiveChance;
-    if (rand <= 0) return o;
-  }
-
-  return rarities[rarities.length - 1];
+  return GameRoller.roll(rarities, globalLuckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
 }
 
 function checkAchievements(currentRarity) {
