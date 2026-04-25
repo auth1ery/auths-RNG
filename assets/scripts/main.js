@@ -240,8 +240,13 @@ function updateRollsSinceRare(rolledRarity) {
     rollsSinceLastRare++;
   }
   const el = document.getElementById('rollsSinceRare');
-  if (el && thresh > 0)
+  if (!el) return;
+  if (thresh > 0) {
+    el.style.display = 'block';
     el.textContent = `rolls since last rare: ${rollsSinceLastRare}`;
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 function calculateRarityPoints(rarity) {
@@ -1042,7 +1047,6 @@ const rarities = [
   { name: 'Aldebaran', chance: 1 / 1190 },
   { name: 'Heliocentric', chance: 1 / 1175 },
   { name: 'Antares', chance: 1 / 1160 },
-  { name: 'Comet', chance: 1 / 1150 },
   { name: 'Arcturus', chance: 1 / 1140 },
   { name: 'Vega', chance: 1 / 1125 },
   { name: 'anyone there?', chance: 1 / 1100 },
