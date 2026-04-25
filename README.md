@@ -6,7 +6,7 @@ the repository for the web game, auth's RNG!
 ![Last Commit](https://img.shields.io/github/last-commit/auth1ery/auths-RNG)
 ![License](https://img.shields.io/github/license/auth1ery/auths-RNG)
 ![Code Size](https://img.shields.io/github/languages/code-size/auth1ery/auths-RNG)
-![Lines](https://img.shields.io/tokei/lines/github/auth1ery/auths-RNG)
+![Top Language](https://img.shields.io/github/languages/top/auth1ery/auths-RNG)
 
 <p align="center">
   <img src="assets/repo1.png" width="30%" />
