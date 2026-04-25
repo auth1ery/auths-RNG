@@ -117,7 +117,7 @@
       name: 'inferno',
       emoji: '🔥',
       minRolls: 7000,
-      rarities: ['Breakdown', 'Galactic', 'rare rarity :3'],
+      rarities: ['Galactic', 'rare rarity :3', 'Disorder'],
       rewards: [
         { type: 'points', amount: 1000000, label: '1,000,000 pts' },
         { type: 'anomaly', amount: 1800, label: '1,800 anomalies' },
@@ -140,7 +140,7 @@
 
   // pre-register gauntlet luck keys in potionData so main.js never
   // crashes on a page-reload while a gauntlet luck is still active and shit
-  ['global', 'easy', 'medium', 'hard', 'insane', 'godlike'].forEach((id) => {
+  ['global', 'easy', 'medium', 'hard', 'insane', 'godlike', 'inferno', 'snowy'].forEach((id) => {
     if (typeof potionData !== 'undefined') {
       potionData['_g_' + id] = {
         name: id + ' luck',
@@ -151,6 +151,17 @@
     }
   });
 
+  function formatWellTime(ms) {
+    if (typeof window.formatWellTime === 'function') return window.formatWellTime(ms);
+    // local fallback
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    const s = Math.floor((ms % 60000) / 1000);
+    if (h > 0) return h + 'h ' + m + 'm';
+    if (m > 0) return m + 'm ' + s + 's';
+    return s + 's';
+  }
+  
   // ── helpers ──────────────────────────────────────────────────────────
   function loadData() {
     try {
@@ -192,21 +203,14 @@
   }
 
   function getGlobalRarities() {
-    const rot = rotIdx(),
-      picked = [],
-      used = new Set();
-    for (let i = 0; i < 3; i++) {
-      let att = 0,
-        idx;
-      do {
-        idx = Math.floor(
-          seededRand(rot * 37 + i * 13 + att++ * 7) * GLOBAL_POOL.length,
-        );
-      } while (used.has(idx) && att < 100);
-      used.add(idx);
-      picked.push(GLOBAL_POOL[idx]);
+    const rot = rotIdx();
+    // shuffle a copy of the pool with the seeded RNG, then take first 3
+    const indices = Array.from({ length: GLOBAL_POOL.length }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(seededRand(rot * 97 + i * 31) * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
     }
-    return picked;
+    return indices.slice(0, 3).map((i) => GLOBAL_POOL[i]);
   }
 
   function getTierRarities(t) {
@@ -283,7 +287,7 @@
     const rew = tier.rewards[rewIdx];
     if (!rew) return;
 
-    if (tier.isGlobal) d.global = { lastRot: rotIdx() };
+    if (tier.isGlobal) d.global = Object.assign({}, d.global || {}, { lastRot: rotIdx() });
     else d[tier.id] = { lastClaim: Date.now() };
     saveData(d);
     applyReward(rew, tierId);
@@ -454,5 +458,14 @@
   // refresh every 4 s (timers + post-roll sync) as well as check the rotation change.
   checkRotationChange(); // run once on load
   setInterval(renderGauntlets, 4000);
-  setTimeout(renderGauntlets, 200);
+
+  // Wait for main.js to finish loading inventoryData before first render
+  function tryFirstRender(attempts) {
+    if (typeof inventoryData !== 'undefined' && inventoryData instanceof Map) {
+      renderGauntlets();
+    } else if (attempts > 0) {
+      setTimeout(() => tryFirstRender(attempts - 1), 100);
+    }
+  }
+  tryFirstRender(30); // up to 3 seconds of retries
 })();
