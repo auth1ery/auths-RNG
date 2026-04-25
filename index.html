@@ -1455,17 +1455,48 @@ function handleSwipe() {
     }
   }
 
+  // Set up overflow watchers first
   const checkSettingsOverflow = setupShowMore('settingsTransferCode', 'showMoreSettingsBtn');
   const checkSaveOverflow = setupShowMore('saveTransferCode', 'showMoreSaveBtn');
 
-  const _origRefreshSettings = refreshSettings;
-  refreshSettings = () => { _origRefreshSettings(); checkSettingsOverflow(); };
+  // Now rebuild the action arrays with overflow checks baked in
+  const saveBtnActionsWithCheck = [
+    ['exportSaveBtn',   copyToClipboard, 'save data',           () => { refreshSave(); checkSaveOverflow(); }],
+    ['downloadSaveBtn', downloadAsFile,  'authsrng_save.txt',   () => { refreshSave(); checkSaveOverflow(); }],
+    ['refreshSaveBtn',  null,            null,                  () => { refreshSave(); checkSaveOverflow(); }],
+  ];
+  const settingsBtnActionsWithCheck = [
+    ['exportSettingsBtn',   copyToClipboard, 'settings',              () => { refreshSettings(); checkSettingsOverflow(); }],
+    ['downloadSettingsBtn', downloadAsFile,  'authsrng_settings.txt', () => { refreshSettings(); checkSettingsOverflow(); }],
+    ['refreshSettingsBtn',  null,            null,                    () => { refreshSettings(); checkSettingsOverflow(); }],
+  ];
 
-  const _origRefreshSave = refreshSave;
-  refreshSave = () => { _origRefreshSave(); checkSaveOverflow(); };
+  // Unified setup that always calls the refresh+overflow func
+  function setupBtnActionsV2(actions, type) {
+    actions.forEach(([id, func, param, refreshAndCheck]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('click', () => {
+        refreshAndCheck();
+        if (!func) return;
+        const codeEl = type === 'save'
+          ? document.getElementById('saveTransferCode')
+          : document.getElementById('settingsTransferCode');
+        const text = codeEl.textContent;
+        if (text.includes('(no ')) { alert('no ' + type + ' data to export'); return; }
+        if (func === copyToClipboard) func(text, param);
+        else if (func === downloadAsFile) func(text, param);
+      });
+    });
+  }
+
+  setupBtnActionsV2(saveBtnActionsWithCheck, 'save');
+  setupBtnActionsV2(settingsBtnActionsWithCheck, 'settings');
 
   refreshSave();
+  checkSaveOverflow();
   refreshSettings();
+  checkSettingsOverflow();
 
   document.querySelectorAll('.page-container').forEach(pc => {
     const firstPage = pc.querySelector('.page');
