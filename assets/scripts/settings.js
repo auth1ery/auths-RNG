@@ -359,11 +359,7 @@
       document.body.style.removeProperty('--bg-color');
     }
 
-    const prevRaw = window.rawNumbers;
-      window.rawNumbers = !!settings.rawNumbers;
-      if (prevRaw !== window.rawNumbers && window.refreshAllDisplays) {
-        window.refreshAllDisplays();
-      }
+    window.rawNumbers = !!settings.rawNumbers;
 
     document.body.style.fontSize = (settings.textSize || 16) + 'px';
 
@@ -442,6 +438,8 @@
 
     const rsrEl = el('rollsSinceRare');
     if (rsrEl) rsrEl.style.display = settings.rareThreshold > 0 ? '' : 'none';
+
+    if (window.refreshAllDisplays) window.refreshAllDisplays();
   }
 
   // ── syncUIToSettings ──────────────────────────────────────────────────
