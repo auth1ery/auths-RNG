@@ -2155,6 +2155,7 @@ function resetInventory() {
     localStorage.removeItem('wishingWell');
     localStorage.removeItem('gauntletData');
     localStorage.removeItem('_beacon_v2');
+    localStorage.removeItem('mutationsUnlocked');
 
     inventoryData.clear();
     inventoryList.innerHTML = '';
