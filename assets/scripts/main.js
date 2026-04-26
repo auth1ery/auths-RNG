@@ -3126,6 +3126,12 @@ if (isWellOnCooldown()) {
   startWellCooldownTimer();
 }
 
+window.refreshAllDisplays = function() {
+  updatePointsDisplay();
+  updateShopUI();
+  updateTotalRolls();
+};
+
 // FINISH THIS SCRIPT A;READY
 window.setWellAmount = setWellAmount;
 window.closeWellResult = closeWellResult;
