@@ -1877,8 +1877,15 @@ body.legacy-mode #legacySettingsBtn {
 .gauntlet-tier[data-tier='eon'] {
   border-color: #2a1a3a;
 }
+@keyframes eon-rgb {
+  0%   { color: #ff6666; }
+  33%  { color: #66ff66; }
+  66%  { color: #6666ff; }
+  100% { color: #ff6666; }
+}
 .gauntlet-tier[data-tier='eon'] .gauntlet-tier-name {
-  color: #cc88ff;
+  color: unset;
+  animation: eon-rgb 4s linear infinite;
 }
 
 .gauntlet-locked {
