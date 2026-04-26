@@ -25,6 +25,7 @@ window.formatNum = function(n) {
 };
 
 window.formatMult = function(n) {
+  if (window.rawNumbers) return n.toFixed(1);
   if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
   if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
   if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
@@ -305,6 +306,13 @@ function updateShopUI() {
   if (luckBtn)  luckBtn.textContent  = `buy luck upgrade (${formatNum(luckCost)} pts)`;
   if (speedBtn) speedBtn.textContent = `buy speed upgrade (${formatNum(speedCost)} pts)`;
   if (pointBtn) pointBtn.textContent = `buy points upgrade (${formatNum(pointCost)} pts)`;
+
+  const luckCostEl  = document.getElementById('luckCost');
+  const speedCostEl = document.getElementById('speedCost');
+  const pointCostEl = document.getElementById('pointCost');
+  if (luckCostEl)  luckCostEl.textContent  = formatNum(luckCost);
+  if (speedCostEl) speedCostEl.textContent = formatNum(speedCost);
+  if (pointCostEl) pointCostEl.textContent = formatNum(pointCost);
 
   if (luckBtn)  luckBtn.disabled  = points < luckCost  || shopUpgrades.luck >= 100;
   if (speedBtn) speedBtn.disabled = points < speedCost || shopUpgrades.speed >= 3;
