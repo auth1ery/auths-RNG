@@ -1868,8 +1868,11 @@ body.legacy-mode #legacySettingsBtn {
 .gauntlet-tier[data-tier='godlike'] .gauntlet-tier-name {
   color: #ffd700;
 }
+.gauntlet-tier[data-tier='inferno'] {
+  border-color: #3a1a0a;
+}
 .gauntlet-tier[data-tier='inferno'] .gauntlet-tier-name {
-  border-color: #ff4500
+  color: #ff4500;
 }
 .gauntlet-tier[data-tier='eon'] {
   border-color: #2a1a3a;
