@@ -196,48 +196,54 @@ function renderHistory() {
     }
   }
 
-  function doMutation() {
-    const selA = document.getElementById('mutateSelectA');
-    const selB = document.getElementById('mutateSelectB');
-    if (!selA || !selB) return;
+function doMutation() {
+  const selA = document.getElementById('mutateSelectA');
+  const selB = document.getElementById('mutateSelectB');
+  if (!selA || !selB) return;
 
-    const nameA = selA.value;
-    const nameB = selB.value;
+  const nameA = selA.value;
+  const nameB = selB.value;
 
-    if (nameA === nameB) {
-      if (typeof showAnomalyPopup === 'function') showAnomalyPopup('pick two different rarities!');
-      return;
-    }
+  if (nameA === nameB) {
+    if (typeof showAnomalyPopup === 'function') showAnomalyPopup('pick two different rarities!');
+    return;
+  }
 
-    const result = mutate(nameA, nameB);
-    if (!result) return;
+  const result = mutate(nameA, nameB);
+  if (!result) return;
 
-    lastMutationTime = Date.now();
+  lastMutationTime = Date.now();
 
-    if (typeof addToInventory === 'function') addToInventory(result);
-    if (typeof saveAllData    === 'function') saveAllData();
+  const idxA     = getRarityIndex(nameA);
+  const idxB     = getRarityIndex(nameB);
+  const resultIdx = getRarityIndex(result.name);
+  const wasGood  = resultIdx < Math.min(idxA, idxB);
 
-    const denom    = Math.round(1 / result.chance);
-    const idxA     = getRarityIndex(nameA);
-    const idxB     = getRarityIndex(nameB);
-    const resultIdx = getRarityIndex(result.name);
-    const wasGood  = resultIdx < Math.min(idxA, idxB);
-
-    const resultEl = document.getElementById('mutationResult');
-    if (resultEl) {
-      resultEl.innerHTML = `
-        <div class="mutation-result ${wasGood ? 'result-good' : 'result-bad'}">
-          <div class="mutation-result-quality">${wasGood ? '✨ better!' : '💀 worse...'}</div>
-          <div class="mutation-result-name">${result.name}</div>
-          <div class="mutation-result-chance">1/${denom.toLocaleString()}</div>
-        </div>`;
-    }
-
+  const onDone = () => {
     addToHistory(nameA, nameB, result, wasGood);
     renderHistory();
-
     updateCooldownDisplay();
+    if (typeof saveAllData === 'function') saveAllData();
+  };
+
+  if (typeof showRollChoice === 'function') {
+    showRollChoice(result, onDone);
+  } else {
+    if (typeof addToInventory === 'function') addToInventory(result);
+    onDone();
   }
+
+  const denom = Math.round(1 / result.chance);
+  const resultEl = document.getElementById('mutationResult');
+  if (resultEl) {
+    resultEl.innerHTML = `
+      <div class="mutation-result ${wasGood ? 'result-good' : 'result-bad'}">
+        <div class="mutation-result-quality">${wasGood ? '✨ better!' : '💀 worse...'}</div>
+        <div class="mutation-result-name">${result.name}</div>
+        <div class="mutation-result-chance">1/${denom.toLocaleString()}</div>
+      </div>`;
+  }
+}
 
   window.renderMutations = renderMutations;
 
