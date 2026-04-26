@@ -2,6 +2,39 @@
   'use strict';
 
   const MUTATIONS_KEY = 'mutationsUnlocked';
+  const MUTATION_HISTORY_KEY = 'mutationHistory';
+const MUTATION_HISTORY_MAX = 50;
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(MUTATION_HISTORY_KEY) || '[]'); } catch { return []; }
+}
+function saveHistory(h) {
+  try { localStorage.setItem(MUTATION_HISTORY_KEY, JSON.stringify(h)); } catch {}
+}
+function addToHistory(nameA, nameB, result, wasGood) {
+  const h = loadHistory();
+  h.unshift({ a: nameA, b: nameB, result: result.name, good: wasGood, ts: Date.now() });
+  if (h.length > MUTATION_HISTORY_MAX) h.pop();
+  saveHistory(h);
+}
+function renderHistory() {
+  const el = document.getElementById('mutationHistory');
+  if (!el) return;
+  const h = loadHistory();
+  if (h.length === 0) {
+    el.innerHTML = '<div style="opacity:0.35;text-align:center;padding:16px;font-size:0.8em;">no mutations yet</div>';
+    return;
+  }
+  el.innerHTML = h.map(e => {
+    const d = new Date(e.ts);
+    const time = `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+    return `<div class="mutation-history-entry ${e.good ? 'mh-good' : 'mh-bad'}">
+      <div class="mh-formula">${e.a} + ${e.b}</div>
+      <div class="mh-result">${e.good ? '✨' : '💀'} ${e.result}</div>
+      <div class="mh-time">${time}</div>
+    </div>`;
+  }).join('');
+}
   const MUTATION_COOLDOWN = 30000;
 
   const EXCLUDED_NAMES = new Set([
@@ -130,6 +163,21 @@
     if (selB && selB.options.length > 1) selB.selectedIndex = 1;
 
     document.getElementById('mutateBtn').addEventListener('click', doMutation);
+
+    // history notebook
+    const histSection = document.createElement('div');
+    histSection.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:24px;margin-bottom:8px;">
+        <div style="font-size:0.8em;opacity:0.5;">mutation log</div>
+        <button class="small" id="clearMutationHistory" style="opacity:0.4;font-size:0.72em;">clear</button>
+      </div>
+      <div id="mutationHistory" class="mutation-history"></div>`;
+    container.appendChild(histSection);
+    document.getElementById('clearMutationHistory').onclick = () => {
+      saveHistory([]);
+      renderHistory();
+    };
+    renderHistory();
     updateCooldownDisplay();
   }
 
@@ -184,6 +232,9 @@
           <div class="mutation-result-chance">1/${denom.toLocaleString()}</div>
         </div>`;
     }
+
+    addToHistory(nameA, nameB, result, wasGood);
+    renderHistory();
 
     updateCooldownDisplay();
   }
