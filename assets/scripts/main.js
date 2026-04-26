@@ -2366,14 +2366,14 @@ function spinAndReveal(res) {
   spinner.style.transform = `translateY(-${scroll}px)`;
 
   setTimeout(() => {
-  totalRolls++;
-  updateTotalRolls();
-  addToInventory(res);
-  awardAnomalyIfEligible(res);
-  checkAchievements(res);
-  updateRollsSinceRare(res);
-  maybeFireConfettiAndCutscene(res);
-}, duration * 1000 + 1000);
+    totalRolls++;
+    updateTotalRolls();
+    addToInventory(res);
+    awardAnomalyIfEligible(res);
+    checkAchievements(res);
+    updateRollsSinceRare(res);
+    maybeFireConfettiAndCutscene(res);
+  }, duration * 1000 + 1000);
 
 function maybeFireConfettiAndCutscene(res) {
   const denom = Math.round(1 / res.chance);
