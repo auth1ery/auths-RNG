@@ -107,6 +107,18 @@
         background: #222;
         opacity: 1;
       }
+
+      pre {
+        white-space: pre-wrap;
+        word-break: break-all;
+        overflow-wrap: anywhere;
+        margin: 0;
+      }
+
+      code {
+        font-family: monospace;
+        font-size: 0.85em;
+      }
     </style>
   </head>
   <body>
@@ -202,12 +214,83 @@
           on level 30, or 300/sec on level 300. there is no max level.
           <br /><br />
           <strong>duplicate chance:</strong> every level you get a 1% chance
-          that stacks. every roll yoou're essentially getting a chance to clone
+          that stacks. every roll you're essentially getting a chance to clone
           that rarity you got into 2. so lets say you rolled common and you get
           a popup saying that you got a duplicate, you now got 2 commons from
           that roll. max level 10. <br /><br />
           <strong>the potions</strong> are simple. you dont need help on potions
           trust me.
+        </div>
+      </div>
+
+      <h2>mutations</h2>
+
+      <div class="faq-item">
+        <div class="question">what are mutations?</div>
+        <div class="answer">
+          mutations let you combine two rarities you already own to produce a
+          new one. the result is unpredictable — it can be rarer than both
+          inputs or more common than both. you unlock mutations by completing
+          the eon gauntlet.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="question">how do i mutate?</div>
+        <div class="answer">
+          go to the mutations tab, pick two different rarities from your
+          inventory using the two dropdowns, and press mutate. after a result
+          appears you'll be asked whether to keep, sell, or pass on it — same
+          as any other roll. there's a 30 second cooldown between mutations.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="question">what are the odds of a good result?</div>
+        <div class="answer">
+          base odds are approximately <strong>35% better</strong> and
+          <strong>65% worse</strong>. two things improve your chances:
+          <div class="example">
+            rarity bonus: the rarer your worse input, the better your odds.<br />
+            inputs at the very top of the rarity list can push good-chance up
+            to ~60%.<br /><br />
+            pair bias: each specific combination of two rarities has a fixed
+            hidden bias of up to ±8%. the same pair always skews the same way,
+            so experimenting and keeping a log helps.
+          </div>
+          good results are capped at 75% no matter what modifiers apply.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="question">what counts as a "good" or "bad" result?</div>
+        <div class="answer">
+          <strong>good:</strong> the result is rarer than your rarer input.<br />
+          <strong>bad:</strong> the result is more common than your worse input.<br /><br />
+          a bad result won't produce anything rarer than the top 6 excluded
+          rarities (SUMMER, finished., etc.), and a good result won't produce
+          one of those either — they are completely off the mutation table.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="question">does the result get added to my inventory?</div>
+        <div class="answer">
+          only if you choose to keep or sell it. after a mutation resolves, a
+          modal appears with three options:<br /><br />
+          <strong>keep</strong> — adds it to your inventory normally.<br />
+          <strong>sell</strong> — converts it to points immediately using the
+          standard formula (rarity number ÷ current point divisor).<br />
+          <strong>pass</strong> — discards the result entirely. nothing is added
+          and no points are earned.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="question">does mutating consume my rarities?</div>
+        <div class="answer">
+          no. your input rarities are never removed. mutation only produces a
+          new rarity on top of what you already have.
         </div>
       </div>
 
@@ -229,7 +312,7 @@
           that's a gauntlet! (obviously) but it is special because it is GLOBAL.
           every 2 days the rarities needed to get rewards get rotated, so one
           day it could be really easy-to-get rarities, but in the next 2 days,
-          it could get to very hard-to-gey rarities. the rarities needed are
+          it could get to very hard-to-get rarities. the rarities needed are
           usually in the medium - hard tiers to let anyone claim a reward from
           the global gauntlet easily, but not easily at the same time.
         </div>
@@ -364,12 +447,12 @@
 
       <div class="faq-item">
         <div class="question">
-          my file size is under 10 megabytes, why cant i upload it? (custom
+          my file size is under 3 megabytes, why cant i upload it? (custom
           music)
         </div>
         <div class="answer">
           sometimes localStorage gets a bit too aggressive. try compressing it
-          down to under 3 MB so it can upload safely.
+          down to under 2 MB so it can upload safely.
         </div>
       </div>
 
@@ -426,15 +509,24 @@
 
           now paste this into the console and press enter:<br /><br />
 
-          <strong><pre><code>copy(JSON.stringify(Object.fromEntries(
-  ['rarityInventory','totalRolls','achievementsUnlocked','anomalies',
-   'anomaliesUsed','shopPoints','shopUpgrades','soldOutRarities',
-   'playerPotions','activePotions','wishingWell','luckBoostState',
-   'totalPlaytime','daily_lastClaim','daily_streak','weekly_lastClaim',
-   'weekly_streak','gauntletData']
-  .filter(k => localStorage.getItem(k) !== null)
-  .map(k => [k, localStorage.getItem(k)])
-)));</code></pre></strong>
+          <strong><pre><code>copy(JSON.stringify(
+  Object.fromEntries(
+    ['rarityInventory','totalRolls',
+     'achievementsUnlocked','anomalies',
+     'anomaliesUsed','shopPoints',
+     'shopUpgrades','soldOutRarities',
+     'playerPotions','activePotions',
+     'wishingWell','luckBoostState',
+     'totalPlaytime','daily_lastClaim',
+     'daily_streak','weekly_lastClaim',
+     'weekly_streak','gauntletData',
+     'notifications','mutationsUnlocked',
+     'mutationHistory','_beacon_v2',
+     'userSettings']
+    .filter(k => localStorage.getItem(k) !== null)
+    .map(k => [k, localStorage.getItem(k)])
+  )
+));</code></pre></strong>
 
           your save data is now copied to your clipboard. now open the
           <strong>new site</strong>, open the console there (same steps as
@@ -442,8 +534,9 @@
           following, but replace <code>PASTE_HERE</code> with what you just
           copied:<br /><br />
 
-          <strong><pre><code>Object.entries(JSON.parse(`PASTE_HERE`))
-  .forEach(([k,v]) => localStorage.setItem(k,v));
+          <strong><pre><code>Object.entries(
+  JSON.parse(`PASTE_HERE`)
+).forEach(([k,v]) => localStorage.setItem(k,v));
 location.reload();</code></pre></strong>
 
           the page will reload and your save should be fully restored. if it

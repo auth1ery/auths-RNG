@@ -62,24 +62,6 @@
   }
 }
 
-@keyframes rgb {
-  0% {
-    color: #ff6666;
-  }
-
-  33% {
-    color: #66ff66;
-  }
-
-  66% {
-    color: #6666ff;
-  }
-
-  100% {
-    color: #ff6666;
-  }
-}
-
 @keyframes flash {
   0%,
   50%,
@@ -1658,9 +1640,8 @@ body.legacy-mode .swipe-indicator {
   display: none !important;
 }
 
-/* Hide page 2 and 5 in legacy mode since we're using popups */
 body.legacy-mode #page-2,
-body.legacy-mode #page-5 {
+body.legacy-mode #page-6 {
   display: none !important;
 }
 
@@ -1886,6 +1867,25 @@ body.legacy-mode #legacySettingsBtn {
 }
 .gauntlet-tier[data-tier='godlike'] .gauntlet-tier-name {
   color: #ffd700;
+}
+.gauntlet-tier[data-tier='inferno'] {
+  border-color: #3a1a0a;
+}
+.gauntlet-tier[data-tier='inferno'] .gauntlet-tier-name {
+  color: #ff4500;
+}
+.gauntlet-tier[data-tier='eon'] {
+  border-color: #2a1a3a;
+}
+@keyframes eon-rgb {
+  0%   { color: #ff6666; }
+  33%  { color: #66ff66; }
+  66%  { color: #6666ff; }
+  100% { color: #ff6666; }
+}
+.gauntlet-tier[data-tier='eon'] .gauntlet-tier-name {
+  color: unset;
+  animation: eon-rgb 4s linear infinite;
 }
 
 .gauntlet-locked {
@@ -2278,8 +2278,8 @@ body.high-contrast #inventoryList li.item-rare {
   position: absolute;
   top: -5px;
   right: -5px;
-  background: #b33;
-  color: #fff;
+  background: var(--accent-color);
+  color: var(--bg-color);
   font-size: 0.58em;
   min-width: 17px;
   height: 17px;
@@ -2486,3 +2486,119 @@ body.high-contrast #inventoryList li.item-rare {
     max-height: 55vh;
   }
 }
+
+.mutation-panel {
+  max-width: 500px;
+  width: 100%;
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  padding: 20px;
+  text-align: center;
+}
+.mutation-subtitle {
+  font-size: 0.85em;
+  opacity: 0.6;
+  margin-bottom: 6px;
+}
+.mutation-odds {
+  font-size: 0.75em;
+  opacity: 0.4;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+.mutation-selectors {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mutation-slot {
+  flex: 1;
+  min-width: 140px;
+}
+.mutation-slot-label {
+  font-size: 0.75em;
+  opacity: 0.5;
+  margin-bottom: 5px;
+  text-transform: lowercase;
+}
+.mutation-select {
+  width: 100%;
+  padding: 6px 8px;
+  font-size: 0.82em;
+}
+.mutation-plus {
+  font-size: 1.4em;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.mutation-btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95em;
+  margin-bottom: 8px;
+}
+.mutation-cooldown {
+  font-size: 0.75em;
+  opacity: 0.45;
+  min-height: 1.2em;
+  margin-bottom: 12px;
+  color: #ffaa66;
+}
+.mutation-result {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 3px;
+  border: 1px solid var(--border-color);
+  background: var(--overlay-bg);
+  animation: fadeInResult 0.3s ease forwards;
+}
+.result-good {
+  border-color: #3a5a3a;
+  background: rgba(40, 90, 40, 0.1);
+}
+.result-bad {
+  border-color: #5a2a2a;
+  background: rgba(90, 30, 30, 0.1);
+}
+.mutation-result-quality {
+  font-size: 0.8em;
+  opacity: 0.7;
+  margin-bottom: 6px;
+}
+.mutation-result-name {
+  font-size: 1.2em;
+  margin-bottom: 4px;
+}
+.mutation-result-chance {
+  font-size: 0.8em;
+  opacity: 0.55;
+}
+
+.mutation-history {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--overlay-bg);
+}
+.mutation-history-entry {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.78em;
+}
+.mutation-history-entry:last-child { border-bottom: none; }
+.mh-formula { opacity: 0.5; }
+.mh-result { font-weight: bold; }
+.mh-good .mh-result { color: #88cc88; }
+.mh-bad .mh-result { color: #cc6666; }
+.mh-time { opacity: 0.3; font-size: 0.9em; white-space: nowrap; }
+
+/* ouuuuuuuuuuu */

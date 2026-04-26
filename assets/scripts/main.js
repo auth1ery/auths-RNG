@@ -16,6 +16,22 @@ const POINTS_KEY = 'shopPoints';
 const SHOP_UPGRADES_KEY = 'shopUpgrades';
 const SOLD_OUT_KEY = 'soldOutRarities';
 
+window.formatNum = function(n) {
+  if (window.rawNumbers) return String(Math.round(n));
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+  return String(Math.round(n));
+};
+
+window.formatMult = function(n) {
+  if (window.rawNumbers) return n.toFixed(1);
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n.toFixed(1);
+};
+
 let points = 0;
 let shopUpgrades = {
   luck: 0,
@@ -66,6 +82,8 @@ let playerPotions = {
   luck150x: 0,
   luck250x: 0,
   luck300x: 0,
+  luck800x: 0,
+  luck1500x: 0,
   duplicate: 0,
 };
 
@@ -129,6 +147,20 @@ const potionData = {
     duration: 30000,
     cost: 150000,
     emoji: '💎',
+  },
+  luck800x: {
+    name: 'HEAVENLY LUCK',
+    mult: 800,
+    duration: 20000,
+    cost: 500000,
+    emoji: '☁️',
+  },
+  luck1500x: {
+    name: 'RAW LUCK',
+    mult: 1500,
+    duration: 30000,
+    cost: 1500000,
+    emoji: '🍀',
   },
   duplicate: { name: 'duplicate', rolls: 10, cost: 5000, emoji: '🎭' },
 };
@@ -240,8 +272,13 @@ function updateRollsSinceRare(rolledRarity) {
     rollsSinceLastRare++;
   }
   const el = document.getElementById('rollsSinceRare');
-  if (el && thresh > 0)
+  if (!el) return;
+  if (thresh > 0) {
+    el.style.display = 'block';
     el.textContent = `rolls since last rare: ${rollsSinceLastRare}`;
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 function calculateRarityPoints(rarity) {
@@ -250,7 +287,7 @@ function calculateRarityPoints(rarity) {
 }
 
 function updatePointsDisplay() {
-  document.getElementById('pointsValue').textContent = points;
+  document.getElementById('pointsValue').textContent = formatNum(points);
 }
 
 function updateShopUI() {
@@ -259,57 +296,54 @@ function updateShopUI() {
   document.getElementById('pointLevel').textContent = shopUpgrades.pointMult;
 
   const luckCost = Math.floor(25 + shopUpgrades.luck * shopUpgrades.luck * 15);
-  const speedCost = Math.floor(
-    50 + shopUpgrades.speed * shopUpgrades.speed * 55,
-  );
-  const pointCost = Math.floor(
-    100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35,
-  );
+  const speedCost = Math.floor(50 + shopUpgrades.speed * shopUpgrades.speed * 55);
+  const pointCost = Math.floor(100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35);
 
-  // Update button text to show costs
   const luckBtn = document.getElementById('buyLuckBtn');
   const speedBtn = document.getElementById('buySpeedBtn');
   const pointBtn = document.getElementById('buyPointBtn');
 
-  if (luckBtn) luckBtn.textContent = `buy luck upgrade (${luckCost} pts)`;
-  if (speedBtn) speedBtn.textContent = `buy speed upgrade (${speedCost} pts)`;
-  if (pointBtn) pointBtn.textContent = `buy points upgrade (${pointCost} pts)`;
+  if (luckBtn)  luckBtn.textContent  = `buy luck upgrade (${formatNum(luckCost)} pts)`;
+  if (speedBtn) speedBtn.textContent = `buy speed upgrade (${formatNum(speedCost)} pts)`;
+  if (pointBtn) pointBtn.textContent = `buy points upgrade (${formatNum(pointCost)} pts)`;
 
-  // Disable buttons if can't afford or maxed out
-  if (luckBtn) luckBtn.disabled = points < luckCost || shopUpgrades.luck >= 100;
-  if (speedBtn)
-    speedBtn.disabled = points < speedCost || shopUpgrades.speed >= 3;
-  if (pointBtn)
-    pointBtn.disabled = points < pointCost || shopUpgrades.pointMult >= 10;
+  const luckCostEl  = document.getElementById('luckCost');
+  const speedCostEl = document.getElementById('speedCost');
+  const pointCostEl = document.getElementById('pointCost');
+  if (luckCostEl)  luckCostEl.textContent  = formatNum(luckCost);
+  if (speedCostEl) speedCostEl.textContent = formatNum(speedCost);
+  if (pointCostEl) pointCostEl.textContent = formatNum(pointCost);
 
-  const magnetLevelEl = document.getElementById('magnetLevel');
+  if (luckBtn)  luckBtn.disabled  = points < luckCost  || shopUpgrades.luck >= 100;
+  if (speedBtn) speedBtn.disabled = points < speedCost || shopUpgrades.speed >= 3;
+  if (pointBtn) pointBtn.disabled = points < pointCost || shopUpgrades.pointMult >= 10;
+
+  const magnetLevelEl  = document.getElementById('magnetLevel');
   const printerLevelEl = document.getElementById('printerLevel');
-  const dupeLevelEl = document.getElementById('dupeLevel');
+  const dupeLevelEl    = document.getElementById('dupeLevel');
 
-  if (magnetLevelEl) magnetLevelEl.textContent = shopUpgrades.magnet || 0;
+  if (magnetLevelEl)  magnetLevelEl.textContent  = shopUpgrades.magnet || 0;
   if (printerLevelEl) printerLevelEl.textContent = shopUpgrades.printer || 0;
-  if (dupeLevelEl) dupeLevelEl.textContent = shopUpgrades.duplicate || 0;
+  if (dupeLevelEl)    dupeLevelEl.textContent    = shopUpgrades.duplicate || 0;
 
-  const magnetCost = 500 + (shopUpgrades.magnet || 0) * 1000;
-  const printerCost =
-    1000 + (shopUpgrades.printer || 0) * (shopUpgrades.printer || 0) * 500;
-  const dupeCost =
-    800 + (shopUpgrades.duplicate || 0) * (shopUpgrades.duplicate || 0) * 400;
+  const magnetCost  = 500  + (shopUpgrades.magnet || 0) * 1000;
+  const printerCost = 1000 + (shopUpgrades.printer || 0) * (shopUpgrades.printer || 0) * 500;
+  const dupeCost    = 800  + (shopUpgrades.duplicate || 0) * (shopUpgrades.duplicate || 0) * 400;
 
-  const magnetBtn = document.getElementById('buyMagnetBtn');
+  const magnetBtn  = document.getElementById('buyMagnetBtn');
   const printerBtn = document.getElementById('buyPrinterBtn');
-  const dupeBtn = document.getElementById('buyDupeBtn');
+  const dupeBtn    = document.getElementById('buyDupeBtn');
 
   if (magnetBtn) {
-    magnetBtn.textContent = `upgrade (${magnetCost} pts)`;
+    magnetBtn.textContent = `upgrade (${formatNum(magnetCost)} pts)`;
     magnetBtn.disabled = points < magnetCost || (shopUpgrades.magnet || 0) >= 5;
   }
   if (printerBtn) {
-    printerBtn.textContent = `upgrade (${printerCost} pts)`;
+    printerBtn.textContent = `upgrade (${formatNum(printerCost)} pts)`;
     printerBtn.disabled = points < printerCost;
   }
   if (dupeBtn) {
-    dupeBtn.textContent = `upgrade (${dupeCost} pts)`;
+    dupeBtn.textContent = `upgrade (${formatNum(dupeCost)} pts)`;
     dupeBtn.disabled = points < dupeCost || (shopUpgrades.duplicate || 0) >= 10;
   }
 }
@@ -333,7 +367,7 @@ function buyPotion(potionType) {
     saveAllData();
     showAnomalyPopup(`bought ${data.emoji} ${data.name}!`);
   } else {
-    alert(`need ${data.cost} points!`);
+    alert(`need ${formatNum(data.cost)} points!`);
   }
 }
 
@@ -373,12 +407,10 @@ function usePotion(potionType) {
 function recalcPotionLuck() {
   potionLuckMultiplier = 1;
   activePotions = activePotions.filter((p) => p.endTime > Date.now());
-
   activePotions.forEach((p) => {
-    potionLuckMultiplier *= p.multiplier;
+    potionLuckMultiplier += (p.multiplier - 1);
   });
-
-  updateLuckDisplay();
+  recalcLuckMultiplier();
 }
 
 function updateActivePotionsDisplay() {
@@ -475,6 +507,7 @@ let globalLuckMultiplier = 1;
 function recalcLuckMultiplier() {
   shopLuckMultiplier = 1 + shopUpgrades.luck * 0.1;
   globalLuckMultiplier = shopLuckMultiplier + anomaliesUsed * 0.5;
+  if (luckBoostActive) globalLuckMultiplier *= 4;
   globalLuckMultiplier *= potionLuckMultiplier;
   updateLuckDisplay();
 }
@@ -485,21 +518,17 @@ function updateLuckDisplay() {
 
   if (!luckEl || !breakdownEl) return;
 
-  luckEl.textContent = `luck multiplier: ${globalLuckMultiplier.toFixed(1)}x`;
+  luckEl.textContent = `luck multiplier: ${formatMult(globalLuckMultiplier)}x`;
 
   const parts = [];
 
   if (anomaliesUsed > 0) {
     const anomalyMult = 1 + anomaliesUsed * 0.5;
-    parts.push(
-      `anomalies: ${anomalyMult.toFixed(1)}x (${anomaliesUsed} consumed)`,
-    );
+    parts.push(`anomalies: ${formatMult(anomalyMult)}x (${anomaliesUsed} consumed)`);
   }
 
   if (shopUpgrades.luck > 0) {
-    parts.push(
-      `shop upgrade: ${shopLuckMultiplier.toFixed(1)}x (level ${shopUpgrades.luck})`,
-    );
+    parts.push(`shop upgrade: ${formatMult(shopLuckMultiplier)}x (level ${shopUpgrades.luck})`);
   }
 
   if (luckBoostActive) {
@@ -507,7 +536,7 @@ function updateLuckDisplay() {
   }
 
   if (potionLuckMultiplier > 1) {
-    parts.push(`potions: ${potionLuckMultiplier.toFixed(1)}x`);
+    parts.push(`potions: ${formatMult(potionLuckMultiplier)}x`);
   }
 
   if (duplicateRollsLeft > 0) {
@@ -1042,7 +1071,6 @@ const rarities = [
   { name: 'Aldebaran', chance: 1 / 1190 },
   { name: 'Heliocentric', chance: 1 / 1175 },
   { name: 'Antares', chance: 1 / 1160 },
-  { name: 'Comet', chance: 1 / 1150 },
   { name: 'Arcturus', chance: 1 / 1140 },
   { name: 'Vega', chance: 1 / 1125 },
   { name: 'anyone there?', chance: 1 / 1100 },
@@ -1517,8 +1545,9 @@ function saveAllData() {
     JSON.stringify({
       active: activePotions,
       duplicateLeft: duplicateRollsLeft,
-    }),
+    })
   );
+  Beacon.save();
 }
 
 function loadAllData() {
@@ -1564,7 +1593,7 @@ function loadAllData() {
 }
 
 function updateTotalRolls() {
-  totalRollsEl.textContent = `total rolls: ${totalRolls}`;
+  totalRollsEl.textContent = `total rolls: ${formatNum(totalRolls)}`;
 }
 
 function addToInventory(o) {
@@ -1578,7 +1607,8 @@ function addToInventory(o) {
     updateItem(inventoryData.get(o.name));
     inventoryList.appendChild(li);
   }
-  inventoryList.scrollTop = inventoryList.scrollHeight;
+  const isNearBottom = inventoryList.scrollHeight - inventoryList.scrollTop - inventoryList.clientHeight < 60;
+  if (isNearBottom) inventoryList.scrollTop = inventoryList.scrollHeight;
   updateCollectedCounter();
 
   // ── auto-sell ──────────────────────────────────────────────────────────
@@ -1594,7 +1624,7 @@ function addToInventory(o) {
         updatePointsDisplay();
         updateShopUI();
         updateItem(d);
-        showAnomalyPopup(`auto-sold ${o.name} for ${earned} pts`);
+        showAnomalyPopup(`auto-sold ${o.name} for ${formatNum(earned)} pts`);
       }
     }
   }
@@ -1609,7 +1639,7 @@ function addToInventory(o) {
 
   if (shopUpgrades.duplicate > 0) {
     const dupeChance = shopUpgrades.duplicate / 100;
-    if (Math.random() < dupeChance) {
+    if (Beacon.float() < dupeChance) {
       // Add another copy!
       if (inventoryData.has(o.name)) {
         const d = inventoryData.get(o.name);
@@ -1700,12 +1730,11 @@ function updateItem(d) {
     liElement.classList.remove('sold-out');
   }
 
-  // Remove previous sell handler before adding a new one (prevents listener accumulation)
-  if (liElement._sellHandler) {
-    liElement.removeEventListener('dblclick', liElement._sellHandler);
-  }
-
-  liElement._sellHandler = function sellHandler() {
+    // Remove previous sell handler before adding a new one (prevents listener accumulation)
+    if (liElement._sellHandler) {
+      liElement.removeEventListener('dblclick', liElement._sellHandler);
+    }
+    liElement._sellHandler = function sellHandler() {
     const currentData = inventoryData.get(rarityObj.name);
     if (!currentData) return;
 
@@ -1722,7 +1751,7 @@ function updateItem(d) {
 
     showConfirmModal(
       'sell rarity?',
-      `sell ${availableToSell}x ${rarityObj.name} for ${pointsEarned} points? (you keep the rarity)`,
+      `sell ${availableToSell}x ${rarityObj.name} for ${formatNum(pointsEarned)} points? (you keep the rarity)`,
       () => {
         points += pointsEarned;
         soldOutRarities.set(key, { count: currentData.count });
@@ -1739,43 +1768,7 @@ function updateItem(d) {
 }
 
 function getRandomRarity() {
-  let totalWeight = 0;
-  rarities.forEach((r) => {
-    const denom = Math.round(1 / r.chance);
-    const isNoticeable = denom >= 100;
-
-    let mult = 1;
-    if (luckBoostActive && isNoticeable) mult *= 4;
-    if (isNoticeable) mult *= globalLuckMultiplier;
-
-    // Rarity magnet - boost uncollected rarities
-    if (shopUpgrades.magnet > 0 && !inventoryData.has(r.name) && isNoticeable) {
-      mult *= 1 + shopUpgrades.magnet * 0.1;
-    }
-
-    totalWeight += r.chance * mult;
-  });
-
-  let rand = Math.random() * totalWeight;
-
-  for (const o of rarities) {
-    const denom = Math.round(1 / o.chance);
-    const isNoticeable = denom >= 100;
-    let mult = 1;
-    if (luckBoostActive && isNoticeable) mult *= 4;
-    if (isNoticeable) mult *= globalLuckMultiplier;
-
-    // Rarity magnet
-    if (shopUpgrades.magnet > 0 && !inventoryData.has(o.name) && isNoticeable) {
-      mult *= 1 + shopUpgrades.magnet * 0.1;
-    }
-
-    const effectiveChance = o.chance * mult;
-    rand -= effectiveChance;
-    if (rand <= 0) return o;
-  }
-
-  return rarities[rarities.length - 1];
+  return Beacon.roll(rarities, globalLuckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
 }
 
 function checkAchievements(currentRarity) {
@@ -2068,6 +2061,7 @@ function consumeAllAnomalies() {
 }
 
 function renderSortedInventory(mode) {
+  const savedScroll = inventoryList.scrollTop;
   inventoryList.innerHTML = '';
 
   let items = Array.from(inventoryData.values());
@@ -2085,6 +2079,7 @@ function renderSortedInventory(mode) {
   }
 
   items.forEach((d) => inventoryList.appendChild(d.liElement));
+  inventoryList.scrollTop = savedScroll; 
 }
 
 const savedPoints = localStorage.getItem(POINTS_KEY);
@@ -2111,7 +2106,12 @@ pointDivisor = Math.max(1.0, 3.0 - shopUpgrades.pointMult * 0.2);
 const savedPotions = localStorage.getItem(POTIONS_KEY);
 if (savedPotions) {
   try {
-    playerPotions = JSON.parse(savedPotions);
+    const loaded = JSON.parse(savedPotions);
+    // merge into defaults so missing/NaN keys fall back to 0
+    for (const key of Object.keys(playerPotions)) {
+      const v = loaded[key];
+      playerPotions[key] = (typeof v === 'number' && !isNaN(v)) ? v : 0;
+    }
   } catch {}
 }
 
@@ -2154,6 +2154,8 @@ function resetInventory() {
     localStorage.removeItem('userSettings');
     localStorage.removeItem('wishingWell');
     localStorage.removeItem('gauntletData');
+    localStorage.removeItem('_beacon_v2');
+    localStorage.removeItem('mutationsUnlocked');
 
     inventoryData.clear();
     inventoryList.innerHTML = '';
@@ -2181,6 +2183,8 @@ function resetInventory() {
       luck150x: 0,
       luck250x: 0,
       luck300x: 0,
+      luck800x: 0,
+      luck1500x: 0,
       duplicate: 0,
     };
     activePotions = [];
@@ -2211,8 +2215,8 @@ function resetInventory() {
 function startLuckBoost() {
   luckBoostActive = true;
   luckBoostEndTime = Date.now() + 60000;
-  updateLuckDisplay();
-
+  recalcLuckMultiplier();
+  
   document.getElementById('luckBoostOverlay').style.display = 'flex';
 
   localStorage.setItem(
@@ -2243,7 +2247,7 @@ function updateLuckTimer() {
 function endLuckBoost() {
   luckBoostActive = false;
   luckBoostEndTime = 0;
-  updateLuckDisplay();
+  recalcLuckMultiplier();
 
   document.getElementById('luckBoostOverlay').style.display = 'none';
 
@@ -2267,6 +2271,41 @@ function checkMuteSettings() {
     }
   } catch (e) {}
   return false;
+}
+
+function showRollChoice(res, onDone) {
+  const modal = document.getElementById('rollChoiceModal');
+  const denom = Math.round(1 / res.chance);
+  const pts = calculateRarityPoints(res);
+
+  document.getElementById('rollChoiceRarity').textContent = res.name;
+  document.getElementById('rollChoiceChance').textContent = `1/${denom.toLocaleString()}`;
+  document.getElementById('rollChoiceSellAmt').textContent = `sell value: ${formatNum(pts)} pts`;
+  modal.style.display = 'flex';
+
+  const cleanup = (fn) => {
+    modal.style.display = 'none';
+    fn();
+    onDone();
+  };
+
+  document.getElementById('rollChoiceSell').onclick = () => cleanup(() => {
+    points += pts;
+    soldOutRarities.set(res.name, { count: 1 });
+    // still add to inventory so it shows as collected, just mark sold
+    addToInventory(res);
+    updatePointsDisplay();
+    updateShopUI();
+    showAnomalyPopup(`sold ${res.name} for ${formatNum(pts)} pts`);
+  });
+
+  document.getElementById('rollChoiceKeep').onclick = () => cleanup(() => {
+    addToInventory(res);
+  });
+
+  document.getElementById('rollChoicePass').onclick = () => cleanup(() => {
+    showAnomalyPopup(`passed on ${res.name}`);
+  });
 }
 
 function spinAndReveal(res) {
@@ -2326,18 +2365,49 @@ function spinAndReveal(res) {
   spinner.style.transition = `transform ${duration}s ease-out`;
   spinner.style.transform = `translateY(-${scroll}px)`;
 
-  setTimeout(
-    () => {
-      totalRolls++;
-      updateTotalRolls();
-      addToInventory(res);
-      awardAnomalyIfEligible(res);
-      checkAchievements(res);
-      updateRollsSinceRare(res);
-      maybeFireConfettiAndCutscene(res);
-    },
-    duration * 1000 + 1000,
-  );
+  setTimeout(() => {
+    totalRolls++;
+    updateTotalRolls();
+    addToInventory(res);
+    awardAnomalyIfEligible(res);
+    checkAchievements(res);
+    updateRollsSinceRare(res);
+    maybeFireConfettiAndCutscene(res);
+  }, duration * 1000 + 1000);
+}
+
+function maybeFireConfettiAndCutscene(res) {
+  const denom = Math.round(1 / res.chance);
+  const cutsceneThresh = window.cutsceneThreshold || 0;
+  const confettiThresh = window.confettiThreshold || 0;
+
+  if (confettiThresh > 0 && denom >= confettiThresh) triggerConfetti();
+
+  const hasCutscene = !!cutsceneMap[res.name];
+  const cutsceneAllowed =
+    hasCutscene && (cutsceneThresh === 0 || denom >= cutsceneThresh);
+
+  const afterReveal = () => {
+    const isMuted = checkMuteSettings();
+    if (res.name === 'Lunar') {
+      if (!isMuted) {
+        lunarMusic.currentTime = 0;
+        lunarMusic.play();
+      }
+      backgroundMusic.pause();
+    } else {
+      lunarMusic.pause();
+      if (!isMuted) backgroundMusic.play();
+    }
+    saveAllData();
+  };
+
+  if (cutsceneAllowed) {
+    playCutscene(res.name, afterReveal);
+  } else {
+    afterReveal();
+    rollBtn.disabled = false;
+  }
 }
 
 function maybeFireConfettiAndCutscene(res) {
@@ -2383,13 +2453,18 @@ rollBtn.addEventListener('click', () => {
   rollBtn.disabled = true;
   spinner.style.transition = 'none';
   spinner.style.transform = 'translateY(0)';
-  const res = getRandomRarity();
+
+  const result = getRandomRarity();
+  const res = result.rarity;
+
+  if (result.wasPity) showAnomalyPopup('pity triggered!');
+  if (result.isHotPulse) rollBtn.classList.add('hot-pulse');
+  else rollBtn.classList.remove('hot-pulse');
 
   const isMuted = checkMuteSettings();
   if (!isMuted && backgroundMusic.paused && res.name !== 'Lunar') {
     backgroundMusic.play().catch(() => {});
   }
-
   setTimeout(() => spinAndReveal(res), 100);
 });
 
@@ -2962,55 +3037,50 @@ function formatWellTime(ms) {
   return `${seconds}s`;
 }
 
-// Update well UI
 function updateWellUI() {
-  const status = document.getElementById('wellStatus');
-  const timer = document.getElementById('wellTimer');
-  const throwBtn = document.getElementById('throwWellBtn');
-  const totalThrown = document.getElementById('wellTotalThrown');
+  const status        = document.getElementById('wellStatus');
+  const timer         = document.getElementById('wellTimer');
+  const throwBtn      = document.getElementById('throwWellBtn');
+  const totalThrown   = document.getElementById('wellTotalThrown');
   const totalReceived = document.getElementById('wellTotalReceived');
-  const timesThrown = document.getElementById('wellTimesThrown');
-  const successRate = document.getElementById('wellSuccessRate');
+  const timesThrown   = document.getElementById('wellTimesThrown');
+  const successRate   = document.getElementById('wellSuccessRate');
 
   if (!status || !timer || !throwBtn) return;
 
   if (isWellOnCooldown()) {
     const remaining = getRemainingCooldown();
-    throwBtn.disabled = true;
-    status.textContent = 'the well is recovering its magic...';
-    timer.textContent = `available in: ${formatWellTime(remaining)}`;
+    throwBtn.disabled    = true;
+    status.textContent   = 'the well is recovering its magic...';
+    timer.textContent    = `available in: ${formatWellTime(remaining)}`;
   } else {
-    throwBtn.disabled = false;
+    throwBtn.disabled  = false;
     status.textContent = 'ready to accept your offering';
-    timer.textContent = '';
+    timer.textContent  = '';
   }
 
-  // Update stats
-  if (totalThrown) totalThrown.textContent = wellData.totalThrown;
-  if (totalReceived) totalReceived.textContent = wellData.totalReceived;
-  if (timesThrown) timesThrown.textContent = wellData.timesThrown;
+  if (totalThrown)   totalThrown.textContent   = formatNum(wellData.totalThrown);
+  if (totalReceived) totalReceived.textContent = formatNum(wellData.totalReceived);
+  if (timesThrown)   timesThrown.textContent   = formatNum(wellData.timesThrown);
   if (successRate) {
-    const rate =
-      wellData.timesThrown > 0
-        ? Math.round((wellData.successes / wellData.timesThrown) * 100)
-        : 0;
+    const rate = wellData.timesThrown > 0
+      ? Math.round((wellData.successes / wellData.timesThrown) * 100)
+      : 0;
     successRate.textContent = `${rate}%`;
   }
 }
 
-// Throw points into well
 function throwIntoWell() {
   const input = document.getElementById('wellInput');
   const amount = parseInt(input.value) || 0;
 
-  // Validation
   if (amount <= 0) {
     alert('you must throw at least 1 point!');
     return;
   }
 
   if (amount > points) {
-    alert(`you only have ${points} points!`);
+    alert(`you only have ${formatNum(points)} points!`);
     return;
   }
 
@@ -3019,17 +3089,12 @@ function throwIntoWell() {
     return;
   }
 
-  // Deduct points
   points -= amount;
   updatePointsDisplay();
-
-  // Ripple animation
   createWellRipple();
 
-  // 40% chance to win
-  const won = Math.random() < 0.4;
+  const won = Beacon.float() < 0.4;
 
-  // Update stats
   wellData.lastThrow = Date.now();
   wellData.totalThrown += amount;
   wellData.timesThrown++;
@@ -3047,17 +3112,13 @@ function throwIntoWell() {
     showWellResult(false, amount);
   }
 
-  // Save everything
   saveWellData();
   saveAllData();
   updateWellUI();
-
-  // Clear input
   input.value = '';
-
-  // Start cooldown timer
   startWellCooldownTimer();
 }
+
 
 // Create ripple animation
 function createWellRipple() {
@@ -3075,23 +3136,23 @@ function createWellRipple() {
 
 // Show result modal
 function showWellResult(won, amount) {
-  const modal = document.getElementById('wellResultModal');
-  const icon = document.getElementById('wellResultIcon');
-  const text = document.getElementById('wellResultText');
+  const modal    = document.getElementById('wellResultModal');
+  const icon     = document.getElementById('wellResultIcon');
+  const text     = document.getElementById('wellResultText');
   const amountEl = document.getElementById('wellResultAmount');
 
   if (!modal || !icon || !text || !amountEl) return;
 
   if (won) {
-    icon.textContent = '✨';
-    text.textContent = 'the well grants your wish!';
-    amountEl.textContent = `it gives you +${amount} points, go thank it!`;
-    amountEl.style.color = '#4a4';
+    icon.textContent      = '✨';
+    text.textContent      = 'the well grants your wish!';
+    amountEl.textContent  = `it gives you +${formatNum(amount)} points, go thank it!`;
+    amountEl.style.color  = '#4a4';
   } else {
-    icon.textContent = '🌊';
-    text.textContent = 'the well accepts your offering...';
-    amountEl.textContent = 'but nothing happens.. whoops?';
-    amountEl.style.color = '#888';
+    icon.textContent      = '🌊';
+    text.textContent      = 'the well accepts your offering...';
+    amountEl.textContent  = 'but nothing happens.. whoops?';
+    amountEl.style.color  = '#888';
   }
 
   modal.classList.add('show');
@@ -3132,7 +3193,14 @@ if (isWellOnCooldown()) {
   startWellCooldownTimer();
 }
 
+window.refreshAllDisplays = function() {
+  updatePointsDisplay();
+  updateShopUI();
+  updateTotalRolls();
+  updateLuckDisplay();
+};
+
 // FINISH THIS SCRIPT A;READY
 window.setWellAmount = setWellAmount;
 window.closeWellResult = closeWellResult;
-initNotifCenter(); // YAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+document.addEventListener('DOMContentLoaded', () => initNotifCenter());// YAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY

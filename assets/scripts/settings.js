@@ -1,6 +1,4 @@
-// settings.js — auth's RNG settings system v2
-// overhauled: discord-style pending changes bar, music tidal-wave fix
-
+// settings.js 
 (function () {
   'use strict';
 
@@ -361,6 +359,8 @@
       document.body.style.removeProperty('--bg-color');
     }
 
+    window.rawNumbers = !!settings.rawNumbers;
+
     document.body.style.fontSize = (settings.textSize || 16) + 'px';
 
     const fontMap = {
@@ -438,6 +438,8 @@
 
     const rsrEl = el('rollsSinceRare');
     if (rsrEl) rsrEl.style.display = settings.rareThreshold > 0 ? '' : 'none';
+
+    if (window.refreshAllDisplays) window.refreshAllDisplays();
   }
 
   // ── syncUIToSettings ──────────────────────────────────────────────────
@@ -473,6 +475,7 @@
       reduceMotion: !!settings.reduceMotion,
       highContrast: !!settings.highContrast,
       largeTargets: !!settings.largeTargets,
+      rawNumbers: !!settings.rawNumbers,
     };
     for (const [id, checked] of Object.entries(checks)) {
       const n = el(id);
@@ -529,6 +532,7 @@
       reduceMotion: !!(el('reduceMotion') || {}).checked,
       highContrast: !!(el('highContrast') || {}).checked,
       largeTargets: !!(el('largeTargets') || {}).checked,
+      rawNumbers: !!(el('rawNumbers') || {}).checked,
       rollSound: (el('rollSound') || {}).value || 'none',
       rareThreshold: parseInt((el('rareThreshold') || {}).value || 1000, 10),
       confettiThreshold: parseInt(
@@ -581,6 +585,7 @@
       'reduceMotion',
       'highContrast',
       'largeTargets',
+      'rawNumbers',
     ];
     const inputIds = [
       'textSize',
@@ -1024,7 +1029,7 @@
     const legacyShopPopup = el('legacyShopPopup');
     const legacySettingsPopup = el('legacySettingsPopup');
     const shopPage = document.querySelector('#page-2');
-    const settingsPage = document.querySelector('#page-5');
+    const settingsPage = document.querySelector('#page-6');
     if (
       !legacyShopBtn ||
       !legacySettingsBtn ||
@@ -1142,6 +1147,7 @@
       confettiThreshold: 0,
       autoSellThreshold: 0,
       cutsceneThreshold: 0,
+      rawNumbers: false,
     };
 
     savedSettings = { ...defaults, ...loaded };
