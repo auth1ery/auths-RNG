@@ -2273,6 +2273,41 @@ function checkMuteSettings() {
   return false;
 }
 
+function showRollChoice(res, onDone) {
+  const modal = document.getElementById('rollChoiceModal');
+  const denom = Math.round(1 / res.chance);
+  const pts = calculateRarityPoints(res);
+
+  document.getElementById('rollChoiceRarity').textContent = res.name;
+  document.getElementById('rollChoiceChance').textContent = `1/${denom.toLocaleString()}`;
+  document.getElementById('rollChoiceSellAmt').textContent = `sell value: ${formatNum(pts)} pts`;
+  modal.style.display = 'flex';
+
+  const cleanup = (fn) => {
+    modal.style.display = 'none';
+    fn();
+    onDone();
+  };
+
+  document.getElementById('rollChoiceSell').onclick = () => cleanup(() => {
+    points += pts;
+    soldOutRarities.set(res.name, { count: 1 });
+    // still add to inventory so it shows as collected, just mark sold
+    addToInventory(res);
+    updatePointsDisplay();
+    updateShopUI();
+    showAnomalyPopup(`sold ${res.name} for ${formatNum(pts)} pts`);
+  });
+
+  document.getElementById('rollChoiceKeep').onclick = () => cleanup(() => {
+    addToInventory(res);
+  });
+
+  document.getElementById('rollChoicePass').onclick = () => cleanup(() => {
+    showAnomalyPopup(`passed on ${res.name}`);
+  });
+}
+
 function spinAndReveal(res) {
   const style = window.spinnerStyleSetting || 'slot';
   const reduceMotion = document.body.classList.contains('reduce-motion');
@@ -2300,7 +2335,7 @@ function spinAndReveal(res) {
       spinner.classList.remove('fade-style');
       totalRolls++;
       updateTotalRolls();
-      addToInventory(res);
+      showRollChoice(res, () => saveAllData());
       awardAnomalyIfEligible(res);
       checkAchievements(res);
       updateRollsSinceRare(res);
@@ -2330,18 +2365,15 @@ function spinAndReveal(res) {
   spinner.style.transition = `transform ${duration}s ease-out`;
   spinner.style.transform = `translateY(-${scroll}px)`;
 
-  setTimeout(
-    () => {
-      totalRolls++;
-      updateTotalRolls();
-      addToInventory(res);
-      awardAnomalyIfEligible(res);
-      checkAchievements(res);
-      updateRollsSinceRare(res);
-      maybeFireConfettiAndCutscene(res);
-    },
-    duration * 1000 + 1000,
-  );
+  setTimeout(() => {
+    totalRolls++;
+    updateTotalRolls();
+    awardAnomalyIfEligible(res);
+    checkAchievements(res);
+    updateRollsSinceRare(res);
+    maybeFireConfettiAndCutscene(res);
+    showRollChoice(res, () => saveAllData());
+  }, duration * 1000 + 1000);
 }
 
 function maybeFireConfettiAndCutscene(res) {
