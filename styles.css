@@ -2260,8 +2260,8 @@ body.high-contrast #inventoryList li.item-rare {
   position: absolute;
   top: -5px;
   right: -5px;
-  background: #b33;
-  color: #fff;
+  background: var(--accent-color);
+  color: var(--bg-color);
   font-size: 0.58em;
   min-width: 17px;
   height: 17px;
