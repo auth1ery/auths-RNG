@@ -2577,3 +2577,28 @@ body.high-contrast #inventoryList li.item-rare {
   font-size: 0.8em;
   opacity: 0.55;
 }
+
+.mutation-history {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  background: var(--overlay-bg);
+}
+.mutation-history-entry {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.78em;
+}
+.mutation-history-entry:last-child { border-bottom: none; }
+.mh-formula { opacity: 0.5; }
+.mh-result { font-weight: bold; }
+.mh-good .mh-result { color: #88cc88; }
+.mh-bad .mh-result { color: #cc6666; }
+.mh-time { opacity: 0.3; font-size: 0.9em; white-space: nowrap; }
+
+/* ouuuuuuuuuuu */
