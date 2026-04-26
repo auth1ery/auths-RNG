@@ -24,6 +24,13 @@ window.formatNum = function(n) {
   return String(Math.round(n));
 };
 
+window.formatMult = function(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n.toFixed(1);
+};
+
 let points = 0;
 let shopUpgrades = {
   luck: 0,
@@ -503,21 +510,17 @@ function updateLuckDisplay() {
 
   if (!luckEl || !breakdownEl) return;
 
-  luckEl.textContent = `luck multiplier: ${globalLuckMultiplier.toFixed(1)}x`;
+  luckEl.textContent = `luck multiplier: ${formatMult(globalLuckMultiplier)}x`;
 
   const parts = [];
 
   if (anomaliesUsed > 0) {
     const anomalyMult = 1 + anomaliesUsed * 0.5;
-    parts.push(
-      `anomalies: ${anomalyMult.toFixed(1)}x (${anomaliesUsed} consumed)`,
-    );
+    parts.push(`anomalies: ${formatMult(anomalyMult)}x (${anomaliesUsed} consumed)`);
   }
 
   if (shopUpgrades.luck > 0) {
-    parts.push(
-      `shop upgrade: ${shopLuckMultiplier.toFixed(1)}x (level ${shopUpgrades.luck})`,
-    );
+    parts.push(`shop upgrade: ${formatMult(shopLuckMultiplier)}x (level ${shopUpgrades.luck})`);
   }
 
   if (luckBoostActive) {
@@ -525,7 +528,7 @@ function updateLuckDisplay() {
   }
 
   if (potionLuckMultiplier > 1) {
-    parts.push(`potions: ${potionLuckMultiplier.toFixed(1)}x`);
+    parts.push(`potions: ${formatMult(potionLuckMultiplier)}x`);
   }
 
   if (duplicateRollsLeft > 0) {
