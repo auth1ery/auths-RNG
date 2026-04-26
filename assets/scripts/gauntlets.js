@@ -136,11 +136,23 @@
         { type: 'luck', mult: 7, dur: 360, label: '6m 7x luck' },
       ],
     },
+    {
+      id: 'eon',
+      name: 'eon',
+      emoji: '🌌',
+      minRolls: 30000,
+      rarities: ['Interstellar', 'Delusion', 'Psychosis', 'STOP PLAYING'],
+      rewards: [
+        { type: 'anomaly', amount: 10000, label: '10,000 anomalies' },
+        { type: 'luck', mult: 8, dur: 480, label: '8m 8x luck' },
+        { type: 'unlock_mutations', label: 'unlock mutations! 🧬' },
+      ],
+    },
   ];
 
   // pre-register gauntlet luck keys in potionData so main.js never
   // crashes on a page-reload while a gauntlet luck is still active and shit
-  ['global', 'easy', 'medium', 'hard', 'insane', 'godlike', 'inferno', 'snowy'].forEach((id) => {
+  ['global', 'easy', 'medium', 'hard', 'insane', 'godlike', 'inferno', 'snowy', 'eon'].forEach((id) => {
     if (typeof potionData !== 'undefined') {
       potionData['_g_' + id] = {
         name: id + ' luck',
@@ -263,6 +275,11 @@
           mult: rew.mult,
           duration: rew.dur * 1000,
         };
+      } else if (rew.type === 'unlock_mutations') {
+        localStorage.setItem('mutationsUnlocked', '1');
+        showAnomalyPopup('mutations unlocked! 🧬');
+        if (typeof renderMutations === 'function') renderMutations();
+      }
       if (typeof activePotions !== 'undefined') {
         activePotions.push({
           type: key,
