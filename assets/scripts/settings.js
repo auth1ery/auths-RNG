@@ -359,7 +359,11 @@
       document.body.style.removeProperty('--bg-color');
     }
 
-    window.rawNumbers = !!settings.rawNumbers;
+    const prevRaw = window.rawNumbers;
+      window.rawNumbers = !!settings.rawNumbers;
+      if (prevRaw !== window.rawNumbers && window.refreshAllDisplays) {
+        window.refreshAllDisplays();
+      }
 
     document.body.style.fontSize = (settings.textSize || 16) + 'px';
 
