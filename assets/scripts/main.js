@@ -2335,7 +2335,7 @@ function spinAndReveal(res) {
       spinner.classList.remove('fade-style');
       totalRolls++;
       updateTotalRolls();
-      showRollChoice(res, () => saveAllData());
+      addToInventory(res);
       awardAnomalyIfEligible(res);
       checkAchievements(res);
       updateRollsSinceRare(res);
@@ -2366,15 +2366,14 @@ function spinAndReveal(res) {
   spinner.style.transform = `translateY(-${scroll}px)`;
 
   setTimeout(() => {
-    totalRolls++;
-    updateTotalRolls();
-    awardAnomalyIfEligible(res);
-    checkAchievements(res);
-    updateRollsSinceRare(res);
-    maybeFireConfettiAndCutscene(res);
-    showRollChoice(res, () => saveAllData());
-  }, duration * 1000 + 1000);
-}
+  totalRolls++;
+  updateTotalRolls();
+  addToInventory(res);
+  awardAnomalyIfEligible(res);
+  checkAchievements(res);
+  updateRollsSinceRare(res);
+  maybeFireConfettiAndCutscene(res);
+}, duration * 1000 + 1000);
 
 function maybeFireConfettiAndCutscene(res) {
   const denom = Math.round(1 / res.chance);
