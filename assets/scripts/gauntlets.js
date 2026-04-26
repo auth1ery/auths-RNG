@@ -255,7 +255,7 @@
   }
 
   // ── reward application ───────────────────────────rfvgbhgvfcdfvgbvfc────────────────────
-  function applyReward(rew, tierId) {
+function applyReward(rew, tierId) {
     if (rew.type === 'points') {
       points += rew.amount;
       updatePointsDisplay();
@@ -268,17 +268,13 @@
       showAnomalyPopup('+' + rew.amount + ' anomalies ✨');
     } else if (rew.type === 'luck') {
       const key = '_g_' + tierId;
-      if (typeof potionData !== 'undefined')
+      if (typeof potionData !== 'undefined') {
         potionData[key] = {
           name: tierId + ' luck',
           emoji: '🏆',
           mult: rew.mult,
           duration: rew.dur * 1000,
         };
-      } else if (rew.type === 'unlock_mutations') {
-        localStorage.setItem('mutationsUnlocked', '1');
-        showAnomalyPopup('mutations unlocked! 🧬');
-        if (typeof renderMutations === 'function') renderMutations();
       }
       if (typeof activePotions !== 'undefined') {
         activePotions.push({
@@ -292,6 +288,10 @@
         saveAllData();
       }
       showAnomalyPopup(rew.mult + 'x luck · ' + rew.dur + 's 🏆');
+    } else if (rew.type === 'unlock_mutations') {
+      localStorage.setItem('mutationsUnlocked', '1');
+      showAnomalyPopup('mutations unlocked! 🧬');
+      if (typeof renderMutations === 'function') renderMutations();
     }
   }
 
