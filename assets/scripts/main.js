@@ -1582,7 +1582,7 @@ function loadAllData() {
 }
 
 function updateTotalRolls() {
-  totalRollsEl.textContent = `total rolls: ${totalRolls}`;
+  totalRollsEl.textContent = `total rolls: ${formatNum(totalRolls)}`;
 }
 
 function addToInventory(o) {
