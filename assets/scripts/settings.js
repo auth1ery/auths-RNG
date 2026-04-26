@@ -1029,7 +1029,7 @@
     const legacyShopPopup = el('legacyShopPopup');
     const legacySettingsPopup = el('legacySettingsPopup');
     const shopPage = document.querySelector('#page-2');
-    const settingsPage = document.querySelector('#page-5');
+    const settingsPage = document.querySelector('#page-6');
     if (
       !legacyShopBtn ||
       !legacySettingsBtn ||
