@@ -1640,9 +1640,8 @@ body.legacy-mode .swipe-indicator {
   display: none !important;
 }
 
-/* Hide page 2 and 5 in legacy mode since we're using popups */
 body.legacy-mode #page-2,
-body.legacy-mode #page-5 {
+body.legacy-mode #page-6 {
   display: none !important;
 }
 
