@@ -753,6 +753,12 @@ if (navigator.userAgent.includes("Screenjesus")) {
 </div>
 
     <div class="page" id="page-4">
+  <h2 style="margin-top: 0;">mutations</h2>
+  <p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 12px;">combine two rarities for an unpredictable result!</p>
+  <div id="mutationsContainer"></div>
+</div>
+
+    <div class="page" id="page-5">
   <h2 style="margin-top: 0;">wishing well</h2>
   
   <div class="well-container">
@@ -794,7 +800,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
   </div>
 </div>
 
-<div class="page" id="page-5">
+<div class="page" id="page-6">
   <h2 style="margin-top: 0; margin-bottom: 20px;">settings</h2>
   
   <div style="width: 100%; max-width: 400px; font-size: 0.9em; padding: 0 20px;">
@@ -977,7 +983,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
   </div>
 </div>
     
-<div class="page" id="page-6">
+<div class="page" id="page-7">
   <h2 style="margin-top: 0;">links and more</h2>
   
   <!--
@@ -1079,6 +1085,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
   <div class="page-dot" data-page="3"></div>
     <div class="page-dot" data-page="4"></div>
 <div class="page-dot" data-page="5"></div>
+  <div class="page-dot" data-page="6"></div>
 
 </div>
 
@@ -1288,7 +1295,7 @@ if (navigator.userAgent.includes("Screenjesus")) {
   const swipeIndicator = document.querySelector('.swipe-indicator');
   
   let currentPage = 0;
-  const totalPages = 6;
+  const totalPages = 7;
   
   // ???????????????????????????????????/
 let visitCount = parseInt(localStorage.getItem('pageVisitCount') || '0');
@@ -1646,6 +1653,8 @@ function handleSwipe() {
 </script>
 
 <script src="assets/scripts/gauntlets.js" defer></script>
+
+<script src="assets/scripts/mutations.js" defer></script>
 
 <script> // TAGS </script>
 
