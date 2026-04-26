@@ -1176,6 +1176,19 @@ if (navigator.userAgent.includes("Screenjesus")) {
   <button class="well-result-close" onclick="closeWellResult()">okay</button>
 </div>
 
+<div id="rollChoiceModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:10005;align-items:center;justify-content:center;">
+  <div class="modal-content" style="min-width:280px;">
+    <div id="rollChoiceRarity" style="font-size:1.2em;margin-bottom:4px;"></div>
+    <div id="rollChoiceChance" style="font-size:0.8em;opacity:0.5;margin-bottom:20px;"></div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button id="rollChoiceSell" class="small" style="color:#ffb86b;">sell</button>
+      <button id="rollChoiceKeep" class="small" style="color:#88cc88;">keep</button>
+      <button id="rollChoicePass" class="small" style="opacity:0.5;">pass</button>
+    </div>
+    <div id="rollChoiceSellAmt" style="font-size:0.75em;opacity:0.4;margin-top:10px;"></div>
+  </div>
+</div>
+    
 <div id="activePotionsDisplay" class="active-potions-display" style="display: none;">
   <div class="active-potions-title">active potions</div>
   <div id="activePotionsList"></div>
