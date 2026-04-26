@@ -3130,6 +3130,7 @@ window.refreshAllDisplays = function() {
   updatePointsDisplay();
   updateShopUI();
   updateTotalRolls();
+  updateLuckDisplay();
 };
 
 // FINISH THIS SCRIPT A;READY
