@@ -16,7 +16,7 @@ the repository for the web game, auth's RNG!
 
 main branch: https://authsrng.xyz (main stable site)   
 
-nightly branch: https://nightly.authsrng.xyz (unstable testing branch, but contains the latest pre-versions)
+nightly branch: https://nightly.authsrng.xyz (unstable testing branch, but contains the latest code. updates every commit)
 
 >made with ♥ in canada 🇨🇦
 
