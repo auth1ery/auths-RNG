@@ -152,7 +152,17 @@
 
   // pre-register gauntlet luck keys in potionData so main.js never
   // crashes on a page-reload while a gauntlet luck is still active and shit
-  ['global', 'easy', 'medium', 'hard', 'insane', 'godlike', 'inferno', 'snowy', 'eon'].forEach((id) => {
+  [
+    'global',
+    'easy',
+    'medium',
+    'hard',
+    'insane',
+    'godlike',
+    'inferno',
+    'snowy',
+    'eon',
+  ].forEach((id) => {
     if (typeof potionData !== 'undefined') {
       potionData['_g_' + id] = {
         name: id + ' luck',
@@ -164,7 +174,8 @@
   });
 
   function formatWellTime(ms) {
-    if (typeof window.formatWellTime === 'function') return window.formatWellTime(ms);
+    if (typeof window.formatWellTime === 'function')
+      return window.formatWellTime(ms);
     // local fallback
     const h = Math.floor(ms / 3600000);
     const m = Math.floor((ms % 3600000) / 60000);
@@ -173,7 +184,7 @@
     if (m > 0) return m + 'm ' + s + 's';
     return s + 's';
   }
-  
+
   // ── helpers ──────────────────────────────────────────────────────────
   function loadData() {
     try {
@@ -255,7 +266,7 @@
   }
 
   // ── reward application ───────────────────────────rfvgbhgvfcdfvgbvfc────────────────────
-function applyReward(rew, tierId) {
+  function applyReward(rew, tierId) {
     if (rew.type === 'points') {
       points += rew.amount;
       updatePointsDisplay();
@@ -304,7 +315,8 @@ function applyReward(rew, tierId) {
     const rew = tier.rewards[rewIdx];
     if (!rew) return;
 
-    if (tier.isGlobal) d.global = Object.assign({}, d.global || {}, { lastRot: rotIdx() });
+    if (tier.isGlobal)
+      d.global = Object.assign({}, d.global || {}, { lastRot: rotIdx() });
     else d[tier.id] = { lastClaim: Date.now() };
     saveData(d);
     applyReward(rew, tierId);

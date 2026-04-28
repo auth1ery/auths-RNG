@@ -1,4 +1,4 @@
-// settings.js 
+// settings.js
 (function () {
   'use strict';
 
@@ -349,8 +349,14 @@
       document.body.style.removeProperty('--bg-color');
     } else if (settings.theme === 'custom') {
       document.body.removeAttribute('data-theme');
-      document.body.style.setProperty('--bg-color', settings.customHex || '#0e0e0e');
-      document.body.style.setProperty('--text-color', settings.customTextHex || '#dcdcdc'); 
+      document.body.style.setProperty(
+        '--bg-color',
+        settings.customHex || '#0e0e0e',
+      );
+      document.body.style.setProperty(
+        '--text-color',
+        settings.customTextHex || '#dcdcdc',
+      );
     } else {
       document.body.removeAttribute('data-theme');
       document.body.style.removeProperty('--bg-color');

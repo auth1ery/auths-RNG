@@ -41,10 +41,16 @@
 
     if (this._recentTiers.length >= COLD_WINDOW) {
       const slice = this._recentTiers.slice(-COLD_WINDOW);
-      const avg = this._recentTiers.reduce(function (a, b) { return a + b; }, 0) / this._recentTiers.length;
-      const recentAvg = slice.reduce(function (a, b) { return a + b; }, 0) / COLD_WINDOW;
+      const avg =
+        this._recentTiers.reduce(function (a, b) {
+          return a + b;
+        }, 0) / this._recentTiers.length;
+      const recentAvg =
+        slice.reduce(function (a, b) {
+          return a + b;
+        }, 0) / COLD_WINDOW;
 
-      if (avg > 0 && recentAvg < avg * COLD_TIER_RATIO) return daily * 1.10;
+      if (avg > 0 && recentAvg < avg * COLD_TIER_RATIO) return daily * 1.1;
       if (avg > 0 && recentAvg > avg * HOT_TIER_RATIO) return daily * 0.94;
     }
 
@@ -54,7 +60,9 @@
   StreakTracker.prototype.getDryRunMultiplier = function (name) {
     const count = this._dryRuns.get(name) || 0;
     if (count <= DRY_THRESHOLD) return 1.0;
-    return 1.0 + Math.min((count - DRY_THRESHOLD) * DRY_MULT_PER_STEP, DRY_MULT_CAP);
+    return (
+      1.0 + Math.min((count - DRY_THRESHOLD) * DRY_MULT_PER_STEP, DRY_MULT_CAP)
+    );
   };
 
   StreakTracker.prototype.isInHotPulse = function () {
@@ -63,7 +71,9 @@
 
   StreakTracker.prototype.serialize = function () {
     const dryRuns = {};
-    this._dryRuns.forEach(function (v, k) { dryRuns[k] = v; });
+    this._dryRuns.forEach(function (v, k) {
+      dryRuns[k] = v;
+    });
     return {
       recentTiers: this._recentTiers.slice(),
       hotPulseRolls: this._hotPulseRolls,

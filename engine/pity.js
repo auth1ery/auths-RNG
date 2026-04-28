@@ -60,7 +60,9 @@
 
   PityTracker.prototype.serialize = function () {
     const obj = {};
-    this._counters.forEach(function (v, k) { obj[k] = v; });
+    this._counters.forEach(function (v, k) {
+      obj[k] = v;
+    });
     return obj;
   };
 

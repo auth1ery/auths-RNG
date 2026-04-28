@@ -16,7 +16,7 @@ const POINTS_KEY = 'shopPoints';
 const SHOP_UPGRADES_KEY = 'shopUpgrades';
 const SOLD_OUT_KEY = 'soldOutRarities';
 
-window.formatNum = function(n) {
+window.formatNum = function (n) {
   if (window.rawNumbers) return String(Math.round(n));
   if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
   if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -24,7 +24,7 @@ window.formatNum = function(n) {
   return String(Math.round(n));
 };
 
-window.formatMult = function(n) {
+window.formatMult = function (n) {
   if (window.rawNumbers) return n.toFixed(1);
   if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
   if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -296,43 +296,54 @@ function updateShopUI() {
   document.getElementById('pointLevel').textContent = shopUpgrades.pointMult;
 
   const luckCost = Math.floor(25 + shopUpgrades.luck * shopUpgrades.luck * 15);
-  const speedCost = Math.floor(50 + shopUpgrades.speed * shopUpgrades.speed * 55);
-  const pointCost = Math.floor(100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35);
+  const speedCost = Math.floor(
+    50 + shopUpgrades.speed * shopUpgrades.speed * 55,
+  );
+  const pointCost = Math.floor(
+    100 + shopUpgrades.pointMult * shopUpgrades.pointMult * 35,
+  );
 
   const luckBtn = document.getElementById('buyLuckBtn');
   const speedBtn = document.getElementById('buySpeedBtn');
   const pointBtn = document.getElementById('buyPointBtn');
 
-  if (luckBtn)  luckBtn.textContent  = `buy luck upgrade (${formatNum(luckCost)} pts)`;
-  if (speedBtn) speedBtn.textContent = `buy speed upgrade (${formatNum(speedCost)} pts)`;
-  if (pointBtn) pointBtn.textContent = `buy points upgrade (${formatNum(pointCost)} pts)`;
+  if (luckBtn)
+    luckBtn.textContent = `buy luck upgrade (${formatNum(luckCost)} pts)`;
+  if (speedBtn)
+    speedBtn.textContent = `buy speed upgrade (${formatNum(speedCost)} pts)`;
+  if (pointBtn)
+    pointBtn.textContent = `buy points upgrade (${formatNum(pointCost)} pts)`;
 
-  const luckCostEl  = document.getElementById('luckCost');
+  const luckCostEl = document.getElementById('luckCost');
   const speedCostEl = document.getElementById('speedCost');
   const pointCostEl = document.getElementById('pointCost');
-  if (luckCostEl)  luckCostEl.textContent  = formatNum(luckCost);
+  if (luckCostEl) luckCostEl.textContent = formatNum(luckCost);
   if (speedCostEl) speedCostEl.textContent = formatNum(speedCost);
   if (pointCostEl) pointCostEl.textContent = formatNum(pointCost);
 
-  if (luckBtn)  luckBtn.disabled  = points < luckCost  || shopUpgrades.luck >= 100;
-  if (speedBtn) speedBtn.disabled = points < speedCost || shopUpgrades.speed >= 3;
-  if (pointBtn) pointBtn.disabled = points < pointCost || shopUpgrades.pointMult >= 10;
+  if (luckBtn) luckBtn.disabled = points < luckCost || shopUpgrades.luck >= 100;
+  if (speedBtn)
+    speedBtn.disabled = points < speedCost || shopUpgrades.speed >= 3;
+  if (pointBtn)
+    pointBtn.disabled = points < pointCost || shopUpgrades.pointMult >= 10;
 
-  const magnetLevelEl  = document.getElementById('magnetLevel');
+  const magnetLevelEl = document.getElementById('magnetLevel');
   const printerLevelEl = document.getElementById('printerLevel');
-  const dupeLevelEl    = document.getElementById('dupeLevel');
+  const dupeLevelEl = document.getElementById('dupeLevel');
 
-  if (magnetLevelEl)  magnetLevelEl.textContent  = shopUpgrades.magnet || 0;
+  if (magnetLevelEl) magnetLevelEl.textContent = shopUpgrades.magnet || 0;
   if (printerLevelEl) printerLevelEl.textContent = shopUpgrades.printer || 0;
-  if (dupeLevelEl)    dupeLevelEl.textContent    = shopUpgrades.duplicate || 0;
+  if (dupeLevelEl) dupeLevelEl.textContent = shopUpgrades.duplicate || 0;
 
-  const magnetCost  = 500  + (shopUpgrades.magnet || 0) * 1000;
-  const printerCost = 1000 + (shopUpgrades.printer || 0) * (shopUpgrades.printer || 0) * 500;
-  const dupeCost    = 800  + (shopUpgrades.duplicate || 0) * (shopUpgrades.duplicate || 0) * 400;
+  const magnetCost = 500 + (shopUpgrades.magnet || 0) * 1000;
+  const printerCost =
+    1000 + (shopUpgrades.printer || 0) * (shopUpgrades.printer || 0) * 500;
+  const dupeCost =
+    800 + (shopUpgrades.duplicate || 0) * (shopUpgrades.duplicate || 0) * 400;
 
-  const magnetBtn  = document.getElementById('buyMagnetBtn');
+  const magnetBtn = document.getElementById('buyMagnetBtn');
   const printerBtn = document.getElementById('buyPrinterBtn');
-  const dupeBtn    = document.getElementById('buyDupeBtn');
+  const dupeBtn = document.getElementById('buyDupeBtn');
 
   if (magnetBtn) {
     magnetBtn.textContent = `upgrade (${formatNum(magnetCost)} pts)`;
@@ -408,7 +419,7 @@ function recalcPotionLuck() {
   potionLuckMultiplier = 1;
   activePotions = activePotions.filter((p) => p.endTime > Date.now());
   activePotions.forEach((p) => {
-    potionLuckMultiplier += (p.multiplier - 1);
+    potionLuckMultiplier += p.multiplier - 1;
   });
   recalcLuckMultiplier();
 }
@@ -524,11 +535,15 @@ function updateLuckDisplay() {
 
   if (anomaliesUsed > 0) {
     const anomalyMult = 1 + anomaliesUsed * 0.5;
-    parts.push(`anomalies: ${formatMult(anomalyMult)}x (${anomaliesUsed} consumed)`);
+    parts.push(
+      `anomalies: ${formatMult(anomalyMult)}x (${anomaliesUsed} consumed)`,
+    );
   }
 
   if (shopUpgrades.luck > 0) {
-    parts.push(`shop upgrade: ${formatMult(shopLuckMultiplier)}x (level ${shopUpgrades.luck})`);
+    parts.push(
+      `shop upgrade: ${formatMult(shopLuckMultiplier)}x (level ${shopUpgrades.luck})`,
+    );
   }
 
   if (luckBoostActive) {
@@ -1545,7 +1560,7 @@ function saveAllData() {
     JSON.stringify({
       active: activePotions,
       duplicateLeft: duplicateRollsLeft,
-    })
+    }),
   );
   Beacon.save();
 }
@@ -1607,7 +1622,11 @@ function addToInventory(o) {
     updateItem(inventoryData.get(o.name));
     inventoryList.appendChild(li);
   }
-  const isNearBottom = inventoryList.scrollHeight - inventoryList.scrollTop - inventoryList.clientHeight < 60;
+  const isNearBottom =
+    inventoryList.scrollHeight -
+      inventoryList.scrollTop -
+      inventoryList.clientHeight <
+    60;
   if (isNearBottom) inventoryList.scrollTop = inventoryList.scrollHeight;
   updateCollectedCounter();
 
@@ -1730,11 +1749,11 @@ function updateItem(d) {
     liElement.classList.remove('sold-out');
   }
 
-    // Remove previous sell handler before adding a new one (prevents listener accumulation)
-    if (liElement._sellHandler) {
-      liElement.removeEventListener('dblclick', liElement._sellHandler);
-    }
-    liElement._sellHandler = function sellHandler() {
+  // Remove previous sell handler before adding a new one (prevents listener accumulation)
+  if (liElement._sellHandler) {
+    liElement.removeEventListener('dblclick', liElement._sellHandler);
+  }
+  liElement._sellHandler = function sellHandler() {
     const currentData = inventoryData.get(rarityObj.name);
     if (!currentData) return;
 
@@ -1768,7 +1787,13 @@ function updateItem(d) {
 }
 
 function getRandomRarity() {
-  return Beacon.roll(rarities, globalLuckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
+  return Beacon.roll(
+    rarities,
+    globalLuckMultiplier,
+    inventoryData,
+    shopUpgrades,
+    luckBoostActive,
+  );
 }
 
 function checkAchievements(currentRarity) {
@@ -2079,7 +2104,7 @@ function renderSortedInventory(mode) {
   }
 
   items.forEach((d) => inventoryList.appendChild(d.liElement));
-  inventoryList.scrollTop = savedScroll; 
+  inventoryList.scrollTop = savedScroll;
 }
 
 const savedPoints = localStorage.getItem(POINTS_KEY);
@@ -2110,7 +2135,7 @@ if (savedPotions) {
     // merge into defaults so missing/NaN keys fall back to 0
     for (const key of Object.keys(playerPotions)) {
       const v = loaded[key];
-      playerPotions[key] = (typeof v === 'number' && !isNaN(v)) ? v : 0;
+      playerPotions[key] = typeof v === 'number' && !isNaN(v) ? v : 0;
     }
   } catch {}
 }
@@ -2216,7 +2241,7 @@ function startLuckBoost() {
   luckBoostActive = true;
   luckBoostEndTime = Date.now() + 60000;
   recalcLuckMultiplier();
-  
+
   document.getElementById('luckBoostOverlay').style.display = 'flex';
 
   localStorage.setItem(
@@ -2279,8 +2304,10 @@ function showRollChoice(res, onDone) {
   const pts = calculateRarityPoints(res);
 
   document.getElementById('rollChoiceRarity').textContent = res.name;
-  document.getElementById('rollChoiceChance').textContent = `1/${denom.toLocaleString()}`;
-  document.getElementById('rollChoiceSellAmt').textContent = `sell value: ${formatNum(pts)} pts`;
+  document.getElementById('rollChoiceChance').textContent =
+    `1/${denom.toLocaleString()}`;
+  document.getElementById('rollChoiceSellAmt').textContent =
+    `sell value: ${formatNum(pts)} pts`;
   modal.style.display = 'flex';
 
   const cleanup = (fn) => {
@@ -2289,23 +2316,26 @@ function showRollChoice(res, onDone) {
     onDone();
   };
 
-  document.getElementById('rollChoiceSell').onclick = () => cleanup(() => {
-    points += pts;
-    soldOutRarities.set(res.name, { count: 1 });
-    // still add to inventory so it shows as collected, just mark sold
-    addToInventory(res);
-    updatePointsDisplay();
-    updateShopUI();
-    showAnomalyPopup(`sold ${res.name} for ${formatNum(pts)} pts`);
-  });
+  document.getElementById('rollChoiceSell').onclick = () =>
+    cleanup(() => {
+      points += pts;
+      soldOutRarities.set(res.name, { count: 1 });
+      // still add to inventory so it shows as collected, just mark sold
+      addToInventory(res);
+      updatePointsDisplay();
+      updateShopUI();
+      showAnomalyPopup(`sold ${res.name} for ${formatNum(pts)} pts`);
+    });
 
-  document.getElementById('rollChoiceKeep').onclick = () => cleanup(() => {
-    addToInventory(res);
-  });
+  document.getElementById('rollChoiceKeep').onclick = () =>
+    cleanup(() => {
+      addToInventory(res);
+    });
 
-  document.getElementById('rollChoicePass').onclick = () => cleanup(() => {
-    showAnomalyPopup(`passed on ${res.name}`);
-  });
+  document.getElementById('rollChoicePass').onclick = () =>
+    cleanup(() => {
+      showAnomalyPopup(`passed on ${res.name}`);
+    });
 }
 
 function spinAndReveal(res) {
@@ -2365,15 +2395,18 @@ function spinAndReveal(res) {
   spinner.style.transition = `transform ${duration}s ease-out`;
   spinner.style.transform = `translateY(-${scroll}px)`;
 
-  setTimeout(() => {
-    totalRolls++;
-    updateTotalRolls();
-    addToInventory(res);
-    awardAnomalyIfEligible(res);
-    checkAchievements(res);
-    updateRollsSinceRare(res);
-    maybeFireConfettiAndCutscene(res);
-  }, duration * 1000 + 1000);
+  setTimeout(
+    () => {
+      totalRolls++;
+      updateTotalRolls();
+      addToInventory(res);
+      awardAnomalyIfEligible(res);
+      checkAchievements(res);
+      updateRollsSinceRare(res);
+      maybeFireConfettiAndCutscene(res);
+    },
+    duration * 1000 + 1000,
+  );
 }
 
 function maybeFireConfettiAndCutscene(res) {
@@ -3038,34 +3071,36 @@ function formatWellTime(ms) {
 }
 
 function updateWellUI() {
-  const status        = document.getElementById('wellStatus');
-  const timer         = document.getElementById('wellTimer');
-  const throwBtn      = document.getElementById('throwWellBtn');
-  const totalThrown   = document.getElementById('wellTotalThrown');
+  const status = document.getElementById('wellStatus');
+  const timer = document.getElementById('wellTimer');
+  const throwBtn = document.getElementById('throwWellBtn');
+  const totalThrown = document.getElementById('wellTotalThrown');
   const totalReceived = document.getElementById('wellTotalReceived');
-  const timesThrown   = document.getElementById('wellTimesThrown');
-  const successRate   = document.getElementById('wellSuccessRate');
+  const timesThrown = document.getElementById('wellTimesThrown');
+  const successRate = document.getElementById('wellSuccessRate');
 
   if (!status || !timer || !throwBtn) return;
 
   if (isWellOnCooldown()) {
     const remaining = getRemainingCooldown();
-    throwBtn.disabled    = true;
-    status.textContent   = 'the well is recovering its magic...';
-    timer.textContent    = `available in: ${formatWellTime(remaining)}`;
+    throwBtn.disabled = true;
+    status.textContent = 'the well is recovering its magic...';
+    timer.textContent = `available in: ${formatWellTime(remaining)}`;
   } else {
-    throwBtn.disabled  = false;
+    throwBtn.disabled = false;
     status.textContent = 'ready to accept your offering';
-    timer.textContent  = '';
+    timer.textContent = '';
   }
 
-  if (totalThrown)   totalThrown.textContent   = formatNum(wellData.totalThrown);
-  if (totalReceived) totalReceived.textContent = formatNum(wellData.totalReceived);
-  if (timesThrown)   timesThrown.textContent   = formatNum(wellData.timesThrown);
+  if (totalThrown) totalThrown.textContent = formatNum(wellData.totalThrown);
+  if (totalReceived)
+    totalReceived.textContent = formatNum(wellData.totalReceived);
+  if (timesThrown) timesThrown.textContent = formatNum(wellData.timesThrown);
   if (successRate) {
-    const rate = wellData.timesThrown > 0
-      ? Math.round((wellData.successes / wellData.timesThrown) * 100)
-      : 0;
+    const rate =
+      wellData.timesThrown > 0
+        ? Math.round((wellData.successes / wellData.timesThrown) * 100)
+        : 0;
     successRate.textContent = `${rate}%`;
   }
 }
@@ -3119,7 +3154,6 @@ function throwIntoWell() {
   startWellCooldownTimer();
 }
 
-
 // Create ripple animation
 function createWellRipple() {
   const visual = document.getElementById('wellVisual');
@@ -3136,23 +3170,23 @@ function createWellRipple() {
 
 // Show result modal
 function showWellResult(won, amount) {
-  const modal    = document.getElementById('wellResultModal');
-  const icon     = document.getElementById('wellResultIcon');
-  const text     = document.getElementById('wellResultText');
+  const modal = document.getElementById('wellResultModal');
+  const icon = document.getElementById('wellResultIcon');
+  const text = document.getElementById('wellResultText');
   const amountEl = document.getElementById('wellResultAmount');
 
   if (!modal || !icon || !text || !amountEl) return;
 
   if (won) {
-    icon.textContent      = '✨';
-    text.textContent      = 'the well grants your wish!';
-    amountEl.textContent  = `it gives you +${formatNum(amount)} points, go thank it!`;
-    amountEl.style.color  = '#4a4';
+    icon.textContent = '✨';
+    text.textContent = 'the well grants your wish!';
+    amountEl.textContent = `it gives you +${formatNum(amount)} points, go thank it!`;
+    amountEl.style.color = '#4a4';
   } else {
-    icon.textContent      = '🌊';
-    text.textContent      = 'the well accepts your offering...';
-    amountEl.textContent  = 'but nothing happens.. whoops?';
-    amountEl.style.color  = '#888';
+    icon.textContent = '🌊';
+    text.textContent = 'the well accepts your offering...';
+    amountEl.textContent = 'but nothing happens.. whoops?';
+    amountEl.style.color = '#888';
   }
 
   modal.classList.add('show');
@@ -3193,7 +3227,7 @@ if (isWellOnCooldown()) {
   startWellCooldownTimer();
 }
 
-window.refreshAllDisplays = function() {
+window.refreshAllDisplays = function () {
   updatePointsDisplay();
   updateShopUI();
   updateTotalRolls();
@@ -3203,4 +3237,4 @@ window.refreshAllDisplays = function() {
 // FINISH THIS SCRIPT A;READY
 window.setWellAmount = setWellAmount;
 window.closeWellResult = closeWellResult;
-document.addEventListener('DOMContentLoaded', () => initNotifCenter());// YAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+document.addEventListener('DOMContentLoaded', () => initNotifCenter()); // YAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY

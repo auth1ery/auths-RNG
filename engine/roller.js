@@ -18,7 +18,13 @@
     this.streak = new root.StreakTracker();
   }
 
-  BeaconRoller.prototype._buildWeightTable = function (rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive) {
+  BeaconRoller.prototype._buildWeightTable = function (
+    rarities,
+    luckMultiplier,
+    inventoryData,
+    shopUpgrades,
+    luckBoostActive,
+  ) {
     const weights = new Array(rarities.length);
     let totalWeight = 0n;
     const streakMult = this.streak.getLuckMultiplier();
@@ -53,8 +59,20 @@
     return { weights: weights, totalWeight: totalWeight };
   };
 
-  BeaconRoller.prototype.roll = function (rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive) {
-    const table = this._buildWeightTable(rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
+  BeaconRoller.prototype.roll = function (
+    rarities,
+    luckMultiplier,
+    inventoryData,
+    shopUpgrades,
+    luckBoostActive,
+  ) {
+    const table = this._buildWeightTable(
+      rarities,
+      luckMultiplier,
+      inventoryData,
+      shopUpgrades,
+      luckBoostActive,
+    );
     const weights = table.weights;
     const totalWeight = table.totalWeight;
 
@@ -83,7 +101,11 @@
       }
     }
 
-    this.streak.record(rarityTier(result), result.name, rarityTier(result) >= 3);
+    this.streak.record(
+      rarityTier(result),
+      result.name,
+      rarityTier(result) >= 3,
+    );
 
     return {
       rarity: result,
@@ -95,9 +117,24 @@
     };
   };
 
-  BeaconRoller.prototype.probabilityOf = function (rarity, rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive) {
-    const table = this._buildWeightTable(rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
-    const idx = rarities.findIndex(function (r) { return r.name === rarity.name; });
+  BeaconRoller.prototype.probabilityOf = function (
+    rarity,
+    rarities,
+    luckMultiplier,
+    inventoryData,
+    shopUpgrades,
+    luckBoostActive,
+  ) {
+    const table = this._buildWeightTable(
+      rarities,
+      luckMultiplier,
+      inventoryData,
+      shopUpgrades,
+      luckBoostActive,
+    );
+    const idx = rarities.findIndex(function (r) {
+      return r.name === rarity.name;
+    });
     if (idx === -1) return 0;
     return Number(table.weights[idx]) / Number(table.totalWeight);
   };

@@ -1878,10 +1878,18 @@ body.legacy-mode #legacySettingsBtn {
   border-color: #2a1a3a;
 }
 @keyframes eon-rgb {
-  0%   { color: #ff6666; }
-  33%  { color: #66ff66; }
-  66%  { color: #6666ff; }
-  100% { color: #ff6666; }
+  0% {
+    color: #ff6666;
+  }
+  33% {
+    color: #66ff66;
+  }
+  66% {
+    color: #6666ff;
+  }
+  100% {
+    color: #ff6666;
+  }
 }
 .gauntlet-tier[data-tier='eon'] .gauntlet-tier-name {
   color: unset;
@@ -2594,11 +2602,25 @@ body.high-contrast #inventoryList li.item-rare {
   border-bottom: 1px solid var(--border-color);
   font-size: 0.78em;
 }
-.mutation-history-entry:last-child { border-bottom: none; }
-.mh-formula { opacity: 0.5; }
-.mh-result { font-weight: bold; }
-.mh-good .mh-result { color: #88cc88; }
-.mh-bad .mh-result { color: #cc6666; }
-.mh-time { opacity: 0.3; font-size: 0.9em; white-space: nowrap; }
+.mutation-history-entry:last-child {
+  border-bottom: none;
+}
+.mh-formula {
+  opacity: 0.5;
+}
+.mh-result {
+  font-weight: bold;
+}
+.mh-good .mh-result {
+  color: #88cc88;
+}
+.mh-bad .mh-result {
+  color: #cc6666;
+}
+.mh-time {
+  opacity: 0.3;
+  font-size: 0.9em;
+  white-space: nowrap;
+}
 
 /* ouuuuuuuuuuu */
