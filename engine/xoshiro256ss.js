@@ -1,5 +1,5 @@
 (function (root) {
-  const M64 = (1n << 64n) - 1n;
+  const M64 = 0xffffffffffffffffn; // (1n << 64n) - 1n
 
   function rotl64(x, k) {
     return ((x << k) | (x >> (64n - k))) & M64;
@@ -33,7 +33,7 @@
 
   Xoshiro256SS.prototype.next = function () {
     const s = this._s;
-    const result = rotl64((s[1] * 5n) & M64, 7n) * 9n & M64;
+    const result = (rotl64((s[1] * 5n) & M64, 7n) * 9n) & M64;
     const t = (s[1] << 17n) & M64;
     s[2] ^= s[0];
     s[3] ^= s[1];
@@ -44,12 +44,23 @@
     return result;
   };
 
+  Xoshiro256SS.prototype.nextFloat = function () {
+    return Number(this.next() >> 11n) / 0x1fffffffffffff; // 2^53 - 1
+  };
+  
+  Xoshiro256SS.prototype.nextInt = function (min, max) {
+    if (min >= max) throw new RangeError('min must be less than max');
+    return min + Number(this.next() % BigInt(max - min));
+  };
+
   Xoshiro256SS.prototype.getState = function () {
     return this._s.map(function (v) { return v.toString(16).padStart(16, '0'); });
   };
 
   Xoshiro256SS.prototype.setState = function (arr) {
-    this._s = arr.map(function (v) { return BigInt('0x' + v); });
+    if (arr.length !== 4) throw new RangeError('state must have exactly 4 elements');
+    this._s = arr.map(function (v) { return BigInt('0x' + v) & M64; });
+    if (this._s.every(function (v) { return v === 0n; })) this._s[0] = 1n;
   };
 
   Xoshiro256SS.prototype.jump = function () {
@@ -78,4 +89,4 @@
   };
 
   root.Xoshiro256SS = Xoshiro256SS;
-})(typeof window !== 'undefined' ? window : this);
+})(typeof window !== 'undefined' ? window : this); // oh this was confusing to make
