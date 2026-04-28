@@ -349,11 +349,8 @@
       document.body.style.removeProperty('--bg-color');
     } else if (settings.theme === 'custom') {
       document.body.removeAttribute('data-theme');
-      document.body.style.setProperty(
-        '--bg-color',
-        settings.customHex || '#0e0e0e',
-      );
-      document.body.style.setProperty('--text-color', '#dcdcdc');
+      document.body.style.setProperty('--bg-color', settings.customHex || '#0e0e0e');
+      document.body.style.setProperty('--text-color', settings.customTextHex || '#dcdcdc'); 
     } else {
       document.body.removeAttribute('data-theme');
       document.body.style.removeProperty('--bg-color');
@@ -483,10 +480,18 @@
     }
 
     const ccNode = el('customColor');
+    const ctNode = el('customTextColor');
+    const ctLabel = el('customTextColorLabel');
+    const isCustom = settings.theme === 'custom';
     if (ccNode) {
       ccNode.value = settings.customHex || '#0e0e0e';
-      ccNode.style.display = settings.theme === 'custom' ? 'block' : 'none';
+      ccNode.style.display = isCustom ? 'block' : 'none';
     }
+    if (ctNode) {
+      ctNode.value = settings.customTextHex || '#dcdcdc';
+      ctNode.style.display = isCustom ? 'block' : 'none';
+    }
+    if (ctLabel) ctLabel.style.display = isCustom ? 'block' : 'none';
 
     const vals = {
       textSize: settings.textSize || 16,
@@ -533,6 +538,7 @@
       highContrast: !!(el('highContrast') || {}).checked,
       largeTargets: !!(el('largeTargets') || {}).checked,
       rawNumbers: !!(el('rawNumbers') || {}).checked,
+      customTextHex: (el('customTextColor') || {}).value || '#dcdcdc',
       rollSound: (el('rollSound') || {}).value || 'none',
       rareThreshold: parseInt((el('rareThreshold') || {}).value || 1000, 10),
       confettiThreshold: parseInt(
@@ -596,6 +602,7 @@
       'confettiThreshold',
       'autoSellThreshold',
       'cutsceneThreshold',
+      'customTextColor',
     ];
 
     selectIds.forEach((id) => {
@@ -614,9 +621,13 @@
     const themeNode = el('themeSelect');
     if (themeNode)
       themeNode.addEventListener('change', () => {
+        const isCustom = themeNode.value === 'custom';
         const cc = el('customColor');
-        if (cc)
-          cc.style.display = themeNode.value === 'custom' ? 'block' : 'none';
+        const ct = el('customTextColor');
+        const ctLabel = el('customTextColorLabel');
+        if (cc) cc.style.display = isCustom ? 'block' : 'none';
+        if (ct) ct.style.display = isCustom ? 'block' : 'none';
+        if (ctLabel) ctLabel.style.display = isCustom ? 'block' : 'none';
       });
   }
 
@@ -1148,6 +1159,7 @@
       autoSellThreshold: 0,
       cutsceneThreshold: 0,
       rawNumbers: false,
+      customTextHex: '#dcdcdc',
     };
 
     savedSettings = { ...defaults, ...loaded };
