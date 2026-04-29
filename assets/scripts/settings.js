@@ -20,7 +20,7 @@
 
   // Music guard::::: THE fix for the tidal wave bug. This was the reason why my ears genuinely ached after when I discovered the bug. Phenomenal. fuck
   // We only ever start/change audio when the key actually changes.
-  let _activeMusicKey = null; // e.g. 'default', 'custom_0', or '__muted__'
+  let _activeMusicKey = null; // e.g. 'default', 'custom_1', or '__muted__'
 
   const musicLinks = {
     default: 'assets/audio/welcomecity.mp3',
@@ -28,6 +28,106 @@
     nocturne: 'assets/audio/nocturne.mp3',
     moonlight: 'assets/audio/moonlight.mp3',
   };
+
+  // ── IndexedDB helpers ──────────────────────────────────────────────────
+  // Tracks are stored as { id (auto), name, buffer (ArrayBuffer), type (MIME) }
+  // The music select uses 'custom_{id}' where id is the IDB record key.
+
+  function openMusicDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open('authsrng_music', 1);
+      req.onupgradeneeded = (e) => {
+        e.target.result.createObjectStore('tracks', {
+          keyPath: 'id',
+          autoIncrement: true,
+        });
+      };
+      req.onsuccess = (e) => resolve(e.target.result);
+      req.onerror = (e) => reject(e.target.error);
+    });
+  }
+
+  async function getAllTracks() {
+    const db = await openMusicDB();
+    return new Promise((resolve, reject) => {
+      const req = db
+        .transaction('tracks', 'readonly')
+        .objectStore('tracks')
+        .getAll();
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function getTrack(id) {
+    const db = await openMusicDB();
+    return new Promise((resolve, reject) => {
+      const req = db
+        .transaction('tracks', 'readonly')
+        .objectStore('tracks')
+        .get(id);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function addTrack(name, buffer, type) {
+    const db = await openMusicDB();
+    return new Promise((resolve, reject) => {
+      const req = db
+        .transaction('tracks', 'readwrite')
+        .objectStore('tracks')
+        .add({ name, buffer, type });
+      req.onsuccess = () => resolve(req.result); // returns the new id
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function deleteTrack(id) {
+    const db = await openMusicDB();
+    return new Promise((resolve, reject) => {
+      const req = db
+        .transaction('tracks', 'readwrite')
+        .objectStore('tracks')
+        .delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  // ── One-time migration from old base64 localStorage format ─────────────
+  async function migrateFromLocalStorage() {
+    const raw = localStorage.getItem('customMusic');
+    if (!raw) return;
+    let old;
+    try {
+      old = JSON.parse(raw);
+    } catch (_) {
+      return;
+    }
+    if (!Array.isArray(old) || old.length === 0) {
+      localStorage.removeItem('customMusic');
+      return;
+    }
+    console.log(
+      `[music] migrating ${old.length} track(s) from localStorage → IndexedDB`,
+    );
+    for (const track of old) {
+      try {
+        // old format: { name, data: 'data:<type>;base64,...' }
+        const [meta, b64] = track.data.split(',');
+        const type = meta.replace('data:', '').replace(';base64', '');
+        const bin = atob(b64);
+        const buf = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+        await addTrack(track.name, buf.buffer, type);
+      } catch (e) {
+        console.warn('[music] failed to migrate track:', track.name, e);
+      }
+    }
+    localStorage.removeItem('customMusic');
+    console.log('[music] migration complete, localStorage entry removed');
+  }
 
   // ── Pending bar ────────────────────────────────────────────────────────
   function createPendingBar() {
@@ -283,9 +383,10 @@
   // Only called explicitly: on page load (init) and on saveChanges().
   // The _activeMusicKey guard means even if called twice with same settings,
   // it is a no-op — no more tidal waves.
-  function applyMusic(settings) {
+  // Now async because custom tracks need an IDB fetch.
+  async function applyMusic(settings) {
     const newKey = settings.muted ? '__muted__' : settings.music || 'default';
-    if (newKey === _activeMusicKey) return; // nothing changed — bail out entirely
+    if (newKey === _activeMusicKey) return;
     _activeMusicKey = newKey;
 
     if (settings.muted) {
@@ -311,19 +412,21 @@
         window.backgroundMusic.load();
       }
       try {
-        const tracks = JSON.parse(localStorage.getItem('customMusic') || '[]');
-        const idx = parseInt(musicKey.replace('custom_', ''), 10);
-        if (tracks[idx] && window.playCustomAudio) {
-          window.playCustomAudio(tracks[idx].data, 0.3, true).catch(() => {
-            _activeMusicKey = null; // allow retry on next save
-            if (window.stopCustomAudio) window.stopCustomAudio();
-            if (window.backgroundMusic) {
-              window.backgroundMusic.src = musicLinks.default;
-              window.backgroundMusic.volume = 0.3;
-              window.backgroundMusic.loop = true;
-              window.backgroundMusic.play().catch(() => {});
-            }
-          });
+        const id = parseInt(musicKey.replace('custom_', ''), 10);
+        const track = await getTrack(id);
+        if (track && window.playCustomAudio) {
+          window
+            .playCustomAudio(track.buffer, track.type, 0.3, true)
+            .catch(() => {
+              _activeMusicKey = null; // allow retry on next save
+              if (window.stopCustomAudio) window.stopCustomAudio();
+              if (window.backgroundMusic) {
+                window.backgroundMusic.src = musicLinks.default;
+                window.backgroundMusic.volume = 0.3;
+                window.backgroundMusic.loop = true;
+                window.backgroundMusic.play().catch(() => {});
+              }
+            });
         }
       } catch (e) {
         console.error('custom music error:', e);
@@ -638,11 +741,12 @@
   }
 
   // ── Web Audio API (custom music) ──────────────────────────────────────
+  // Now takes an ArrayBuffer (from IDB) + MIME type instead of a base64 data URL.
   window.audioContext = null;
   window.customAudioSource = null;
   window.customAudioGain = null;
 
-  window.playCustomAudio = function (base64Data, volume, loop) {
+  window.playCustomAudio = function (arrayBuffer, mimeType, volume, loop) {
     return new Promise((resolve, reject) => {
       try {
         if (window.customAudioSource) {
@@ -655,15 +759,16 @@
           window.audioContext = new (
             window.AudioContext || window.webkitAudioContext
           )();
-        const b64 = base64Data.split(',')[1];
-        const bin = atob(b64);
-        const buf = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+
+        // IDB hands us the same ArrayBuffer every time — slice a copy so
+        // decodeAudioData can detach it safely without corrupting the stored record.
+        const bufferCopy = arrayBuffer.slice(0);
+
         window.audioContext.decodeAudioData(
-          buf.buffer,
-          (buffer) => {
+          bufferCopy,
+          (decoded) => {
             const src = window.audioContext.createBufferSource();
-            src.buffer = buffer;
+            src.buffer = decoded;
             src.loop = loop;
             if (!window.customAudioGain) {
               window.customAudioGain = window.audioContext.createGain();
@@ -693,25 +798,28 @@
   };
 
   // ── Custom music upload UI ─────────────────────────────────────────────
-  function loadCustomMusicUI() {
+  async function loadCustomMusicUI() {
     const musicSel = el('musicSelect');
     const listWrapper = el('customMusicList');
     const listEl = el('customTracksList');
     if (!musicSel) return;
     try {
-      const saved = JSON.parse(localStorage.getItem('customMusic') || '[]');
+      const tracks = await getAllTracks();
+
+      // Rebuild custom_* options (remove old ones first)
       Array.from(musicSel.options).forEach((o) => {
         if (o.value.startsWith('custom_')) o.remove();
       });
-      saved.forEach((track, i) => {
+      tracks.forEach((track) => {
         const opt = document.createElement('option');
-        opt.value = 'custom_' + i;
+        opt.value = 'custom_' + track.id;
         opt.textContent = track.name + ' (custom)';
         musicSel.appendChild(opt);
       });
+
       if (listWrapper)
-        listWrapper.style.display = saved.length ? 'block' : 'none';
-      if (listEl) renderCustomTracksList(saved, listEl, musicSel);
+        listWrapper.style.display = tracks.length ? 'block' : 'none';
+      if (listEl) renderCustomTracksList(tracks, listEl, musicSel);
     } catch (e) {
       console.error('custom music UI error:', e);
     }
@@ -719,28 +827,37 @@
 
   function renderCustomTracksList(tracks, container, musicSel) {
     container.innerHTML = '';
-    tracks.forEach((track, i) => {
+    tracks.forEach((track) => {
       const row = document.createElement('div');
       row.style.cssText =
         'display:flex;justify-content:space-between;align-items:center;padding:6px 8px;margin-bottom:4px;background:var(--overlay-bg);border:1px solid var(--border-color);border-radius:2px;';
+
+      // Size badge
+      const sizeMB = track.buffer
+        ? (track.buffer.byteLength / 1024 / 1024).toFixed(1)
+        : '?';
       const name = document.createElement('span');
-      name.textContent = track.name;
       name.style.fontSize = '0.85em';
+      name.textContent = `${track.name}  (${sizeMB} MB)`;
+
       const del = document.createElement('button');
       del.textContent = 'delete';
       del.className = 'small';
-      del.onclick = () => {
-        const saved = JSON.parse(localStorage.getItem('customMusic') || '[]');
-        const deletedId = 'custom_' + i;
-        saved.splice(i, 1);
-        localStorage.setItem('customMusic', JSON.stringify(saved));
-        if (_activeMusicKey === deletedId) _activeMusicKey = null; // allow music to restart
-        loadCustomMusicUI();
-        if (musicSel && musicSel.value === deletedId) {
+      del.onclick = async () => {
+        const deletedKey = 'custom_' + track.id;
+        try {
+          await deleteTrack(track.id);
+        } catch (e) {
+          console.error('failed to delete track:', e);
+        }
+        if (_activeMusicKey === deletedKey) _activeMusicKey = null;
+        if (musicSel && musicSel.value === deletedKey) {
           musicSel.value = 'default';
           onChange();
         }
+        loadCustomMusicUI();
       };
+
       row.appendChild(name);
       row.appendChild(del);
       container.appendChild(row);
@@ -750,11 +867,13 @@
   function bindCustomMusicUpload() {
     const upload = el('customMusicUpload');
     if (!upload) return;
-    upload.addEventListener('change', (e) => {
+    upload.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      if (file.size > 10 * 1024 * 1024) {
-        alert('file too large! max 10MB');
+
+      // 100 MB limit — IndexedDB can handle it, localStorage couldn't
+      if (file.size > 100 * 1024 * 1024) {
+        alert('file too large! max 100MB');
         upload.value = '';
         return;
       }
@@ -763,24 +882,17 @@
         upload.value = '';
         return;
       }
+
       const reader = new FileReader();
-      reader.onload = (ev) => {
+      reader.onload = async (ev) => {
         try {
-          const saved = JSON.parse(localStorage.getItem('customMusic') || '[]');
-          saved.push({
-            name: file.name.replace(/\.[^/.]+$/, ''),
-            data: ev.target.result,
-          });
-          localStorage.setItem('customMusic', JSON.stringify(saved));
-          loadCustomMusicUI();
+          const trackName = file.name.replace(/\.[^/.]+$/, '');
+          await addTrack(trackName, ev.target.result, file.type);
+          await loadCustomMusicUI();
           upload.value = '';
           alert('track uploaded!');
         } catch (err) {
-          alert(
-            err.name === 'QuotaExceededError'
-              ? 'storage full! delete some tracks first.'
-              : 'error: ' + err.message,
-          );
+          alert('error saving track: ' + err.message);
           upload.value = '';
         }
       };
@@ -788,7 +900,7 @@
         alert('error reading file');
         upload.value = '';
       };
-      reader.readAsDataURL(file);
+      reader.readAsArrayBuffer(file); // ArrayBuffer, not data URL
     });
   }
 
@@ -1119,13 +1231,18 @@
   }
 
   // ── Init ──────────────────────────────────────────────────────────────
-  function init() {
+  async function init() {
     createPendingBar();
     bindSettings();
     bindCustomMusicUpload();
-    loadCustomMusicUI();
     bindTransfer();
     bindLegacyMode();
+
+    // Migrate any old localStorage tracks → IDB (runs once, then removes the key)
+    await migrateFromLocalStorage();
+
+    // Populate the music select with IDB tracks
+    await loadCustomMusicUI();
 
     let loaded = {};
     try {
