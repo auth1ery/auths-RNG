@@ -4608,6 +4608,7 @@ body.blur-panels .starmap-market-item {
 
 body {
 	--font-body: monospace;
+
 	font-family: var(--font-body);
 }
 
@@ -4639,10 +4640,7 @@ button {
 .gauntlet-tier,
 .page-dots,
 #notifPanel {
-	border-top-left-radius: var(--radius-tl, 2px);
-	border-top-right-radius: var(--radius-tr, 2px);
-	border-bottom-left-radius: var(--radius-bl, 2px);
-	border-bottom-right-radius: var(--radius-br, 2px);
+	border-radius: var(--radius-tl, 2px) var(--radius-tr, 2px) var(--radius-br, 2px) var(--radius-bl, 2px);
 	border-style: var(--border-style, solid);
 	box-shadow: var(--shadow-depth, none);
 }
@@ -4650,27 +4648,35 @@ button {
 .gauntlet-tier[data-tier='easy'] .gauntlet-tier-name {
 	color: var(--gauntlet-easy, #8d8);
 }
+
 .gauntlet-tier[data-tier='medium'] .gauntlet-tier-name {
 	color: var(--gauntlet-medium, #78f);
 }
+
 .gauntlet-tier[data-tier='hard'] .gauntlet-tier-name {
 	color: var(--gauntlet-hard, #f77);
 }
+
 .gauntlet-tier[data-tier='insane'] .gauntlet-tier-name {
 	color: var(--gauntlet-insane, #d4f);
 }
+
 .gauntlet-tier[data-tier='godlike'] .gauntlet-tier-name {
 	color: var(--gauntlet-godlike, #ffd700);
 }
+
 .gauntlet-tier[data-tier='inferno'] .gauntlet-tier-name {
 	color: var(--gauntlet-inferno, #ff4500);
 }
+
 .gauntlet-tier[data-tier='void'] .gauntlet-tier-name {
 	color: var(--gauntlet-void, #96f);
 }
+
 .gauntlet-tier[data-tier='abyss'] .gauntlet-tier-name {
 	color: var(--gauntlet-abyss, #0cc);
 }
+
 .gauntlet-tier[data-tier='eclipse_gate'] .gauntlet-tier-name {
 	color: var(--gauntlet-eclipse, #f80);
 }
@@ -4678,9 +4684,11 @@ button {
 .well-result-amount {
 	color: var(--well-result-amount, #4a4);
 }
+
 .notif-badge {
 	background: var(--notif-badge, var(--accent-color));
 }
+
 .active-potion-timer {
 	color: var(--active-potion-timer, #fa6);
 }
