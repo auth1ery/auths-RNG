@@ -1318,6 +1318,7 @@ function checkAchievements(currentRarity) {
 		}
 	});
 	if (newlyUnlocked) {
+		if (window.playThemeSound) window.playThemeSound('achievement');
 		updateAchievementsUI();
 		saveAllData();
 	}
@@ -1857,6 +1858,7 @@ function spinAndReveal(res) {
 	const effectiveStyle = reduceMotion && style === 'slot' ? 'none' : style;
 
 	playRollSound();
+	if (window.playThemeSound) window.playThemeSound('roll');
 
 	if (totalRolls > 0 && totalRolls % 100 === 0) startLuckBoost();
 
@@ -1896,6 +1898,7 @@ function spinAndReveal(res) {
 		const thresh = window.rareThreshold || 1000;
 
 		if (denom >= thresh) {
+			if (window.playThemeSound) window.playThemeSound('rare');
 			if (window.rainbowSweepCursor) window.rainbowSweepCursor();
 			if (window.pulseCursorForRarity) {
 				window.pulseCursorForRarity(pillColor && pillColor.startsWith('#') ? pillColor : '#ffd700');

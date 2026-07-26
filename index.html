@@ -503,24 +503,57 @@ Last release date on nightly: ${nightlyRDate}`;
 								},
 							];
 
+							const POTION_PACKS = {
+								default: {},
+								retro: {
+									luck2x: '🎲',
+									luck4x: '🎯',
+									luck10x: '🏆',
+									luck50x: '👑',
+									luck100x: '💣',
+									luck150x: '🚀',
+									luck250x: '⚔️',
+									luck300x: '🗿',
+									luck800x: '🌈',
+									luck1500x: '🎇',
+									luck3000x: '🧿',
+									duplicate: '🪞',
+								},
+							};
+
+							function potionEmoji(p) {
+								let pack = 'default';
+								try {
+									const raw = JSON.parse(localStorage.getItem('themeEditorActive') || 'null');
+									pack =
+										(raw &&
+											raw.editorData &&
+											raw.editorData.settings &&
+											raw.editorData.settings.potionPack) ||
+										'default';
+								} catch (_) {}
+								const override = POTION_PACKS[pack] && POTION_PACKS[pack][p.id];
+								return override || p.emoji;
+							}
+
 							const container = document.getElementById('potionsContainer');
 
-							potions.forEach(({ id, emoji, name, effect, cost }) => {
+							potions.forEach((p) => {
 								const el = document.createElement('div');
 								el.className = 'potion-item';
-								el.dataset.potion = id;
+								el.dataset.potion = p.id;
 								el.innerHTML = `
                 <div class="potion-header">
-                    <span class="potion-emoji">${emoji}</span>
+                    <span class="potion-emoji">${potionEmoji(p)}</span>
                     <div>
-                        <div class="potion-name">${name}</div>
-                        <div class="potion-effect">${effect}</div>
+                        <div class="potion-name">${p.name}</div>
+                        <div class="potion-effect">${p.effect}</div>
                     </div>
                 </div>
-                <div class="potion-cost">${cost} pts</div>
-                <div class="potion-owned">owned: <span id="potion-${id}-count">0</span></div>
-                <button class="small" onclick="buyPotion('${id}')">buy</button>
-                <button class="small" onclick="usePotion('${id}')">use</button>
+                <div class="potion-cost">${p.cost} pts</div>
+                <div class="potion-owned">owned: <span id="potion-${p.id}-count">0</span></div>
+                <button class="small" onclick="buyPotion('${p.id}')">buy</button>
+                <button class="small" onclick="usePotion('${p.id}')">use</button>
             `;
 								container.appendChild(el);
 							});
@@ -687,6 +720,64 @@ Last release date on nightly: ${nightlyRDate}`;
 									<option value="whoosh">whoosh</option>
 									<option value="coin">coin</option>
 								</select>
+							</div>
+
+							<div class="setting-row setting-row--stacked">
+								<div class="setting-info">
+									<span class="setting-name"
+										>custom roll sound <span class="setting-badge">max 5mb</span></span
+									>
+									<span class="setting-desc" id="customSoundName-roll">no custom sound set</span>
+								</div>
+								<input type="file" id="customSound-roll" accept="audio/*" class="setting-file" />
+								<button
+									id="customSoundRemove-roll"
+									class="small"
+									style="display: none; color: #ff6666; margin-top: 6px"
+								>
+									remove
+								</button>
+							</div>
+
+							<div class="setting-row setting-row--stacked">
+								<div class="setting-info">
+									<span class="setting-name"
+										>custom rare-roll sound <span class="setting-badge">max 5mb</span></span
+									>
+									<span class="setting-desc" id="customSoundName-rare">no custom sound set</span>
+								</div>
+								<input type="file" id="customSound-rare" accept="audio/*" class="setting-file" />
+								<button
+									id="customSoundRemove-rare"
+									class="small"
+									style="display: none; color: #ff6666; margin-top: 6px"
+								>
+									remove
+								</button>
+							</div>
+
+							<div class="setting-row setting-row--stacked">
+								<div class="setting-info">
+									<span class="setting-name"
+										>custom achievement sound <span class="setting-badge">max 5mb</span></span
+									>
+									<span class="setting-desc" id="customSoundName-achievement"
+										>no custom sound set</span
+									>
+								</div>
+								<input
+									type="file"
+									id="customSound-achievement"
+									accept="audio/*"
+									class="setting-file"
+								/>
+								<button
+									id="customSoundRemove-achievement"
+									class="small"
+									style="display: none; color: #ff6666; margin-top: 6px"
+								>
+									remove
+								</button>
 							</div>
 
 							<div class="setting-row setting-row--stacked">
@@ -1017,6 +1108,7 @@ Last release date on nightly: ${nightlyRDate}`;
 			<div id="notifEmpty" class="notif-empty">all caught up! no notifications yet :)</div>
 		</div>
 
+		<script src="assets/scripts/icons.js" defer></script>
 		<script src="assets/scripts/settings.js" defer></script>
 		<script src="assets/scripts/jukebox.js" defer></script>
 
@@ -1986,6 +2078,44 @@ Last release date on nightly: ${nightlyRDate}`;
 							value="#0e0e0e"
 							style="width: 100%; height: 32px; margin-bottom: 6px"
 						/>
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7">
+							background fill type
+						</label>
+						<select id="te-colorMode-bgColor" style="width: 100%; margin-bottom: 8px">
+							<option value="solid">solid color</option>
+							<option value="gradient">gradient</option>
+						</select>
+						<div id="te-gradientRow-bgColor" style="display: none; margin-bottom: 10px">
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>from</label
+							>
+							<input
+								type="color"
+								id="te-gradFrom-bgColor"
+								value="#0e0e0e"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>to</label
+							>
+							<input
+								type="color"
+								id="te-gradTo-bgColor"
+								value="#1a1a2e"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>angle: <span id="te-gradAngleVal-bgColor">135</span>°</label
+							>
+							<input
+								type="range"
+								id="te-gradAngle-bgColor"
+								min="0"
+								max="360"
+								value="135"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+						</div>
 						<button
 							id="te-autoAdapt"
 							class="small"
@@ -2013,6 +2143,44 @@ Last release date on nightly: ${nightlyRDate}`;
 							value="#111111"
 							style="width: 100%; height: 32px; margin-bottom: 10px"
 						/>
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7">
+							panel fill type
+						</label>
+						<select id="te-colorMode-panelBg" style="width: 100%; margin-bottom: 8px">
+							<option value="solid">solid color</option>
+							<option value="gradient">gradient</option>
+						</select>
+						<div id="te-gradientRow-panelBg" style="display: none; margin-bottom: 10px">
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>from</label
+							>
+							<input
+								type="color"
+								id="te-gradFrom-panelBg"
+								value="#111111"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>to</label
+							>
+							<input
+								type="color"
+								id="te-gradTo-panelBg"
+								value="#1a1a1a"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>angle: <span id="te-gradAngleVal-panelBg">135</span>°</label
+							>
+							<input
+								type="range"
+								id="te-gradAngle-panelBg"
+								min="0"
+								max="360"
+								value="135"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+						</div>
 
 						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
 							>overlay</label
@@ -2043,6 +2211,44 @@ Last release date on nightly: ${nightlyRDate}`;
 							value="#1a1a1a"
 							style="width: 100%; height: 32px; margin-bottom: 10px"
 						/>
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7">
+							button fill type
+						</label>
+						<select id="te-colorMode-buttonBg" style="width: 100%; margin-bottom: 8px">
+							<option value="solid">solid color</option>
+							<option value="gradient">gradient</option>
+						</select>
+						<div id="te-gradientRow-buttonBg" style="display: none; margin-bottom: 10px">
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>from</label
+							>
+							<input
+								type="color"
+								id="te-gradFrom-buttonBg"
+								value="#1a1a1a"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>to</label
+							>
+							<input
+								type="color"
+								id="te-gradTo-buttonBg"
+								value="#242424"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>angle: <span id="te-gradAngleVal-buttonBg">135</span>°</label
+							>
+							<input
+								type="range"
+								id="te-gradAngle-buttonBg"
+								min="0"
+								max="360"
+								value="135"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+						</div>
 
 						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
 							>accent / rare highlight</label
@@ -2073,6 +2279,45 @@ Last release date on nightly: ${nightlyRDate}`;
 							value="#1a2a1a"
 							style="width: 100%; height: 32px; margin-bottom: 10px"
 						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7">
+							achievement fill type
+						</label>
+						<select id="te-colorMode-achievementBg" style="width: 100%; margin-bottom: 8px">
+							<option value="solid">solid color</option>
+							<option value="gradient">gradient</option>
+						</select>
+						<div id="te-gradientRow-achievementBg" style="display: none; margin-bottom: 10px">
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>from</label
+							>
+							<input
+								type="color"
+								id="te-gradFrom-achievementBg"
+								value="#1a2a1a"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>to</label
+							>
+							<input
+								type="color"
+								id="te-gradTo-achievementBg"
+								value="#2a4a2a"
+								style="width: 100%; height: 32px; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>angle: <span id="te-gradAngleVal-achievementBg">135</span>°</label
+							>
+							<input
+								type="range"
+								id="te-gradAngle-achievementBg"
+								min="0"
+								max="360"
+								value="135"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+						</div>
 
 						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
 							>achievement border</label
@@ -2343,6 +2588,418 @@ container.addEventListener('click', () => {
 							placeholder="roll"
 							maxlength="30"
 							style="width: 100%; padding: 6px 8px; margin-bottom: 12px"
+						/>
+
+						<div
+							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 20px 0 12px"
+						>
+							extra colors
+						</div>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>points color already above</label
+						>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>gauntlet easy</label
+						>
+						<input
+							type="color"
+							id="te-gauntletEasy"
+							value="#88dd88"
+							style="width: 100%; height: 32px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>gauntlet medium</label
+						>
+						<input
+							type="color"
+							id="te-gauntletMedium"
+							value="#7788ff"
+							style="width: 100%; height: 32px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>gauntlet hard</label
+						>
+						<input
+							type="color"
+							id="te-gauntletHard"
+							value="#ff7777"
+							style="width: 100%; height: 32px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>gauntlet insane</label
+						>
+						<input
+							type="color"
+							id="te-gauntletInsane"
+							value="#dd44ff"
+							style="width: 100%; height: 32px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>gauntlet godlike</label
+						>
+						<input
+							type="color"
+							id="te-gauntletGodlike"
+							value="#ffd700"
+							style="width: 100%; height: 32px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>well result amount</label
+						>
+						<input
+							type="color"
+							id="te-wellResultAmount"
+							value="#44aa44"
+							style="width: 100%; height: 32px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>notification badge</label
+						>
+						<input
+							type="color"
+							id="te-notifBadge"
+							value="#dcdcdc"
+							style="width: 100%; height: 32px; margin-bottom: 8px"
+						/>
+
+						<div
+							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 20px 0 12px"
+						>
+							spacing
+						</div>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>density: <span id="te-spacingScaleVal">1.0</span>x</label
+						>
+						<input
+							type="range"
+							id="te-spacingScale"
+							min="0.5"
+							max="1.5"
+							step="0.05"
+							value="1"
+							style="width: 100%; margin-bottom: 12px"
+						/>
+
+						<div
+							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 20px 0 12px"
+						>
+							typography
+						</div>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>upload custom font (max 5MB)</label
+						>
+						<input
+							type="file"
+							id="te-fontUpload"
+							accept=".woff,.woff2,.ttf,.otf"
+							style="width: 100%; margin-bottom: 12px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>header size: <span id="te-headerScaleVal">1.0</span>x</label
+						>
+						<input
+							type="range"
+							id="te-headerScale"
+							min="0.7"
+							max="1.8"
+							step="0.05"
+							value="1"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>body text size: <span id="te-bodyScaleVal">1.0</span>x</label
+						>
+						<input
+							type="range"
+							id="te-bodyScale"
+							min="0.7"
+							max="1.5"
+							step="0.05"
+							value="1"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>header letter spacing: <span id="te-headerLetterSpacingVal">0.06</span>em</label
+						>
+						<input
+							type="range"
+							id="te-headerLetterSpacing"
+							min="0"
+							max="0.3"
+							step="0.01"
+							value="0.06"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>header weight</label
+						>
+						<select id="te-headerWeight" style="width: 100%; margin-bottom: 10px">
+							<option value="300">light</option>
+							<option value="400" selected>normal</option>
+							<option value="600">semibold</option>
+							<option value="700">bold</option>
+							<option value="900">black</option>
+						</select>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>header case</label
+						>
+						<select id="te-headerCase" style="width: 100%; margin-bottom: 10px">
+							<option value="none">as written</option>
+							<option value="uppercase">uppercase</option>
+							<option value="lowercase">lowercase</option>
+							<option value="capitalize">capitalize</option>
+						</select>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>button text case</label
+						>
+						<select id="te-buttonCase" style="width: 100%; margin-bottom: 12px">
+							<option value="none">as written</option>
+							<option value="uppercase">uppercase</option>
+							<option value="lowercase" selected>lowercase</option>
+							<option value="capitalize">capitalize</option>
+						</select>
+
+						<div
+							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 20px 0 12px"
+						>
+							shape
+						</div>
+
+						<label
+							style="
+								display: flex;
+								align-items: center;
+								gap: 8px;
+								margin-bottom: 12px;
+								font-size: 0.85em;
+								opacity: 0.7;
+							"
+						>
+							<input type="checkbox" id="te-radiusIndependent" />
+							set corners independently
+						</label>
+
+						<div id="te-independentRadiusControls" style="display: none">
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>top left: <span id="te-radiusTopLeftVal">2</span>px</label
+							>
+							<input
+								type="range"
+								id="te-radiusTopLeft"
+								min="0"
+								max="40"
+								value="2"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>top right: <span id="te-radiusTopRightVal">2</span>px</label
+							>
+							<input
+								type="range"
+								id="te-radiusTopRight"
+								min="0"
+								max="40"
+								value="2"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>bottom left: <span id="te-radiusBottomLeftVal">2</span>px</label
+							>
+							<input
+								type="range"
+								id="te-radiusBottomLeft"
+								min="0"
+								max="40"
+								value="2"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+							<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+								>bottom right: <span id="te-radiusBottomRightVal">2</span>px</label
+							>
+							<input
+								type="range"
+								id="te-radiusBottomRight"
+								min="0"
+								max="40"
+								value="2"
+								style="width: 100%; margin-bottom: 8px"
+							/>
+						</div>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>button radius: <span id="te-buttonRadiusVal">2</span>px</label
+						>
+						<input
+							type="range"
+							id="te-buttonRadius"
+							min="0"
+							max="40"
+							value="2"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>roll button radius: <span id="te-rollBtnRadiusVal">2</span>px</label
+						>
+						<input
+							type="range"
+							id="te-rollBtnRadius"
+							min="0"
+							max="40"
+							value="2"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>border style</label
+						>
+						<select id="te-borderStyle" style="width: 100%; margin-bottom: 10px">
+							<option value="solid">solid</option>
+							<option value="dashed">dashed</option>
+							<option value="dotted">dotted</option>
+							<option value="double">double</option>
+						</select>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>shadow depth: <span id="te-shadowDepthVal">0</span></label
+						>
+						<input
+							type="range"
+							id="te-shadowDepth"
+							min="0"
+							max="10"
+							value="0"
+							style="width: 100%; margin-bottom: 12px"
+						/>
+
+						<div
+							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 20px 0 12px"
+						>
+							motion
+						</div>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>easing curve</label
+						>
+						<select id="te-easing" style="width: 100%; margin-bottom: 12px">
+							<option value="default">default</option>
+							<option value="linear">linear</option>
+							<option value="ease">ease</option>
+							<option value="bounce">bounce</option>
+							<option value="snap">snap</option>
+						</select>
+
+						<label style="display: block; margin-top: 6px; font-size: 0.85em; opacity: 0.7"
+							><input type="checkbox" id="te-motionHoverGlow" checked /> hover glow effect</label
+						>
+						<label style="display: block; margin-top: 6px; font-size: 0.85em; opacity: 0.7"
+							><input type="checkbox" id="te-motionRainbowShimmer" checked /> rainbow shimmer
+							effects</label
+						>
+						<label style="display: block; margin-top: 6px; font-size: 0.85em; opacity: 0.7"
+							><input type="checkbox" id="te-motionPageTransition" checked /> page transition
+							animation</label
+						>
+						<label style="display: block; margin-top: 6px; font-size: 0.85em; opacity: 0.7"
+							><input type="checkbox" id="te-motionAchievementPulse" checked /> achievement unlock
+							pulse</label
+						>
+
+						<div
+							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 20px 0 12px"
+						>
+							texture
+						</div>
+
+						<label style="display: block; margin-top: 6px; font-size: 0.85em; opacity: 0.7"
+							><input type="checkbox" id="te-noiseEnabled" /> grain overlay</label
+						>
+						<label
+							style="
+								display: block;
+								margin-bottom: 4px;
+								font-size: 0.8em;
+								opacity: 0.6;
+								margin-top: 8px;
+							"
+							>grain intensity: <span id="te-noiseIntensityVal">5</span>%</label
+						>
+						<input
+							type="range"
+							id="te-noiseIntensity"
+							min="0"
+							max="30"
+							value="5"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label style="display: block; margin-top: 6px; font-size: 0.85em; opacity: 0.7"
+							><input type="checkbox" id="te-vignetteEnabled" /> vignette</label
+						>
+						<label
+							style="
+								display: block;
+								margin-bottom: 4px;
+								font-size: 0.8em;
+								opacity: 0.6;
+								margin-top: 8px;
+							"
+							>vignette intensity: <span id="te-vignetteIntensityVal">30</span>%</label
+						>
+						<input
+							type="range"
+							id="te-vignetteIntensity"
+							min="0"
+							max="70"
+							value="30"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label
+							style="
+								display: block;
+								margin-bottom: 4px;
+								font-size: 0.85em;
+								opacity: 0.7;
+								margin-top: 10px;
+							"
+							>background pattern size: <span id="te-bgPatternSizeVal">20</span>px</label
+						>
+						<input
+							type="range"
+							id="te-bgPatternSize"
+							min="8"
+							max="80"
+							value="20"
+							style="width: 100%; margin-bottom: 10px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>background pattern opacity: <span id="te-bgPatternOpacityVal">5</span>%</label
+						>
+						<input
+							type="range"
+							id="te-bgPatternOpacity"
+							min="1"
+							max="30"
+							value="5"
+							style="width: 100%; margin-bottom: 10px"
 						/>
 
 						<div
@@ -2640,6 +3297,117 @@ container.addEventListener('click', () => {
 						<label style="display: block; margin-top: 6px; font-size: 0.85em; opacity: 0.7"
 							><input type="checkbox" id="te-chaosMode" /> adhd mode</label
 						>
+
+						<div
+							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 20px 0 12px"
+						>
+							icons
+						</div>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>icon pack</label
+						>
+						<select id="te-iconPack" style="width: 100%; margin-bottom: 10px">
+							<option value="default">default</option>
+							<option value="retro">retro</option>
+							<option value="minimal">minimal (text symbols)</option>
+						</select>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.85em; opacity: 0.7"
+							>potion icon pack</label
+						>
+						<select id="te-potionPack" style="width: 100%; margin-bottom: 10px">
+							<option value="default">default</option>
+							<option value="retro">retro</option>
+						</select>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>notification bell override</label
+						>
+						<input
+							type="text"
+							id="te-icon-notifBell"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>friends button override</label
+						>
+						<input
+							type="text"
+							id="te-icon-friendsBtn"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>messages button override</label
+						>
+						<input
+							type="text"
+							id="te-icon-messagesBtn"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>wishing well icon override</label
+						>
+						<input
+							type="text"
+							id="te-icon-wellVisual"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>winter particle override</label
+						>
+						<input
+							type="text"
+							id="te-icon-seasonWinter"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>spring particle override</label
+						>
+						<input
+							type="text"
+							id="te-icon-seasonSpring"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>summer particle override</label
+						>
+						<input
+							type="text"
+							id="te-icon-seasonSummer"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
+						/>
+
+						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
+							>fall particle override</label
+						>
+						<input
+							type="text"
+							id="te-icon-seasonFall"
+							maxlength="4"
+							placeholder="leave blank to use pack"
+							style="width: 100%; padding: 6px 8px; margin-bottom: 10px"
+						/>
 
 						<div
 							style="font-size: 0.75em; opacity: 0.4; letter-spacing: 0.06em; margin: 16px 0 12px"

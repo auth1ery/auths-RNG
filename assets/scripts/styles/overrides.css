@@ -4583,3 +4583,129 @@ body.blur-panels .starmap-market-item {
 	margin-left: 4px;
 	vertical-align: middle;
 }
+
+#noiseOverlay {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 2;
+	opacity: 0.05;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+	mix-blend-mode: overlay;
+}
+
+#vignetteOverlay {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 2;
+	background: radial-gradient(
+		ellipse at center,
+		transparent 40%,
+		rgb(0 0 0 / var(--vignette-intensity, 0.3)) 100%
+	);
+}
+
+body {
+	--font-body: monospace;
+	font-family: var(--font-body);
+}
+
+h1,
+h2 {
+	letter-spacing: var(--header-letter-spacing, 0.06em);
+	font-weight: var(--header-weight, 400);
+	text-transform: var(--header-case, none);
+}
+
+button {
+	text-transform: var(--button-case, lowercase);
+	border-radius: var(--button-radius, 2px);
+	border-style: var(--border-style, solid);
+}
+
+#rollBtn {
+	border-radius: var(--roll-btn-radius, 2px);
+	font-size: calc(1.1em * var(--roll-btn-text-scale, 1));
+}
+
+.shop-item,
+#inventoryList,
+#luckDisplay,
+.well-container,
+.index-content,
+.modal-content,
+.potion-item,
+.gauntlet-tier,
+.page-dots,
+#notifPanel {
+	border-top-left-radius: var(--radius-tl, 2px);
+	border-top-right-radius: var(--radius-tr, 2px);
+	border-bottom-left-radius: var(--radius-bl, 2px);
+	border-bottom-right-radius: var(--radius-br, 2px);
+	border-style: var(--border-style, solid);
+	box-shadow: var(--shadow-depth, none);
+}
+
+.gauntlet-tier[data-tier='easy'] .gauntlet-tier-name {
+	color: var(--gauntlet-easy, #8d8);
+}
+.gauntlet-tier[data-tier='medium'] .gauntlet-tier-name {
+	color: var(--gauntlet-medium, #78f);
+}
+.gauntlet-tier[data-tier='hard'] .gauntlet-tier-name {
+	color: var(--gauntlet-hard, #f77);
+}
+.gauntlet-tier[data-tier='insane'] .gauntlet-tier-name {
+	color: var(--gauntlet-insane, #d4f);
+}
+.gauntlet-tier[data-tier='godlike'] .gauntlet-tier-name {
+	color: var(--gauntlet-godlike, #ffd700);
+}
+.gauntlet-tier[data-tier='inferno'] .gauntlet-tier-name {
+	color: var(--gauntlet-inferno, #ff4500);
+}
+.gauntlet-tier[data-tier='void'] .gauntlet-tier-name {
+	color: var(--gauntlet-void, #96f);
+}
+.gauntlet-tier[data-tier='abyss'] .gauntlet-tier-name {
+	color: var(--gauntlet-abyss, #0cc);
+}
+.gauntlet-tier[data-tier='eclipse_gate'] .gauntlet-tier-name {
+	color: var(--gauntlet-eclipse, #f80);
+}
+
+.well-result-amount {
+	color: var(--well-result-amount, #4a4);
+}
+.notif-badge {
+	background: var(--notif-badge, var(--accent-color));
+}
+.active-potion-timer {
+	color: var(--active-potion-timer, #fa6);
+}
+
+.setting-row,
+.shop-item,
+.potion-item {
+	padding: calc(12px * var(--spacing-scale, 1)) calc(14px * var(--spacing-scale, 1));
+}
+
+#inventoryList li {
+	padding: calc(8px * var(--spacing-scale, 1)) calc(10px * var(--spacing-scale, 1));
+	margin-bottom: calc(6px * var(--spacing-scale, 1));
+}
+
+button.rainbow-glow-enabled:hover:not(:disabled) {
+	animation: rainbow-glow 4s var(--ease-curve, ease) infinite;
+}
+
+.page-container {
+	transition: transform 0.3s var(--ease-curve, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+.page-dot {
+	transition:
+		width 0.45s var(--ease-curve, cubic-bezier(0.34, 1.56, 0.64, 1)),
+		border-radius 0.45s var(--ease-curve, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
