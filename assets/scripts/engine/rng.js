@@ -28,11 +28,12 @@
 		}
 		float() {
 			this._callCount++;
-			return Number(this._gen.next() >> 11n) / FLOAT_DIV;
+			const n = BigInt(this._gen.next());
+			return Number(n >> 11n) / FLOAT_DIV;
 		}
 		uint64() {
 			this._callCount++;
-			return this._gen.next();
+			return BigInt(this._gen.next());
 		}
 		intBelow(n) {
 			const bn = BigInt(n);
@@ -40,7 +41,9 @@
 			const limit = (range / bn) * bn;
 			let r;
 			do {
-				r = (this._gen.next() << 64n) | this._gen.next();
+				const hi = BigInt(this._gen.next());
+				const lo = BigInt(this._gen.next());
+				r = (hi << 64n) | lo;
 				this._callCount += 2;
 			} while (r >= limit);
 			return r % bn;
