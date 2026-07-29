@@ -30,11 +30,25 @@
 	let _activeMusicKey = null; // e.g. 'default', 'custom_1', or '__muted__'
 
 	const musicLinks = {
-		default: 'assets/audio/welcomecity.mp3',
 		wavelocity: 'assets/audio/wavelocity.mp3',
 		nocturne: 'assets/audio/nocturne.mp3',
 		fallout: 'assets/audio/fallout.mp3',
 	};
+
+	const defaultTierTracks = [
+		{ threshold: 1500000, file: 'assets/audio/4sanctuary2.mp3' },
+		{ threshold: 500000, file: 'assets/audio/3sanctuary1.mp3' },
+		{ threshold: 100000, file: 'assets/audio/2garden.mp3' },
+		{ threshold: 0, file: 'assets/audio/1field.mp3' },
+	];
+
+	function getDefaultTierTrack() {
+		const rolls = typeof totalRolls !== 'undefined' ? totalRolls : 0;
+		for (const tier of defaultTierTracks) {
+			if (rolls >= tier.threshold) return tier;
+		}
+		return defaultTierTracks[defaultTierTracks.length - 1];
+	}
 
 	// ── IndexedDB helpers ──────────────────────────────────────────────────
 	// Tracks are stored as { id (auto), name, buffer (ArrayBuffer), type (MIME) }
@@ -1322,7 +1336,10 @@
 	let _musicApplyToken = 0;
 
 	async function applyMusic(settings) {
-		const newKey = settings.muted ? '__muted__' : settings.music || 'default';
+		const musicKey = settings.muted ? '__muted__' : settings.music || 'default';
+		const tier = musicKey === 'default' ? getDefaultTierTrack() : null;
+		const newKey = musicKey === 'default' ? `default:${tier.file}` : musicKey;
+
 		if (newKey === _activeMusicKey) return;
 		_activeMusicKey = newKey;
 
@@ -1342,8 +1359,6 @@
 		}
 
 		if (window.lunarMusic) window.lunarMusic.volume = 0.6;
-
-		const musicKey = settings.music || 'default';
 
 		if (window.stopCustomAudio) window.stopCustomAudio();
 		if (window.backgroundMusic) {
@@ -1367,7 +1382,7 @@
 						_activeMusicKey = null;
 						if (window.stopCustomAudio) window.stopCustomAudio();
 						if (window.backgroundMusic) {
-							window.backgroundMusic.src = musicLinks.default;
+							window.backgroundMusic.src = getDefaultTierTrack().file;
 							window.backgroundMusic.volume = 0.3;
 							window.backgroundMusic.loop = true;
 							window.backgroundMusic.play().catch(() => {});
@@ -1380,13 +1395,21 @@
 		} else {
 			if (myToken !== _musicApplyToken) return;
 			if (window.backgroundMusic) {
-				window.backgroundMusic.src = musicLinks[musicKey] || musicLinks.default;
+				window.backgroundMusic.src =
+					musicKey === 'default' ? tier.file : musicLinks[musicKey] || getDefaultTierTrack().file;
 				window.backgroundMusic.volume = 0.3;
 				window.backgroundMusic.loop = true;
 				window.backgroundMusic.play().catch(() => {});
 			}
 		}
 	}
+
+	window.recheckDefaultMusicTier = function () {
+		if (!savedSettings) return;
+		if (savedSettings.muted) return;
+		if ((savedSettings.music || 'default') !== 'default') return;
+		applyMusic(savedSettings).catch(() => {});
+	};
 
 	function applyGlowBlobs(settings) {
 		let container = el('glowBlobsContainer');

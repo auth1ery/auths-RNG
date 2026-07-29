@@ -1865,6 +1865,7 @@ function spinAndReveal(res) {
 	const finalize = () => {
 		totalRolls++;
 		updateTotalRolls();
+		if (window.recheckDefaultMusicTier) window.recheckDefaultMusicTier();
 		addToInventory(res);
 		(function (W, R) {
 			var P = [
