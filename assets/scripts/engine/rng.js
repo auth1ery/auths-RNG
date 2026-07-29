@@ -1,5 +1,5 @@
 (function (root) {
-	const FLOAT_DIV = 9007199254740992n;
+	const FLOAT_DIV = 9007199254740992; // WHY DOES IT COMPLAIN THAT IT SHOULD BE A BIGINT
 
 	class BeaconRNG {
 		constructor() {
@@ -28,12 +28,12 @@
 		}
 		float() {
 			this._callCount++;
-			const n = BigInt(this._gen.next());
+			const n = this._gen.next();
 			return Number(n >> 11n) / FLOAT_DIV;
 		}
 		uint64() {
 			this._callCount++;
-			return BigInt(this._gen.next());
+			return this._gen.next();
 		}
 		intBelow(n) {
 			const bn = BigInt(n);
@@ -41,8 +41,8 @@
 			const limit = (range / bn) * bn;
 			let r;
 			do {
-				const hi = BigInt(this._gen.next());
-				const lo = BigInt(this._gen.next());
+				const hi = this._gen.next();
+				const lo = this._gen.next();
 				r = (hi << 64n) | lo;
 				this._callCount += 2;
 			} while (r >= limit);
