@@ -23,6 +23,15 @@
 		return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 	}
 
+	function escAttr(s) {
+		return String(s)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
+
 	function fmtLastSeenShort(ts) {
 		const s = Math.floor((Date.now() - ts) / 1000);
 		if (s < 3600) return Math.floor(s / 60) + 'm ago';
@@ -62,7 +71,7 @@
 	function avatarHtml(username, avatarUrl, size) {
 		size = size || 32;
 		if (avatarUrl)
-			return `<img src="https://accounts.authsrng.xyz${avatarUrl}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;flex-shrink:0;">`;
+			return `<img src="https://accounts.authsrng.xyz${escAttr(avatarUrl)}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;flex-shrink:0;">`;
 		return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:var(--button-bg);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0.6;">${escHtml((username || '?').charAt(0).toUpperCase())}</div>`;
 	}
 

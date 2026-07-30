@@ -213,7 +213,12 @@ console.log(performance.now());
 	}
 
 	function escHtml(s) {
-		return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		return String(s)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
 	}
 
 	function parseUA(ua) {
@@ -333,10 +338,10 @@ console.log(performance.now());
 		try {
 			const data = await apiCall('/me');
 			const avatarImg = data.avatarUrl
-				? `<img src="https://accounts.authsrng.xyz${data.avatarUrl}" class="account-avatar-preview" id="currentAvatarImg">`
-				: `<div class="account-avatar-placeholder" id="currentAvatarImg">${data.username.charAt(0).toUpperCase()}</div>`;
+				? `<img src="https://accounts.authsrng.xyz${escHtml(data.avatarUrl)}" class="account-avatar-preview" id="currentAvatarImg">`
+				: `<div class="account-avatar-placeholder" id="currentAvatarImg">${escHtml(data.username.charAt(0).toUpperCase())}</div>`;
 			const bioHtml = data.bio
-				? `<p style="font-size:0.85em;opacity:0.75;margin:0 0 12px;white-space:pre-wrap;">${data.bio.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>`
+				? `<p style="font-size:0.85em;opacity:0.75;margin:0 0 12px;white-space:pre-wrap;">${escHtml(data.bio)}</p>`
 				: `<p style="font-size:0.8em;opacity:0.4;margin:0 0 12px;font-style:italic;">no bio set</p>`;
 			const pronounsHtml = data.pronouns
 				? `<span style="font-size:0.78em;opacity:0.5;margin-left:6px;">(${escHtml(data.pronouns)})</span>`
@@ -346,7 +351,7 @@ console.log(performance.now());
 	        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
 	          ${avatarImg}
 	          <div>
-	            <h3 style="margin:0;">${data.username}${pronounsHtml}</h3>
+	            <h3 style="margin:0;">${escHtml(data.username)}${pronounsHtml}</h3>
 	            <p style="font-size:0.8em;opacity:0.5;margin:2px 0 0;">joined ${new Date(data.createdAt).toLocaleDateString()}</p>
 	          </div>
 	        </div>
@@ -375,7 +380,7 @@ console.log(performance.now());
 			el('deleteAcctBtn').addEventListener('click', openDeleteAccount);
 		} catch (e) {
 			body.innerHTML = `
-	        <p style="color:#f66;">${e.message}</p>
+	        <p style="color:#f66;">${escHtml(e.message)}</p>
 	        <p style="font-size:0.85em;opacity:0.6;">your session may be invalid or expired. log out and sign back in.</p>
 	        <button id="forceLogoutBtn" class="small" style="width:100%;color:#f66;">log out</button>
 	      `;
@@ -538,11 +543,11 @@ console.log(performance.now());
 		let removeBannerFlag = false;
 
 		const avatarPreview = currentData.avatarUrl
-			? `<img src="https://accounts.authsrng.xyz${currentData.avatarUrl}" class="account-avatar-preview" id="editAvatarPreview">`
-			: `<div class="account-avatar-placeholder" id="editAvatarPreview">${currentData.username.charAt(0).toUpperCase()}</div>`;
+			? `<img src="https://accounts.authsrng.xyz${escHtml(currentData.avatarUrl)}" class="account-avatar-preview" id="editAvatarPreview">`
+			: `<div class="account-avatar-placeholder" id="editAvatarPreview">${escHtml(currentData.username.charAt(0).toUpperCase())}</div>`;
 
 		const bannerPreviewStyle = currentData.bannerImageUrl
-			? `background-image:url('https://accounts.authsrng.xyz${currentData.bannerImageUrl}');background-size:cover;background-position:center;`
+			? `background-image:url('https://accounts.authsrng.xyz${escHtml(currentData.bannerImageUrl)}');background-size:cover;background-position:center;`
 			: `background:var(--overlay-bg);`;
 
 		body.innerHTML = `

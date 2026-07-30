@@ -270,14 +270,23 @@
 	menu.classList.add('_ctx-hidden');
 	document.body.appendChild(menu);
 
+	function escHtml(s) {
+		return String(s)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
+
 	function makeItem(icon, label, badge, onClick, opts = {}) {
 		const el = document.createElement('div');
 		el.className =
 			'_ctx-item' + (opts.disabled ? ' _ctx-disabled' : '') + (opts.danger ? ' _ctx-danger' : '');
 		el.innerHTML = `
       <span class="_ctx-icon">${icon}</span>
-      <span class="_ctx-label">${label}</span>
-      ${badge ? `<span class="_ctx-badge">${badge}</span>` : ''}
+      <span class="_ctx-label">${escHtml(label)}</span>
+      ${badge ? `<span class="_ctx-badge">${escHtml(badge)}</span>` : ''}
     `;
 		if (!opts.disabled && onClick)
 			el.addEventListener('click', () => {
