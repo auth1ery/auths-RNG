@@ -25,6 +25,8 @@ the repository for the web game, auth's RNG!
   <img src="assets/repo3.png" width="30%" />
 </p>
 
+get the mobile app on f-droid: <link soon>
+
 ## about
 
 auth's RNG is a web-based incremental RNG game built with raw HTML/CSS/JS with online features. roll for rarities, sell them out, buy upgrades, wish upon the wishing well, and collect as many rarities as possible!!!!!
@@ -32,6 +34,8 @@ auth's RNG is a web-based incremental RNG game built with raw HTML/CSS/JS with o
 > roll > sell > upgrade > unlock deeper systems > repeat!
 
 inspired by Roblox RNG games like Sol's RNG and Juke's RNG, but to clarify: this is **not** a Roblox game, and never will obviously be.
+
+full set with accounts, leaderboards, cloud sync, an entire mobile app, and more!
 
 auth's RNG is also disgustingly customizable, and you can make auth's RNG truely yours. new customization features are released every update, and the limit just keeps getting higher.
 
