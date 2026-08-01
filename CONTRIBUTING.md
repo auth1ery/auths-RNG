@@ -1,64 +1,150 @@
 # contributing to auth's RNG
 
-thank you for your interest in contributing to **auth's RNG**! please follow these guidelines to ensure smooth collaboration!!!!!!!!!!!!!!!
+Thank you for your interest in contributing to **auth's RNG**! Please follow these guidelines to ensure smooth collaboration!
 
-## how to contribute
+## How to contribute
 
-1. **fork the repository**  
-   click the "fork" button on the top-right of the repo page to create your own copy.
+Contributing to auth's RNG is pretty simple! Whether you're fixing a bug, improving the UI, balancing the game, or adding a small feature, contributions are welcome.
 
-2. **clone your fork**  
-   once you've forked the repo, clone it to your local machine:  
-   `git clone https://github.com/your-username/auths-RNG.git`
+### 1. Fork the repository
 
-3. **create a branch**  
-   create a new branch for your work:  
-   `git checkout -b feature/your-feature-name`
+Click the **Fork** button in the top-right of the GitHub repository page to create your own copy of auth's RNG.
 
-4. **make changes**  
-   work on the feature, fix, or improvement you want to contribute.
+### 2. Clone your fork
 
-5. **commit your changes**  
-   commit your changes with a clear and concise message:  
-   `git commit -m "add feature: description of the change"`
+Clone your fork to your local machine:
 
-6. **push to your fork**  
-   push your changes to your forked repo:  
-   `git push origin feature/your-feature-name`
+```bash
+git clone https://github.com/your-username/auths-RNG.git
+```
 
-7. **create a pull request**  
-   open a pull request (PR) from your fork's branch to the main repository. describe the changes you've made and why! 
+Then enter the repository folder:
 
-## pull request guidelines
+```bash
+cd auths-RNG
+```
 
-- **describe your changes** clearly. provide context on what was changed and why.
-- **test your changes** before submitting a PR. ensure that the game still works and that your code does not introduce bugs.
-- **keep commits focused** on one task or feature. if necessary, break down large changes into smaller, manageable pieces.
-- **maintain coding style**. follow existing coding conventions, such as indentation, variable naming, and comments.
-- **avoid modifying unrelated files**. only modify files related to the feature or bug fix you're working on.
-- **keep it simple**. don't overcomplicate your changes. aim for clean, understandable code.
-- and the most important.. **NEVER TOUCH THE .github/workflows FOLDERS AND FILES!** please... im begging you...
+### 3. Create a branch
 
-## issue tracker
+Create a new branch for your changes:
 
-if you find a bug or have a feature request, feel free to open an issue. please be clear about the problem you're encountering or the feature you'd like to see added.
+```bash
+git checkout -b feature/your-feature-name
+```
 
-## code of conduct
+Use a name that describes what you're working on. For example:
 
-see CODE_OF_CONDUCT.md
+```bash
+git checkout -b fix-mobile-ui
+```
 
-## license
+### 4. Make your changes
 
-by contributing to this project, you agree that your contributions will be licensed under the same license as the project. see the LICENSE file for more details.
+Work on your feature, fix, improvement, or whatever you're contributing.
 
-## for using AI
+Try to keep your changes focused. A small, well-explained change is much easier to review than a huge one that changes everything at once.
 
-see documentation/CLAUDE.md
+### 5. Commit your changes
 
-## how to style the feature
+Write a clear commit message that explains what you changed:
 
-see documentation/STYLES.md
+```bash
+git commit -m "Fix incorrect aura display"
+```
+
+Avoid vague commit messages like:
+
+```bash
+git commit -m "stuff"
+```
+
+Nobody knows what "stuff" means. Not even future you.
+
+### 6. Push your branch
+
+Push your changes to your fork:
+
+```bash
+git push origin feature/your-feature-name
+```
+
+### 7. Open a pull request
+
+Open a pull request from your fork's branch into the main repository.
+
+In your PR description, explain:
+
+- what you changed
+- why you changed it
+- any testing you did
+- anything reviewers should know
 
 ---
 
-for more information, see the meta/ folder
+## Pull request guidelines
+
+Before submitting a PR, please keep these in mind:
+
+- **Explain your changes clearly.** Give context about what changed and why.
+- **Test your changes.** Make sure the game still works and your changes don't introduce bugs.
+- **Keep commits focused.** Avoid mixing unrelated changes together.
+- **Follow the existing code style.** Match the project's formatting, naming conventions, and structure.
+- **Avoid changing unrelated files.** Only modify files needed for your change.
+- **Keep things simple.** The best solutions are usually the ones that are easiest to understand and maintain.
+
+> [!WARNING]
+> **Never modify `.github/workflows` files or folders.**
+>
+> Please. Seriously.
+>
+> Even if you think it's a harmless package update or small fix, workflow changes can break the development pipeline. These files are maintained separately and PRs modifying them will most likely be rejected.
+
+## Issues
+
+If you find a bug or have a feature request, feel free to open an issue! Please be clear about the problem you're encountering or the feature you'd like to see added.
+
+## Code Of Conduct
+
+See CODE_OF_CONDUCT.md.
+
+## License
+
+By contributing to this project, you agree that your contributions will be licensed under the same license as the project. See the LICENSE file for more details.
+
+## For using AI
+
+See AGENTS.md.
+
+## How to style (frontend)
+
+See meta/STYLES.md.
+
+## Anonymous contributions
+
+The official bulletin board (https://authsrng.bbs.fc2.com/) is also good if you want to make a PR without being labeled as a contributor, and/or if you just want to contribute anonymously. Make the first sentence be your commit message (be sure to add "Commit" at the start of it) and write a description of why you made this change, then use `git diff` and after you've reached the end of the git log by holding down `Enter` or what keybind you use to scroll down Git logs, copy and paste the entire output and put it 2 lines under your commit message. CAPITALIZATION AND CORRECT GRAMMAR IS NEEDED!
+
+Example:
+
+```txt
+Commit: Replace unused script tag
+
+Script "example.js" was removed before, and the script
+tag made errors of the file not existing. Remove excess
+line.
+
+diff --git a/index.html b/index.html
+index 1234567..89abcde 100644
+--- a/index.html
++++ b/index.html
+@@ -284,7 +284,6 @@
+     <script src="assets/scripts/vendor.js" defer></script>
+     <script src="assets/scripts/utils.js" defer></script>
+-    <script src="assets/scripts/example.js" defer></script>
+     <script src="assets/scripts/main.js" defer></script>
+     </body>
+ </html>
+```
+
+---
+
+For more information, see the meta/ folder.

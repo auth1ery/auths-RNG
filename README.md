@@ -1,18 +1,11 @@
 # auth's RNG
 
-the repository for the web game, auth's RNG!
-
 ![Version](https://img.shields.io/github/v/release/authsrng-game/auths-RNG)
-![Repo Size](https://img.shields.io/github/repo-size/authsrng-game/auths-RNG)
 ![Last Commit](https://img.shields.io/github/last-commit/authsrng-game/auths-RNG)
 ![License](https://img.shields.io/github/license/authsrng-game/auths-RNG)
 ![Code Size](https://img.shields.io/github/languages/code-size/authsrng-game/auths-RNG)
-![Top Language](https://img.shields.io/github/languages/top/authsrng-game/auths-RNG)
-[![Open Issues](https://img.shields.io/github/issues/authsrng-game/auths-RNG?color=5BCEFA)](https://github.com/authsrng-game/auths-RNG/issues)
-[![Open PRs](https://img.shields.io/github/issues-pr/authsrng-game/auths-RNG?color=F5A9B8)](https://github.com/authsrng-game/auths-RNG/pulls)
 ![trans rights](https://pride-badges.pony.workers.dev/static/v1?label=trans%20rights&stripeWidth=6&stripeColors=5BCEFA,F5A9B8,FFFFFF,F5A9B8,5BCEFA)
 [![Discord](https://img.shields.io/discord/1443019622109675682?color=5BCEFA)](https://discord.gg/mTDw8jJYqX)
-![Visitors](https://komarev.com/ghpvc/?username=authsrng-game&repo=auths-RNG&label=visitors)
 [![CI](https://img.shields.io/github/actions/workflow/status/authsrng-game/auths-RNG/autofix.yml?branch=nightly&label=autofix&color=5BCEFA)](https://github.com/authsrng-game/auths-RNG/actions/workflows/autofix.yml)
 ![Status](https://img.shields.io/badge/status-actively%20developed-5BCEFA)
 
@@ -29,141 +22,63 @@ get the mobile app on f-droid: <link soon>
 
 ## about
 
-auth's RNG is a web-based incremental RNG game built with raw HTML/CSS/JS with online features. roll for rarities, sell them out, buy upgrades, wish upon the wishing well, and collect as many rarities as possible!!!!!
+The greatest RNG webgame of all time.
 
-> roll > sell > upgrade > unlock deeper systems > repeat!
+> roll, sell, buy, repeat, and customize.
 
-inspired by Roblox RNG games like Sol's RNG and Juke's RNG, but to clarify: this is **not** a Roblox game, and never will obviously be.
-
-full set with accounts, leaderboards, cloud sync, an entire mobile app, and more!
-
-auth's RNG is also disgustingly customizable, and you can make auth's RNG truely yours. new customization features are released every update, and the limit just keeps getting higher.
-
-check out the [official wiki](https://github.com/authsrng-game/auths-RNG/wiki) for how to play and how everything works.
-
-official wiki all about auth's RNG, how it works, and how to play it!!
-                ↓↓↓↓↓↓  
-https://github.com/authsrng-game/auths-RNG/wiki
+Inspired by Roblox RNG games like Sol's RNG and Juke's RNG.
 
 ---
 
-## meet the branches and versions of the game
+## Meet the branches and versions of the game
 
-main branch: https://authsrng.xyz  
-nightly branch: https://nightly.authsrng.xyz  
-native branch: https://native.authsrng.xyz  
+Main Branch: https://authsrng.xyz  
+Nightly Branch: https://nightly.authsrng.xyz  
+Native Branch: https://native.authsrng.xyz  
 
-**the main branch** is for the stable and impactful releases of the game! with its name, it's the main game.  
-**the nightly branch** doesnt build or update nightly (i just thought the term was cool), it serves as a bleeding edge development branch and updates with every single commit!  
-**the native branch** is the site that gets maintained seperately. it serves as the website client for the auth's RNG mobile apps and is built for speed and privacy
-
----
-
-## other repos
-
-android app repo: https://github.com/authsrng-game/auths-RNG-apk
+**The main branch** is for the stable and impactful releases of the game! With its name, it's the main game.  
+**The nightly branch** doesn't build or update nightly (I just thought the term was cool), it serves as a bleeding edge development branch and updates with every single commit!  
+**The native branch** is the site that gets maintained seperately. It serves as the website client for the auth's RNG mobile apps and is built for raw speed and privacy.
 
 ---
 
-## misconceptions
+## Other repos
 
-it's **auth's RNG**. not "Auth's RNG", or "authsrng", or "Auth RNG". lowercase "rng" is fine.
-
-and again:
-
-> [!IMPORTANT]
-> **NOT A ROBLOX GAME!!!!!!!**
-
-auth's RNG isn't an RNG algorithm with auth in it, auth is just the alias the creator of this game goes by, which her name is "auth" or "ivy" if you wanna get a little personal. so auth's RNG is an RNG web-game made by auth, not a security thing.
-
-this game wasn't supposed to copy the roblox games, or be one :(
+Android app repo: https://github.com/authsrng-game/auths-RNG-apk
 
 ---
 
-## contributing
+## Contributing
 
-we don't bite with contributions! a good PR is something like a UI tweak, balance change, or bug fix. a bad PR is rewriting the RNG algorithm for no apparent reason.
+We don't bite with contributions! A good PR is something like a UI tweak, balance change, or bug fix. A bad PR is rewriting the RNG algorithm for no apparent reason.
 
 > [!WARNING]
-> **do not touch `.github/workflows`**! even if it's a package tweak or fix. we maintain it ourselves and it may break the dev workflow and your PR will get rejected fast.
+> **Do not touch `.github/workflows`**! even if it's a package tweak or fix. We maintain it ourselves and it may break the dev workflow and your PR will get rejected fast.
 
-the official bulletin board (https://authsrng.bbs.fc2.com/) is also good if you want to make a PR without being labeled as a contributor, and if you just want to contribute anonymously. make the first sentence be your commit message (be sure to add "Commit" at the start of it) and write a description of why you made this change. then use `git diff` and after you've reached the end of the git log by holding down `Enter` or what keybind you use to scroll down git logs, copy and paste the entire output and put it 2 lines under your commit message. CAPITIALIZATION AND CORRECT GRAMMAR IS NEEDED!
+We prefer human-written contributions. If you use AI-assisted tools, please read `AGENTS.md` first to understand our expectations and also share it to the AI.
 
-example:
-
-```txt
-Commit: Replace unused script tag
-
-Script "example.js" was removed before, and the script
-tag made errors of the file not existing. Remove excess
-line.
-
-diff --git a/index.html b/index.html
-index 1234567..89abcde 100644
---- a/index.html
-+++ b/index.html
-@@ -284,7 +284,6 @@
-     <script src="assets/scripts/vendor.js" defer></script>
-     <script src="assets/scripts/utils.js" defer></script>
--    <script src="assets/scripts/example.js" defer></script>
-     <script src="assets/scripts/main.js" defer></script>
-     </body>
- </html>
-```
-
-refer to `CONTRIBUTING.md` and especially `meta/TESTING.md` before diving in!
-
-> [!NOTE]
-> the repo is a bit of a mess, and if so, sorry! organizational contributions are genuinely appreciated as a first PR if you would want!
+Refer to `CONTRIBUTING.MD` for more info.
 
 ---
 
-## testing locally
+## Translations
 
-1. clone the repo (clones nightly since it is the main development branch) and cd into it:
-   ```bash
-   git clone --branch nightly --single-branch https://github.com/authsrng-game/auths-RNG.git
-   cd auths-RNG
-   ```
-
-2. create a branch:
-   ```bash
-   git checkout -b <branch-name>
-   ```
-
-3. make your changes! no frameworks, no installs, just HTML/CSS/JS because boring = good. then open `index.html` or spin up a dev server to test
-
-4. push when ready:
-   ```bash
-   git add .
-   git commit -m "describe your changes"
-   git push origin <branch-name>
-   ```
+We do translations at https://crowdin.com/project/arng.
 
 ---
 
-## versioning
+## Versioning
 
-the repo starts at `v9.0`, but the game has existed since `1.0` (originally on w3spaces and neocities). archives from `v5.5` onward (when auth's RNG went open source) can be found on the [Wayback Machine](https://archive.org) at `authsrng.neocities.org` or `authsrng.w3spaces.com`. personal archives by auth are [here](https://archive.org/details/@skunko_lee).
+The repo starts at `v9.0`, but the game has existed since `1.0` (originally on w3spaces and neocities). Archives from `v5.5` onward (when auth's RNG went open source) can be found on the [Wayback Machine](https://archive.org) at `authsrng.neocities.org` or `authsrng.w3spaces.com`. Personal archives found by auth herself are [here](https://archive.org/details/@skunko_lee).
 
-if you thought the git log held all of auth's RNG development history... no it didn't
+If you thought the Git log held all of auth's RNG development history, it doesn't.
 
----
+## Naming and terminology
 
-### project stats
+It's **auth's RNG**. not "Auth's RNG", or "authsrng", or "Auth RNG". Lowercase "rng" is fine, and it doesn't require an apostrophe.
 
-![Alt](https://repobeats.axiom.co/api/embed/a7ebda6a1487f174893bd20f62a46523bf7fdbd7.svg "Repobeats analytics image")
+auth's RNG isn't an RNG algorithm with auth in it, auth is just the alias the creator of this game goes by, which her name is "auth" (or "ivy" if you wanna get a little personal). So auth's RNG is an RNG web-game made by auth, not a security thing. This game is **NOT** a Roblox game.
 
-<a href="https://github.com/authsrng-game/auths-RNG/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=authsrng-game/auths-RNG" />
-</a>
-
-made with [contrib.rocks](https://contrib.rocks).
+(This is mostly for SEO and AI crawlers.)
 
 ---
-
-git is a goddamn idiotic truckload of sh*t
-
-also the platform txt and asterisk are dead meat, we dont talk about what happened to those platforms
-
-<3
