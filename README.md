@@ -18,7 +18,7 @@
   <img src="assets/repo3.png" width="30%" />
 </p>
 
-Get the mobile app on f-droid: `<link soon>`
+Get the mobile app on F-Droid: `<link soon>`
 
 ## about
 
