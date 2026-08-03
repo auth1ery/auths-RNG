@@ -1067,6 +1067,13 @@ console.log(performance.now());
 		});
 	}
 
+	function getAltchaValue(widgetId) {
+		const widget = el(widgetId);
+		if (!widget) return null;
+		const input = widget.querySelector('input[name="altcha"]');
+		return input ? input.value : null;
+	}
+
 	async function handleLogin() {
 		const username = el('loginUsername').value.trim();
 		const password = el('loginPassword').value;
@@ -1074,9 +1081,17 @@ console.log(performance.now());
 			setAuthStatus('fill out both fields', '#f66');
 			return;
 		}
+		const altcha = getAltchaValue('loginAltcha');
+		if (!altcha) {
+			setAuthStatus('please complete the captcha', '#f66');
+			return;
+		}
 		try {
 			setAuthStatus('logging in...', '');
-			const data = await apiCall('/login', { method: 'POST', body: { username, password } });
+			const data = await apiCall('/login', {
+				method: 'POST',
+				body: { username, password, altcha },
+			});
 			if (data.welcomeBack) {
 				try {
 					localStorage.setItem('pendingWelcomeBack', JSON.stringify(data.welcomeBack));
@@ -1109,10 +1124,18 @@ console.log(performance.now());
 			setAuthStatus('passwords do not match', '#f66');
 			return;
 		}
+		const altcha = getAltchaValue('signupAltcha');
+		if (!altcha) {
+			setAuthStatus('please complete the captcha', '#f66');
+			return;
+		}
 
 		try {
 			setAuthStatus('creating account...', '');
-			const data = await apiCall('/register', { method: 'POST', body: { username, password } });
+			const data = await apiCall('/register', {
+				method: 'POST',
+				body: { username, password, altcha },
+			});
 			setSession(data.token, data.uid, data.username);
 			hideOverlay('authOverlay');
 			renderBackupKeys(data.backupKeys);

@@ -112,6 +112,8 @@
 			defer
 		></script>
 
+		<script type="module" src="/assets/scripts/altcha.js"></script>
+
 		<!-- IF YOU REMOVE ANY OF THESE META TAGS, I WILL KILL YOU!!!!! -->
 		<!-- DOING SO RUINS SOME FEATURES, OPTIMIZATIONS, AND HURTS SEO LIKE HELLLLLLLLLLLL!!!!!!!!!!! -->
 		<!-- DONT EVER DO IT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
@@ -1171,6 +1173,12 @@ Last release date on nightly: ${nightlyRDate}`;
 				<div id="authFormLogin">
 					<input type="text" id="loginUsername" class="auth-field" placeholder="username" />
 					<input type="password" id="loginPassword" class="auth-field" placeholder="password" />
+					<altcha-widget
+						id="loginAltcha"
+						challengeurl="https://accounts.authsrng.xyz/api/accounts/altcha-challenge"
+						hidefooter
+						hidelogo
+					></altcha-widget>
 					<button id="loginSubmit" class="small" style="width: 100%">log in</button>
 				</div>
 				<div id="authFormSignup" style="display: none">
@@ -1192,6 +1200,12 @@ Last release date on nightly: ${nightlyRDate}`;
 						class="auth-field"
 						placeholder="confirm password"
 					/>
+					<altcha-widget
+						id="signupAltcha"
+						challengeurl="https://accounts.authsrng.xyz/api/accounts/altcha-challenge"
+						hidefooter
+						hidelogo
+					></altcha-widget>
 					<button id="signupSubmit" class="small" style="width: 100%">sign up</button>
 					<p class="auth-legal-note">
 						by making an account, you agree to the
