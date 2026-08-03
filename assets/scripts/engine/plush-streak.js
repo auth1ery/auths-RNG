@@ -26,8 +26,12 @@
 			if (this._recentTiers.length > HISTORY_WINDOW) this._recentTiers.shift();
 
 			if (isSignificantWin) {
+				const wasAlreadyHot = this._hotPulseRolls > 0;
 				this._hotPulseRolls = HOT_PULSE_DURATION;
 				this._dryRuns.set(name, 0);
+				if (!wasAlreadyHot && root.PlushLog) {
+					root.PlushLog.milestone('streak', 'hot pulse ignited', { name: name });
+				}
 			} else {
 				if (this._hotPulseRolls > 0) this._hotPulseRolls--;
 				this._dryRuns.set(name, (this._dryRuns.get(name) || 0) + 1);

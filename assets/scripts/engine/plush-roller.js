@@ -1,9 +1,11 @@
 (function (root) {
 	const SCALE = 1000000000n;
 	const MULT_PRECISION = 1000000n;
+	const NOTICEABLE_DENOM = 100n;
 
 	function rarityTier(r) {
 		if (r.tier !== undefined) return r.tier;
+		if (r.denomEpic) return 5;
 		if (r.chance >= 0.5) return 0;
 		if (r.chance >= 0.1) return 1;
 		if (r.chance >= 0.01) return 2;
@@ -11,25 +13,44 @@
 		return 4;
 	}
 
-	class BeaconRoller {
+	function denomBig(r) {
+		if (r.denomEpic && root.Epic) return root.Epic.from(r.denomEpic).toBigInt();
+		return BigInt(Math.round(1 / r.chance));
+	}
+
+	class PlushRoller {
 		constructor(rng) {
 			this._rng = rng;
 			this.pity = new root.PityTracker();
 			this.streak = new root.StreakTracker();
+			this.momentum = new root.MomentumTracker();
+			this.fortune = new root.FortuneBank();
+			this.resistance = new root.ResistanceTracker();
+			this._rollCount = 0;
+			this._pendingFortuneMult = null;
 		}
+
+		spendFortune() {
+			this._pendingFortuneMult = this.fortune.spend();
+			return this._pendingFortuneMult;
+		}
+
 		_buildWeightTable(rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive) {
 			const weights = new Array(rarities.length);
 			let totalWeight = 0n;
 			const streakMult = this.streak.getLuckMultiplier();
+			const momentumMult = this.momentum.getMultiplier();
+			const fortuneMult = this._pendingFortuneMult || 1.0;
 
 			for (let i = 0; i < rarities.length; i++) {
 				const r = rarities[i];
-				const denom = Math.round(1 / r.chance);
-				const noticeable = denom >= 100;
+				const denom = denomBig(r);
+				const noticeable = denom >= NOTICEABLE_DENOM;
 
-				let mult = streakMult;
+				let mult = streakMult * momentumMult;
 				if (luckBoostActive && noticeable) mult *= 4;
 				if (noticeable) mult *= luckMultiplier;
+				if (noticeable) mult *= fortuneMult;
 
 				if (shopUpgrades.magnet > 0 && !inventoryData.has(r.name) && noticeable) {
 					mult *= 1 + shopUpgrades.magnet * 0.1;
@@ -37,13 +58,13 @@
 
 				if (noticeable) {
 					mult *= this.pity.getMultiplier(r);
-					mult *= this.streak.getDryRunMultiplier(r.name, r.chance);
+					mult *= this.streak.getDryRunMultiplier(r.name, r.chance || 1 / Number(denom));
+					mult *= this.resistance.getMultiplier(r);
 				}
 
-				const multBig = BigInt(Math.round(mult * Number(MULT_PRECISION)));
-				const denomBig = BigInt(denom);
-				let w = (SCALE * multBig) / (denomBig * MULT_PRECISION);
-				const minW = r.chance >= 0.01 ? 1n : 0n;
+				const multBig = BigInt(Math.max(0, Math.round(mult * Number(MULT_PRECISION))));
+				let w = (SCALE * multBig) / (denom * MULT_PRECISION);
+				const minW = denom < 10000n ? 1n : 0n;
 				if (w < minW) w = minW;
 
 				weights[i] = w;
@@ -52,6 +73,7 @@
 
 			return { weights: weights, totalWeight: totalWeight };
 		}
+
 		roll(rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive) {
 			const table = this._buildWeightTable(
 				rarities,
@@ -60,10 +82,11 @@
 				shopUpgrades,
 				luckBoostActive
 			);
+			this._pendingFortuneMult = null;
 			const weights = table.weights;
 			const totalWeight = table.totalWeight;
 
-			let rand = this._rng.intBelow(totalWeight);
+			let rand = this._rng.intBelow(totalWeight > 0n ? totalWeight : 1n);
 			let chosenIndex = rarities.length - 1;
 
 			for (let i = 0; i < rarities.length; i++) {
@@ -82,23 +105,46 @@
 				const r = rarities[i];
 				if (!this.pity.isEligible(r)) continue;
 				if (r.name === result.name) {
-					this.pity.reset(r.name);
+					this.pity.reset(r.name, wasPity);
 				} else {
 					this.pity.increment(r.name);
 				}
 			}
 
 			this.streak.record(rarityTier(result), result.name, rarityTier(result) >= 3);
+			this.momentum.record();
+			this.fortune.deposit();
+			this.resistance.onWin(result);
+			this.resistance.tick();
+
+			this._rollCount++;
+			if (root.PlushLog) {
+				root.PlushLog.debug('roll', 'roll #' + this._rollCount, {
+					result: result.name,
+					wasPity: wasPity,
+					combo: this.momentum.combo(),
+				});
+				if (rarityTier(result) >= 4) {
+					root.PlushLog.milestone('roll', 'rare pull landed', {
+						name: result.name,
+						rollNumber: this._rollCount,
+						wasPity: wasPity,
+					});
+				}
+			}
 
 			return {
 				rarity: result,
 				index: chosenIndex,
-				totalWeight: totalWeight,
+				totalWeight: totalWeight.toString(),
 				wasPity: wasPity,
 				pityCurrent: this.pity.get(result.name),
 				isHotPulse: isHotPulse,
+				comboMultiplier: this.momentum.getMultiplier(),
+				resistanceRemaining: this.resistance.remaining(result.name),
 			};
 		}
+
 		probabilityOf(rarity, rarities, luckMultiplier, inventoryData, shopUpgrades, luckBoostActive) {
 			const table = this._buildWeightTable(
 				rarities,
@@ -111,9 +157,18 @@
 				return r.name === rarity.name;
 			});
 			if (idx === -1) return 0;
+			if (table.totalWeight === 0n) return 0;
 			return Number(table.weights[idx]) / Number(table.totalWeight);
+		}
+
+		denomOf(rarity) {
+			return Number(denomBig(rarity));
+		}
+
+		denomOfString(rarity) {
+			return denomBig(rarity).toString();
 		}
 	}
 
-	root.BeaconRoller = BeaconRoller;
+	root.PlushRoller = PlushRoller;
 })(typeof window !== 'undefined' ? window : this);

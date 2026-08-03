@@ -264,7 +264,7 @@ function triggerConfetti() {
 let rollsSinceLastRare = 0;
 function updateRollsSinceRare(rolledRarity) {
 	const thresh = window.rareThreshold ?? 1000;
-	const denom = Math.round(1 / rolledRarity.chance);
+	const denom = Plush.denomOf(rolledRarity);
 	if (denom >= thresh) {
 		rollsSinceLastRare = 0;
 	} else {
@@ -281,7 +281,7 @@ function updateRollsSinceRare(rolledRarity) {
 }
 
 function calculateRarityPoints(rarity) {
-	const denom = Math.round(1 / rarity.chance);
+	const denom = Plush.denomOf(rarity);
 	return Math.ceil(denom / pointDivisor);
 }
 
@@ -872,73 +872,74 @@ const achievementsList = [
 		id: 'startingOut',
 		name: 'Starting Out',
 		subtitle: 'Get A Rarity Under 1/70',
-		check: (rarity) => rarity && 1 / rarity.chance < 70,
+		check: (rarity) => rarity && Plush.denomOf(rarity) < 70,
 	},
 	{
 		id: 'lucky',
 		name: 'Lucky',
 		subtitle: 'Get A Rarity Above 1/70',
-		check: (rarity) => rarity && 1 / rarity.chance > 70,
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 70,
 	},
 	{
 		id: 'spammin',
 		name: 'Spammin',
 		subtitle: 'Get A Rarity Above 1/300',
-		check: (rarity) => rarity && 1 / rarity.chance > 300,
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 300,
 	},
 	{
 		id: 'leftHanded',
 		name: 'Left Handed',
 		subtitle: 'Get A Rarity Above 1/600',
-		check: (rarity) => rarity && 1 / rarity.chance > 600,
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 600,
 	},
 	{
 		id: 'insanelyLucky',
 		name: 'Insanely Lucky',
 		subtitle: 'Get A Rarity Above 1/800',
-		check: (rarity) => rarity && 1 / rarity.chance > 800,
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 800,
+	},
+	// 'lunar' and 'summer' stay unchanged, they check .name not chance
+	{
+		id: 'jackpot',
+		name: 'Jackpot',
+		subtitle: 'Get A Rarity Above 5000',
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 5000,
+	},
+	{
+		id: 'antimatter',
+		name: 'Antimatter',
+		subtitle: 'Get A Rarity Above 15000',
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 15000,
+	},
+	{
+		id: 'oh-my-god',
+		name: 'oh my god',
+		subtitle: 'Get A Rarity Above 50000',
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 50000,
+	},
+	{
+		id: 'market-crash',
+		name: 'Market Crash',
+		subtitle: 'Get A Rarity Above 100000',
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 100000,
+	},
+	{
+		id: 'phenomenon',
+		name: 'Phenomenon',
+		subtitle: 'Get A Rarity Above 10000000',
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 10000000,
+	},
+	{
+		id: 'ok-bro',
+		name: 'ok bro',
+		subtitle: 'Get A Rarity Above 1000000000',
+		check: (rarity) => rarity && Plush.denomOf(rarity) > 1000000000,
 	},
 	{
 		id: 'lunar',
 		name: 'Lunar',
 		subtitle: 'Get Lunar',
 		check: (rarity) => rarity && rarity.name === 'Lunar',
-	},
-	{
-		id: 'jackpot',
-		name: 'Jackpot',
-		subtitle: 'Get A Rarity Above 5000',
-		check: (rarity) => rarity && 1 / rarity.chance > 5000,
-	},
-	{
-		id: 'antimatter',
-		name: 'Antimatter',
-		subtitle: 'Get A Rarity Above 15000',
-		check: (rarity) => rarity && 1 / rarity.chance > 15000,
-	},
-	{
-		id: 'oh-my-god',
-		name: 'oh my god',
-		subtitle: 'Get A Rarity Above 50000',
-		check: (rarity) => rarity && 1 / rarity.chance > 50000,
-	},
-	{
-		id: 'market-crash',
-		name: 'Market Crash',
-		subtitle: 'Get A Rarity Above 100000',
-		check: (rarity) => rarity && 1 / rarity.chance > 100000,
-	},
-	{
-		id: 'phenomenon',
-		name: 'Phenomenon',
-		subtitle: 'Get A Rarity Above 10000000',
-		check: (rarity) => rarity && 1 / rarity.chance > 10000000,
-	},
-	{
-		id: 'ok-bro',
-		name: 'ok bro',
-		subtitle: 'Get A Rarity Above 1000000000',
-		check: (rarity) => rarity && 1 / rarity.chance > 1000000000,
 	},
 	{
 		id: 'summer',
@@ -989,7 +990,7 @@ function saveAllData() {
 			duplicateLeft: duplicateRollsLeft,
 		})
 	);
-	Beacon.save();
+	Plush.save();
 }
 
 function loadAllData() {
@@ -1075,13 +1076,13 @@ function addToInventory(o, skipAutoSell = false) {
 	const rareThresh = window.rareThreshold || 1000;
 	const d = inventoryData.get(o.name);
 	if (d) {
-		const denom = Math.round(1 / o.chance);
+		const denom = Plush.denomOf(o);
 		d.liElement.classList.toggle('item-rare', denom >= rareThresh);
 	}
 
 	if (shopUpgrades.duplicate > 0) {
 		const dupeChance = shopUpgrades.duplicate / 100;
-		if (Beacon.float() < dupeChance) {
+		if (Plush.float() < dupeChance) {
 			const d2 = inventoryData.get(o.name);
 			if (d2) {
 				d2.count++;
@@ -1106,7 +1107,7 @@ function addToInventory(o, skipAutoSell = false) {
 
 	const autoSellThresh = window.autoSellThreshold || 0;
 	if (autoSellThresh > 0) {
-		const denom = Math.round(1 / o.chance);
+		const denom = Plush.denomOf(o);
 		if (denom < autoSellThresh) {
 			const d2 = inventoryData.get(o.name);
 			if (d2) {
@@ -1128,7 +1129,7 @@ function addToInventory(o, skipAutoSell = false) {
 
 function showRollChoice(res, onDone) {
 	const modal = document.getElementById('rollChoiceModal');
-	const denom = Math.round(1 / res.chance);
+	const denom = Plush.denomOf(res);
 	const pts = calculateRarityPoints(res);
 
 	document.getElementById('rollChoiceRarity').textContent = res.name;
@@ -1227,7 +1228,7 @@ setInterval(() => {
 
 function updateItem(d) {
 	const { rarityObj, count, liElement } = d;
-	const denom = Math.round(1 / rarityObj.chance);
+	const denom = Plush.denomOf(rarityObj);
 
 	liElement.textContent =
 		count > 1 ? `${rarityObj.name} (1/${denom}) x${count}` : `${rarityObj.name} (1/${denom})`;
@@ -1304,7 +1305,7 @@ function updateItem(d) {
 }
 
 function getRandomRarity() {
-	return Beacon.roll(rarities, globalLuckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
+	return Plush.roll(rarities, globalLuckMultiplier, inventoryData, shopUpgrades, luckBoostActive);
 }
 
 function checkAchievements(currentRarity) {
@@ -1338,7 +1339,7 @@ function updateAnomalyUI() {
 
 function awardAnomalyIfEligible(rarityObj) {
 	if (!rarityObj) return false;
-	const denom = Math.round(1 / rarityObj.chance);
+	const denom = Plush.denomOf(rarityObj);
 	if (denom > 10000) {
 		anomalies++;
 		try {
@@ -1707,6 +1708,7 @@ async function resetInventory() {
 	localStorage.removeItem('wishingWell');
 	localStorage.removeItem('gauntletData');
 	localStorage.removeItem('_beacon_v2');
+	localStorage.removeItem('_plush_v3');
 	localStorage.removeItem('mutationsUnlocked');
 	localStorage.removeItem('starmapData');
 	localStorage.removeItem('starmapUnlocked');
@@ -1895,7 +1897,7 @@ function spinAndReveal(res) {
 			addTrailItem(res.name, pillColor);
 		}
 
-		const denom = Math.round(1 / res.chance);
+		const denom = Plush.denomOf(res);
 		const thresh = window.rareThreshold || 1000;
 
 		if (denom >= thresh) {
@@ -1971,7 +1973,7 @@ function spinAndReveal(res) {
 }
 
 function maybeFireConfettiAndCutscene(res) {
-	const denom = Math.round(1 / res.chance);
+	const denom = Plush.denomOf(res);
 	const cutsceneThresh = window.cutsceneThreshold || 0;
 	const confettiThresh = window.confettiThreshold || 0;
 
@@ -2373,8 +2375,8 @@ function generateRunCard() {
 	)[0];
 
 	if (rarest) {
-		const d = Math.round(1 / rarest.rarityObj.chance).toLocaleString();
-		line(`rarest rolled    ${rarest.rarityObj.name} (1/${d})`);
+		const d = Plush.denomOfString(rarest.rarityObj);
+		line(`rarest rolled    ${rarest.rarityObj.name} (1/${Number(d).toLocaleString()})`);
 	} else {
 		line(`rarest rolled    (none yet)`);
 	}
@@ -2478,8 +2480,8 @@ document.addEventListener('DOMContentLoaded', function () {
 		// Clear and rebuild list
 		indexList.innerHTML = '';
 
-		// Sort rarities by chance (RAREST FIRST - smallest chance value = rarest)
-		const sortedRarities = [...rarities].sort((a, b) => a.chance - b.chance);
+		// balls
+		const sortedRarities = [...rarities].sort((a, b) => Plush.denomOf(b) - Plush.denomOf(a));
 
 		// Filter by search term
 		const filteredRarities = searchTerm
@@ -2518,7 +2520,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			const chance = document.createElement('div');
 			chance.className = 'index-item-chance';
-			const denom = Math.round(1 / rarity.chance);
+			const denom = Plush.denomOf(rarity);
 			chance.textContent = isUnlocked ? `1/${denom}` : '1/???';
 			chance.style.marginLeft = '12px';
 
@@ -2784,7 +2786,7 @@ function throwIntoWell() {
 	updatePointsDisplay();
 	createWellRipple();
 
-	const won = Beacon.float() < 0.4;
+	const won = Plush.float() < 0.4;
 
 	wellData.lastThrow = Date.now();
 	wellData.totalThrown += amount;

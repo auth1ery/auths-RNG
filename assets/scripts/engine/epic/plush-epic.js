@@ -56,8 +56,8 @@ class LRUCache {
 	removeLRU() {
 		if (!this.tail) return;
 
-		if (this.debug) {
-			console.log('[LRU] evict', this.tail.key);
+		if (this.debug && typeof root !== 'undefined' && root.PlushLog) {
+			root.PlushLog.trace('epic-lru', 'evict', this.tail.key);
 		}
 
 		this.cache.delete(this.tail.key);
@@ -436,7 +436,7 @@ class Epic {
 		const key = `pow:${this.toBigInt()}:${exp.toBigInt()}`;
 		const cached = OP_CACHE.get(key);
 		if (cached) {
-			if (Epic.DEBUG) console.log('[EpicCache] hit', key);
+			if (root.PlushLog) root.PlushLog.trace('epic', 'cache hit', key);
 			return cached;
 		}
 		let res = Epic.ONE;
@@ -448,13 +448,13 @@ class Epic {
 			e /= 2n;
 		}
 		OP_CACHE.set(key, res);
-		if (Epic.DEBUG) console.log('[EpicCache] set', key);
+		if (root.PlushLog) root.PlushLog.trace('epic', 'cache set', key);
 		return res;
 	}
 
 	sqrt() {
 		if (this.negative) {
-			if (Epic.DEBUG) console.warn('[Epic] sqrt of negative');
+			if (root.PlushLog) root.PlushLog.warn('epic', 'sqrt of negative attempted');
 			throw new Error('Square root of negative number');
 		}
 		if (this.isZero()) return Epic.ZERO;
@@ -667,14 +667,11 @@ Epic.ONE = new Epic(1);
 Epic.TWO = new Epic(2);
 Epic.TEN = new Epic(10);
 
-if (typeof module !== 'undefined' && module.exports) {
-	module.exports = Epic;
-	module.exports.default = Epic;
-	module.exports.Epic = Epic;
-}
-if (typeof window !== 'undefined') window.Epic = Epic;
-
-export default Epic;
-export { Epic };
-
-// use laterrrrrrrrrrrrrrrrrrrr
+(function (root) {
+	if (typeof module !== 'undefined' && module.exports) {
+		module.exports = Epic;
+		module.exports.default = Epic;
+		module.exports.Epic = Epic;
+	}
+	root.Epic = Epic;
+})(typeof window !== 'undefined' ? window : this);

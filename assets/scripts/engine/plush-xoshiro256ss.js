@@ -32,9 +32,7 @@
 
 			if (this._s.every((v) => v === 0n)) this._s[0] = 1n;
 
-			if (typeof __BEACON_DEBUG__ !== 'undefined') {
-				console.log('[RNG] reseeded');
-			}
+			if (root.PlushLog) root.PlushLog.trace('xoshiro', 'stream reseeded');
 		}
 		next() {
 			const s = this._s;
