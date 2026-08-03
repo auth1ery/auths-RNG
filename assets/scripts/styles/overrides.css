@@ -4722,11 +4722,13 @@ button.rainbow-glow-enabled:hover:not(:disabled) {
 altcha-widget {
 	display: block;
 	margin-bottom: 10px;
+
 	--altcha-color-base: var(--panel-bg);
 	--altcha-color-border: var(--border-color);
 	--altcha-color-text: var(--text-color);
 	--altcha-color-border-focus: var(--text-color);
 	--altcha-border-radius: 2px;
+
 	font-family: monospace;
 	font-size: 0.85em;
 }

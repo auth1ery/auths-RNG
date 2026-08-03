@@ -136,7 +136,7 @@ function Z(e) {
 	}
 }
 function aa() {
-	for (var e = 0, t = P; ; ) {
+	for (var e = 0, t = P; ;) {
 		if (8 === t.nodeType) {
 			var n = t.data;
 			if (n === zn) {
@@ -328,7 +328,7 @@ function Nt(e, t) {
 }
 function J(e, t = 1, n = !1) {
 	let r = O ? P : e;
-	for (var o; t--; ) ((o = r), (r = Be(r)));
+	for (var o; t--;) ((o = r), (r = Be(r)));
 	if (!O) return r;
 	var i = r?.nodeType;
 	if (n && 3 !== i) {
@@ -387,7 +387,7 @@ function so(e) {
 	}
 }
 function ca(e) {
-	for (var t = e.parent; null !== t; ) {
+	for (var t = e.parent; null !== t;) {
 		if (!(2 & t.f)) return t;
 		t = t.parent;
 	}
@@ -514,13 +514,13 @@ function ho(e) {
 }
 function vo(e, t = !1) {
 	var n = e.first;
-	for (e.first = e.last = null; null !== n; ) {
+	for (e.first = e.last = null; null !== n;) {
 		var r = n.next;
 		(64 & n.f ? (n.parent = null) : je(n, t), (n = r));
 	}
 }
 function ga(e) {
-	for (var t = e.first; null !== t; ) {
+	for (var t = e.first; null !== t;) {
 		var n = t.next;
 		(!(32 & t.f) && je(t), (t = n));
 	}
@@ -539,7 +539,7 @@ function je(e, t = !0) {
 		(e.next = e.prev = e.teardown = e.ctx = e.deps = e.fn = e.nodes_start = e.nodes_end = null));
 }
 function go(e, t) {
-	for (; null !== e; ) {
+	for (; null !== e;) {
 		var n = e === t ? null : Be(e);
 		(e.remove(), (e = n));
 	}
@@ -570,7 +570,7 @@ function mo(e, t, n) {
 	if (!(e.f & wt)) {
 		if (((e.f ^= wt), null !== e.transitions))
 			for (const r of e.transitions) (r.is_global || n) && t.push(r);
-		for (var r = e.first; null !== r; ) {
+		for (var r = e.first; null !== r;) {
 			var o = r.next;
 			(mo(r, t, !!(!!(r.f & Ur) || !!(32 & r.f)) && n), (r = o));
 		}
@@ -582,7 +582,7 @@ function On(e) {
 function _o(e, t) {
 	if (e.f & wt) {
 		((e.f ^= wt), !(e.f & le) && (e.f ^= le), Bt(e) && (_e(e, Ie), mr(e)));
-		for (var n = e.first; null !== n; ) {
+		for (var n = e.first; null !== n;) {
 			var r = n.next;
 			(_o(n, !!(!!(n.f & Ur) || !!(32 & n.f)) && t), (n = r));
 		}
@@ -669,7 +669,7 @@ function Bt(e) {
 	return !1;
 }
 function wa(e, t) {
-	for (var n = t; null !== n; ) {
+	for (var n = t; null !== n;) {
 		if (n.f & ir)
 			try {
 				return void n.fn(e);
@@ -787,7 +787,7 @@ function Ao() {
 	var e = nt;
 	try {
 		var t = 0;
-		for (nt = !0; Ft.length > 0; ) {
+		for (nt = !0; Ft.length > 0;) {
 			t++ > 1e3 && xa();
 			var n = Ft,
 				r = n.length;
@@ -821,7 +821,7 @@ function Ca(e) {
 }
 function mr(e) {
 	lr || ((lr = !0), queueMicrotask(Ao));
-	for (var t = (sr = e); null !== t.parent; ) {
+	for (var t = (sr = e); null !== t.parent;) {
 		var n = (t = t.parent).f;
 		if (96 & n) {
 			if (!(n & le)) return;
@@ -831,7 +831,7 @@ function mr(e) {
 	Ft.push(t);
 }
 function ka(e) {
-	for (var t = [], n = e; null !== n; ) {
+	for (var t = [], n = e; null !== n;) {
 		var r = n.f,
 			o = !!(96 & r);
 		if (!((o && !!(r & le)) || r & wt)) {
@@ -850,7 +850,7 @@ function ka(e) {
 			}
 		}
 		var a = n.parent;
-		for (n = n.next; null === n && null !== a; ) ((n = a.next), (a = a.parent));
+		for (n = n.next; null === n && null !== a;) ((n = a.next), (a = a.parent));
 	}
 	return t;
 }
@@ -1061,7 +1061,7 @@ function Pt(e) {
 			f = S;
 		(Re(null), qe(null));
 		try {
-			for (var d, h = []; null !== i; ) {
+			for (var d, h = []; null !== i;) {
 				var v = i.assignedSlot || i.parentNode || i.host || null;
 				try {
 					var p = i['__' + r];
@@ -1146,7 +1146,7 @@ function Pa(e, t) {
 		r = O,
 		o = P;
 	try {
-		for (var i = ve(n); i && (8 !== i.nodeType || i.data !== Mr); ) i = Be(i);
+		for (var i = ve(n); i && (8 !== i.nodeType || i.data !== Mr);) i = Be(i);
 		if (!i) throw bt;
 		(_t(!0), Ue(i), Et());
 		const r = Oo(e, { ...t, anchor: i });
@@ -1265,7 +1265,7 @@ function tt(e, t, n = !1, r = !1, o = !1) {
 			) {
 				if (O) {
 					P.data;
-					for (var o = Et(), l = o; null !== o && (8 !== o.nodeType || '' !== o.data); )
+					for (var o = Et(), l = o; null !== o && (8 !== o.nodeType || '' !== o.data);)
 						((l = o), (o = Be(o)));
 					if (null === o) throw (hr(), bt);
 					return (Ae(P, l), void (i = Ue(o)));
@@ -1274,7 +1274,7 @@ function tt(e, t, n = !1, r = !1, o = !1) {
 				n ? (s = `<svg>${s}</svg>`) : r && (s = `<math>${s}</math>`);
 				var c = Zr(s);
 				if (((n || r) && (c = ve(c)), Ae(ve(c), c.lastChild), n || r))
-					for (; ve(c); ) i.before(ve(c));
+					for (; ve(c);) i.before(ve(c));
 				else i.before(c);
 			}
 		} else O && Et();
@@ -1293,7 +1293,7 @@ function Ma(e, t, n) {
 		for (var o in n)
 			if (n[o]) r = r ? r + ' ' + o : o;
 			else if (r.length)
-				for (var i = o.length, a = 0; (a = r.indexOf(o, a)) >= 0; ) {
+				for (var i = o.length, a = 0; (a = r.indexOf(o, a)) >= 0;) {
 					var l = a + i;
 					(0 !== a && !jn.includes(r[a - 1])) || (l !== r.length && !jn.includes(r[l]))
 						? (a = l)
@@ -1362,7 +1362,7 @@ function Ba(e) {
 	var t = Bn.get(e.nodeName);
 	if (t) return t;
 	Bn.set(e.nodeName, (t = []));
-	for (var n, r = e, o = Element.prototype; o !== r; ) {
+	for (var n, r = e, o = Element.prototype; o !== r;) {
 		for (var i in (n = Hi(r))) n[i].set && t.push(i);
 		r = Xn(r);
 	}
