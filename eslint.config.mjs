@@ -5,7 +5,7 @@ export default [
 	js.configs.recommended,
 
 	{
-		ignores: ['eslint.config.mjs', 'lighthouserc.js'],
+		ignores: ['eslint.config.mjs', 'lighthouserc.js', 'assets/scripts/altcha.js'],
 	},
 
 	{

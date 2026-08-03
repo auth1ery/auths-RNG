@@ -41,7 +41,8 @@ jobs:
             "**/*.js" \
             "**/*.css" \
             "**/*.html" \
-            --ignore-path .gitignore
+            --ignore-path .gitignore \
+            --ignore-path .prettierignore
         continue-on-error: true
 
       - name: eslint --fix
