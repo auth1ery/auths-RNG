@@ -45,8 +45,8 @@ test.describe('auths-RNG smoke tests', () => {
 		expect(res.status()).toBe(200);
 	});
 
-	test('styles.css loads', async ({ page }) => {
-		const res = await page.goto(`${BASE_URL}/assets/scripts/styles/styles.css`);
+	test('overrides.css loads', async ({ page }) => {
+		const res = await page.goto(`${BASE_URL}/assets/scripts/styles/overrides.css`);
 		expect(res.status()).toBe(200);
 	});
 

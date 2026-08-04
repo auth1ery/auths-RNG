@@ -11,7 +11,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-
   lint:
     name: lint
     runs-on: ubuntu-latest
@@ -56,24 +55,15 @@ jobs:
           node-version: 24
 
       - name: install test tools
-        run: npm install --no-save @playwright/test serve wait-on
+        run: npm install --no-save @playwright/test
 
       - name: install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: serve game
-        run: npx serve . -p 8080 &
-
-      - name: wait for server
-        run: npx wait-on http://localhost:8080 --timeout 15000
-
-      - name: install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox
-
       - name: run smoke tests
         run: npx playwright test tests/smoke.spec.js --project=chromium
         env:
-          BASE_URL: http://localhost:8080
+          BASE_URL: https://nightly.authsrng.xyz
 
   lighthouse:
     name: lighthouse
