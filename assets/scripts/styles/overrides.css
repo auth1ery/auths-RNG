@@ -4742,3 +4742,19 @@ altcha-widget:empty::before {
 	font-size: 0.85em;
 	border-radius: 2px;
 }
+
+.altcha-attribution {
+	font-size: 0.72em;
+	opacity: 0.45;
+	text-align: center;
+	margin: -4px 0 10px;
+}
+
+.altcha-attribution a {
+	opacity: 0.85;
+	border-bottom: 1px dotted #444;
+}
+
+.altcha-attribution a:hover {
+	opacity: 1;
+}
