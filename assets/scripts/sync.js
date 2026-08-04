@@ -73,9 +73,9 @@
 	function scheduleFlush() {
 		if (flushTimer) return;
 		flushTimer = setTimeout(function () {
-			flushTimer = null;
-			flushDirty();
-		}, 2000);
+			flushTimer = null; // this is a new comment
+			flushDirty(); // HAHAHA DIRTY SO FUNNI
+		}, 2000); // 2000 auths
 	}
 
 	function markDirty(key, value) {
