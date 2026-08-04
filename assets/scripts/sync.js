@@ -40,6 +40,42 @@
 		'notifications',
 	];
 
+	var retryDelay = 2000;
+	var MAX_RETRY_DELAY = 60000;
+
+	function scheduleFlush(delay) {
+		if (flushTimer) return;
+		flushTimer = setTimeout(function () {
+			flushTimer = null;
+			flushDirty();
+		}, delay || 2000);
+	}
+
+	function markDirty(key, value) {
+		dirty[key] = value;
+		retryDelay = 2000;
+		scheduleFlush(retryDelay);
+	}
+
+	var lastToken = getToken();
+
+	document.addEventListener('authchange', function () {
+		var token = getToken();
+		if (token !== lastToken) {
+			dirty = Object.create(null);
+			if (flushTimer) {
+				clearTimeout(flushTimer);
+				flushTimer = null;
+			}
+			retryDelay = 2000;
+			lastToken = token;
+		}
+		if (token && !patched) {
+			pullSync();
+			patchStorage();
+		}
+	});
+
 	function getToken() {
 		return localStorage.getItem(TOKEN_KEY);
 	}
@@ -70,19 +106,6 @@
 		return SYNC_KEYS.indexOf(key) !== -1;
 	}
 
-	function scheduleFlush() {
-		if (flushTimer) return;
-		flushTimer = setTimeout(function () {
-			flushTimer = null; // this is a new comment
-			flushDirty(); // HAHAHA DIRTY SO FUNNI
-		}, 2000); // 2000 auths
-	}
-
-	function markDirty(key, value) {
-		dirty[key] = value;
-		scheduleFlush();
-	}
-
 	function flushDirty() {
 		var keys = Object.keys(dirty);
 		if (!keys.length) return;
@@ -109,6 +132,12 @@
 			keepalive: true,
 		})
 			.then(function (r) {
+				if (r.status === 401) {
+					origRemoveItem.call(localStorage, TOKEN_KEY);
+					lastToken = null;
+					document.dispatchEvent(new CustomEvent('syncAuthExpired'));
+					return;
+				}
 				if (!r.ok) throw new Error('push failed');
 				var snap = loadSnapshot();
 				Object.keys(snapshotUpdate).forEach(function (key) {
@@ -120,7 +149,8 @@
 				Object.keys(snapshotUpdate).forEach(function (key) {
 					if (!(key in dirty)) dirty[key] = snapshotUpdate[key];
 				});
-				scheduleFlush();
+				retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY);
+				scheduleFlush(retryDelay);
 			});
 	}
 
@@ -205,6 +235,13 @@
 			return;
 		}
 
+		if (xhr.status === 401) {
+			origRemoveItem.call(localStorage, TOKEN_KEY);
+			lastToken = null;
+			document.dispatchEvent(new CustomEvent('syncAuthExpired'));
+			return;
+		}
+
 		if (xhr.status !== 200) return;
 
 		var data;
@@ -249,7 +286,11 @@
 	function init() {
 		if (!getToken()) return;
 
-		createOverlay();
+		if (document.body) {
+			createOverlay();
+		} else {
+			document.addEventListener('DOMContentLoaded', createOverlay, { once: true });
+		}
 
 		try {
 			pullSync();
@@ -275,11 +316,16 @@
 		});
 	}
 
-	document.addEventListener('authchange', function () {
-		if (getToken() && !patched) {
-			pullSync();
-			patchStorage();
+	window.addEventListener('storage', function (e) {
+		if (e.storageArea !== localStorage) return;
+		if (!e.key || !isSyncKey(e.key)) return;
+		var snap = loadSnapshot();
+		if (e.newValue === null) {
+			delete snap[e.key];
+		} else {
+			snap[e.key] = e.newValue;
 		}
+		saveSnapshot(snap);
 	});
 
 	init();
