@@ -40,6 +40,42 @@
 		'notifications',
 	];
 
+	var retryDelay = 2000;
+	var MAX_RETRY_DELAY = 60000;
+
+	function scheduleFlush(delay) {
+		if (flushTimer) return;
+		flushTimer = setTimeout(function () {
+			flushTimer = null;
+			flushDirty();
+		}, delay || 2000);
+	}
+
+	function markDirty(key, value) {
+		dirty[key] = value;
+		retryDelay = 2000;
+		scheduleFlush(retryDelay);
+	}
+
+	var lastToken = getToken();
+
+	document.addEventListener('authchange', function () {
+		var token = getToken();
+		if (token !== lastToken) {
+			dirty = Object.create(null);
+			if (flushTimer) {
+				clearTimeout(flushTimer);
+				flushTimer = null;
+			}
+			retryDelay = 2000;
+			lastToken = token;
+		}
+		if (token && !patched) {
+			pullSync();
+			patchStorage();
+		}
+	});
+
 	function getToken() {
 		return localStorage.getItem(TOKEN_KEY);
 	}
@@ -70,19 +106,6 @@
 		return SYNC_KEYS.indexOf(key) !== -1;
 	}
 
-	function scheduleFlush() {
-		if (flushTimer) return;
-		flushTimer = setTimeout(function () {
-			flushTimer = null;
-			flushDirty();
-		}, 2000);
-	}
-
-	function markDirty(key, value) {
-		dirty[key] = value;
-		scheduleFlush();
-	}
-
 	function flushDirty() {
 		var keys = Object.keys(dirty);
 		if (!keys.length) return;
@@ -109,6 +132,12 @@
 			keepalive: true,
 		})
 			.then(function (r) {
+				if (r.status === 401) {
+					origRemoveItem.call(localStorage, TOKEN_KEY);
+					lastToken = null;
+					document.dispatchEvent(new CustomEvent('syncAuthExpired'));
+					return;
+				}
 				if (!r.ok) throw new Error('push failed');
 				var snap = loadSnapshot();
 				Object.keys(snapshotUpdate).forEach(function (key) {
@@ -120,7 +149,8 @@
 				Object.keys(snapshotUpdate).forEach(function (key) {
 					if (!(key in dirty)) dirty[key] = snapshotUpdate[key];
 				});
-				scheduleFlush();
+				retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY);
+				scheduleFlush(retryDelay);
 			});
 	}
 
@@ -156,6 +186,42 @@
 			'syncing save...',
 			'fetching your rarities...',
 			'grabbing your data...',
+			'connecting to the server...',
+			'asking nicely for data...',
+			'crunching up your data for you...',
+			'restoring your session...',
+			'petting the server cat...',
+			'looking under the couch for your save...',
+			'warming up the servers...',
+			'loading loading loading...',
+			'verifying your progress...',
+			'looking through the database...',
+			'giving your save a high five...',
+			'kindly asking the server to cooperate',
+			'finding where you left off...',
+			'opening the vault...',
+			'loading the fun part...',
+			'waking up sleepy servers...',
+			'consulting the data goblins...',
+			'assembling the bits...',
+			'watering the database...',
+			'checking for updates...',
+			'loading your profile...',
+			'finding the good stuff...',
+			'making sure everything is where you left it...',
+			'flipping the on switch...',
+			'checking the corners for your save...',
+			'reading your save file...',
+			'connecting the dots...',
+			'stirring the data soup...',
+			'getting comfy...',
+			'loading awesomeness...',
+			'just one more moment...',
+			'looking for extra luck...',
+			'finding the values...',
+			'doing important computer things...',
+			'almost ready...',
+			'packing everything up for you...',
 		];
 		var msg = messages[Math.floor(Math.random() * messages.length)];
 
@@ -205,6 +271,13 @@
 			return;
 		}
 
+		if (xhr.status === 401) {
+			origRemoveItem.call(localStorage, TOKEN_KEY);
+			lastToken = null;
+			document.dispatchEvent(new CustomEvent('syncAuthExpired'));
+			return;
+		}
+
 		if (xhr.status !== 200) return;
 
 		var data;
@@ -249,7 +322,11 @@
 	function init() {
 		if (!getToken()) return;
 
-		createOverlay();
+		if (document.body) {
+			createOverlay();
+		} else {
+			document.addEventListener('DOMContentLoaded', createOverlay, { once: true });
+		}
 
 		try {
 			pullSync();
@@ -275,11 +352,16 @@
 		});
 	}
 
-	document.addEventListener('authchange', function () {
-		if (getToken() && !patched) {
-			pullSync();
-			patchStorage();
+	window.addEventListener('storage', function (e) {
+		if (e.storageArea !== localStorage) return;
+		if (!e.key || !isSyncKey(e.key)) return;
+		var snap = loadSnapshot();
+		if (e.newValue === null) {
+			delete snap[e.key];
+		} else {
+			snap[e.key] = e.newValue;
 		}
+		saveSnapshot(snap);
 	});
 
 	init();

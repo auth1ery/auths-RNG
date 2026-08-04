@@ -15,15 +15,9 @@ const rarities = [
 		chance: 1 / 1000000000000000,
 		style: `
     loop {
-      color: #FF0000
-      wait: 0.1
-      switch color: #FFA500
+      color: #FFA500
       wait: 0.1
       switch color: #FFFF00
-      wait: 0.1
-      switch color: #0000FF
-      wait: 0.1
-      switch color: #FFC0CB
     }
   `,
 	},
@@ -629,7 +623,7 @@ const rarities = [
 	{ name: 'Indium', chance: 1 / 6125 },
 	{ name: 'Interfere', chance: 1 / 6100 },
 	{ name: 'Tin', chance: 1 / 6075 },
-	{ name: 'cloudy', chance: 1 / 6050 },
+	{ name: 'cloudy', chance: 1 / 6050, style: 'color: #b7bccb' },
 	{ name: 'Antimony', chance: 1 / 6025 },
 	{ name: 'Intermission', chance: 1 / 6000 },
 	{ name: 'Tellurium', chance: 1 / 5975 },
@@ -818,7 +812,7 @@ const rarities = [
 	{ name: 'Lunarity', chance: 1 / 1700 },
 	{ name: 'Swan', chance: 1 / 1690 },
 	{ name: 'California', chance: 1 / 1675 },
-	{ name: 'Twilight', chance: 1 / 1650 },
+	{ name: 'Twilight', chance: 1 / 1650, style: 'color: #8b51ff' },
 	{ name: 'Cone', chance: 1 / 1640 },
 	{ name: 'Iris', chance: 1 / 1625 },
 	{ name: 'Constellation', chance: 1 / 1600 },

@@ -167,12 +167,70 @@
 			pointsColor: '#ffb86b',
 			achievementBg: '#1a2a1a',
 			achievementBorder: '#2a4a2a',
+			gauntletEasy: '#8d8',
+			gauntletMedium: '#78f',
+			gauntletHard: '#f77',
+			gauntletInsane: '#d4f',
+			gauntletGodlike: '#ffd700',
+			gauntletInferno: '#ff4500',
+			gauntletVoid: '#96f',
+			gauntletAbyss: '#0cc',
+			gauntletEclipseGate: '#f80',
+			wellResultAmount: '#4a4',
+			notifBadge: '#dcdcdc',
+			activePotionTimer: '#fa6',
 		},
 		settings: {
 			radius: 2,
+			radiusTopLeft: null,
+			radiusTopRight: null,
+			radiusBottomLeft: null,
+			radiusBottomRight: null,
+			radiusIndependent: false,
+			buttonRadius: null,
+			rollBtnRadius: null,
 			borderWidth: 1,
+			borderStyle: 'solid',
+			shadowDepth: 0,
 			textSize: 16,
 			font: 'default',
+			customFontName: '',
+			customFontUrl: '',
+			headerScale: 1,
+			bodyScale: 1,
+			smallScale: 1,
+			rollBtnTextScale: 1,
+			headerLetterSpacing: 0.06,
+			headerWeight: 400,
+			headerCase: 'none',
+			buttonCase: 'lowercase',
+			spacingScale: 1,
+			colorMode: {
+				bgColor: 'solid',
+				panelBg: 'solid',
+				buttonBg: 'solid',
+				achievementBg: 'solid',
+			},
+			gradientOverrides: {
+				bgColor: { from: '#0e0e0e', to: '#1a1a2e', angle: 135 },
+				panelBg: { from: '#111111', to: '#1a1a1a', angle: 135 },
+				buttonBg: { from: '#1a1a1a', to: '#242424', angle: 135 },
+				achievementBg: { from: '#1a2a1a', to: '#2a4a2a', angle: 135 },
+			},
+			easing: 'default',
+			perElementMotion: {
+				hoverGlow: true,
+				rainbowShimmer: true,
+				pageTransition: true,
+				achievementPulse: true,
+			},
+			noiseEnabled: false,
+			noiseIntensity: 5,
+			vignetteEnabled: false,
+			vignetteIntensity: 30,
+			bgPatternSize: 20,
+			bgPatternColor: 'auto',
+			bgPatternOpacity: 5,
 			inventoryStyle: 'compact',
 			spinnerStyle: 'slot',
 			rollBtnSize: 'normal',
@@ -257,6 +315,18 @@
 			__v: PRESET_SCHEMA_VERSION,
 			vars: deepMerge(PRESET_DEFAULTS.vars, p.vars || {}),
 			settings: deepMerge(PRESET_DEFAULTS.settings, p.settings || {}),
+			iconPack: 'default',
+			potionPack: 'default',
+			iconOverrides: {
+				notifBell: '',
+				friendsBtn: '',
+				messagesBtn: '',
+				wellVisual: '',
+				seasonWinter: '',
+				seasonSpring: '',
+				seasonSummer: '',
+				seasonFall: '',
+			},
 		};
 		return merged;
 	}
@@ -337,6 +407,41 @@
 			tx.oncomplete = res;
 			tx.onerror = () => rej(tx.error);
 		});
+	}
+
+	async function idbSetFont(name, buffer) {
+		const db = await openIDB();
+		return new Promise((res, rej) => {
+			const tx = db.transaction(IDB_STORE, 'readwrite');
+			tx.objectStore(IDB_STORE).put(buffer, 'font-' + name);
+			tx.oncomplete = res;
+			tx.onerror = () => rej(tx.error);
+		});
+	}
+
+	async function idbGetFont(name) {
+		return idbGet('font-' + name);
+	}
+
+	let _loadedFontFace = null;
+
+	async function applyCustomFont(name) {
+		if (!name) return;
+		try {
+			const buf = await idbGetFont(name);
+			if (!buf) return;
+			if (_loadedFontFace) {
+				document.fonts.delete(_loadedFontFace);
+				_loadedFontFace = null;
+			}
+			const face = new FontFace('authsrng-custom', buf);
+			await face.load();
+			document.fonts.add(face);
+			_loadedFontFace = face;
+			document.documentElement.style.setProperty('--font-body', 'authsrng-custom, monospace');
+		} catch (e) {
+			console.error('custom font load failed', e);
+		}
 	}
 
 	function el(id) {
@@ -470,6 +575,13 @@
 				pointsColor: val('te-pointsColor'),
 				achievementBg: val('te-achievementBg'),
 				achievementBorder: val('te-achievementBorder'),
+				gauntletEasy: val('te-gauntletEasy'),
+				gauntletMedium: val('te-gauntletMedium'),
+				gauntletHard: val('te-gauntletHard'),
+				gauntletInsane: val('te-gauntletInsane'),
+				gauntletGodlike: val('te-gauntletGodlike'),
+				wellResultAmount: val('te-wellResultAmount'),
+				notifBadge: val('te-notifBadge'),
 			},
 			settings: {
 				radius: intVal('te-radius', 2),
@@ -507,10 +619,88 @@
 				bgGradientType: val('te-bgGradientType') || 'linear',
 				glowEnabled: checked('te-glowEnabled'),
 				glowColor: val('te-glowColor'),
+				iconPack: val('te-iconPack') || 'default',
+				potionPack: val('te-potionPack') || 'default',
+				iconOverrides: {
+					notifBell: val('te-icon-notifBell'),
+					friendsBtn: val('te-icon-friendsBtn'),
+					messagesBtn: val('te-icon-messagesBtn'),
+					wellVisual: val('te-icon-wellVisual'),
+					seasonWinter: val('te-icon-seasonWinter'),
+					seasonSpring: val('te-icon-seasonSpring'),
+					seasonSummer: val('te-icon-seasonSummer'),
+					seasonFall: val('te-icon-seasonFall'),
+				},
 				glowCount: intVal('te-glowCount', 3),
 				glowSize: intVal('te-glowSize', 300),
 				glowOpacity: intVal('te-glowOpacity', 20),
 				glowSpeed: intVal('te-glowSpeed', 20),
+				gauntletEasy: val('te-gauntletEasy'),
+				gauntletMedium: val('te-gauntletMedium'),
+				gauntletHard: val('te-gauntletHard'),
+				gauntletInsane: val('te-gauntletInsane'),
+				gauntletGodlike: val('te-gauntletGodlike'),
+				wellResultAmount: val('te-wellResultAmount'),
+				notifBadge: val('te-notifBadge'),
+				spacingScale: parseFloat(el('te-spacingScale') ? el('te-spacingScale').value : 1),
+				headerScale: parseFloat(el('te-headerScale') ? el('te-headerScale').value : 1),
+				bodyScale: parseFloat(el('te-bodyScale') ? el('te-bodyScale').value : 1),
+				headerLetterSpacing: parseFloat(
+					el('te-headerLetterSpacing') ? el('te-headerLetterSpacing').value : 0.06
+				),
+				headerWeight: intVal('te-headerWeight', 400),
+				headerCase: val('te-headerCase') || 'none',
+				colorMode: {
+					bgColor: val('te-colorMode-bgColor') || 'solid',
+					panelBg: val('te-colorMode-panelBg') || 'solid',
+					buttonBg: val('te-colorMode-buttonBg') || 'solid',
+					achievementBg: val('te-colorMode-achievementBg') || 'solid',
+				},
+				gradientOverrides: {
+					bgColor: {
+						from: val('te-gradFrom-bgColor') || '#0e0e0e',
+						to: val('te-gradTo-bgColor') || '#1a1a2e',
+						angle: intVal('te-gradAngle-bgColor', 135),
+					},
+					panelBg: {
+						from: val('te-gradFrom-panelBg') || '#111111',
+						to: val('te-gradTo-panelBg') || '#1a1a1a',
+						angle: intVal('te-gradAngle-panelBg', 135),
+					},
+					buttonBg: {
+						from: val('te-gradFrom-buttonBg') || '#1a1a1a',
+						to: val('te-gradTo-buttonBg') || '#242424',
+						angle: intVal('te-gradAngle-buttonBg', 135),
+					},
+					achievementBg: {
+						from: val('te-gradFrom-achievementBg') || '#1a2a1a',
+						to: val('te-gradTo-achievementBg') || '#2a4a2a',
+						angle: intVal('te-gradAngle-achievementBg', 135),
+					},
+				},
+				buttonCase: val('te-buttonCase') || 'lowercase',
+				radiusIndependent: checked('te-radiusIndependent'),
+				radiusTopLeft: intVal('te-radiusTopLeft', 2),
+				radiusTopRight: intVal('te-radiusTopRight', 2),
+				radiusBottomLeft: intVal('te-radiusBottomLeft', 2),
+				radiusBottomRight: intVal('te-radiusBottomRight', 2),
+				buttonRadius: intVal('te-buttonRadius', 2),
+				rollBtnRadius: intVal('te-rollBtnRadius', 2),
+				borderStyle: val('te-borderStyle') || 'solid',
+				shadowDepth: intVal('te-shadowDepth', 0),
+				easing: val('te-easing') || 'default',
+				perElementMotion: {
+					hoverGlow: checked('te-motionHoverGlow'),
+					rainbowShimmer: checked('te-motionRainbowShimmer'),
+					pageTransition: checked('te-motionPageTransition'),
+					achievementPulse: checked('te-motionAchievementPulse'),
+				},
+				noiseEnabled: checked('te-noiseEnabled'),
+				noiseIntensity: intVal('te-noiseIntensity', 5),
+				vignetteEnabled: checked('te-vignetteEnabled'),
+				vignetteIntensity: intVal('te-vignetteIntensity', 30),
+				bgPatternSize: intVal('te-bgPatternSize', 20),
+				bgPatternOpacity: intVal('te-bgPatternOpacity', 5),
 				startAnim: {
 					enabled: el('te-sa-enabled') ? el('te-sa-enabled').checked : true,
 					preset: el('te-sa-preset') ? el('te-sa-preset').value : 'default',
@@ -607,9 +797,36 @@
 			'te-wackyText': s.wacky,
 			'te-chaosMode': s.chaos,
 		};
+		const colorModeMap = s.colorMode || {};
+		['bgColor', 'panelBg', 'buttonBg', 'achievementBg'].forEach((key) => {
+			if (el('te-colorMode-' + key)) el('te-colorMode-' + key).value = colorModeMap[key] || 'solid';
+			const g = (s.gradientOverrides && s.gradientOverrides[key]) || {};
+			if (el('te-gradFrom-' + key)) el('te-gradFrom-' + key).value = g.from || v[key] || '#0e0e0e';
+			if (el('te-gradTo-' + key)) el('te-gradTo-' + key).value = g.to || '#1a1a2e';
+			if (el('te-gradAngle-' + key)) {
+				el('te-gradAngle-' + key).value = g.angle ?? 135;
+				el('te-gradAngleVal-' + key).textContent = g.angle ?? 135;
+			}
+		});
+		syncAllColorModeUI();
 		for (const [id, val] of Object.entries(checks)) {
 			if (el(id)) el(id).checked = !!val;
 		}
+		if (el('te-iconPack')) el('te-iconPack').value = s.iconPack || 'default';
+		if (el('te-potionPack')) el('te-potionPack').value = s.potionPack || 'default';
+		const iconOv = s.iconOverrides || {};
+		[
+			'notifBell',
+			'friendsBtn',
+			'messagesBtn',
+			'wellVisual',
+			'seasonWinter',
+			'seasonSpring',
+			'seasonSummer',
+			'seasonFall',
+		].forEach((k) => {
+			if (el('te-icon-' + k)) el('te-icon-' + k).value = iconOv[k] || '';
+		});
 
 		if (el('te-confettiThreshold')) el('te-confettiThreshold').value = s.confettiThreshold ?? 0;
 		if (el('te-rareThreshold')) el('te-rareThreshold').value = s.rareThreshold ?? 1000;
@@ -645,31 +862,170 @@
 			el('te-blurBorderOpacity').value = s.blurBorderOpacity ?? 8;
 			el('te-blurBorderOpacityVal').textContent = s.blurBorderOpacity ?? 8;
 		}
+		if (el('te-gauntletEasy') && v.gauntletEasy) el('te-gauntletEasy').value = v.gauntletEasy;
+		if (el('te-gauntletMedium') && v.gauntletMedium)
+			el('te-gauntletMedium').value = v.gauntletMedium;
+		if (el('te-gauntletHard') && v.gauntletHard) el('te-gauntletHard').value = v.gauntletHard;
+		if (el('te-gauntletInsane') && v.gauntletInsane)
+			el('te-gauntletInsane').value = v.gauntletInsane;
+		if (el('te-gauntletGodlike') && v.gauntletGodlike)
+			el('te-gauntletGodlike').value = v.gauntletGodlike;
+		if (el('te-wellResultAmount') && v.wellResultAmount)
+			el('te-wellResultAmount').value = v.wellResultAmount;
+		if (el('te-notifBadge') && v.notifBadge) el('te-notifBadge').value = v.notifBadge;
+
+		if (el('te-spacingScale')) {
+			el('te-spacingScale').value = s.spacingScale ?? 1;
+			el('te-spacingScaleVal').textContent = (s.spacingScale ?? 1).toFixed(2);
+		}
+		if (el('te-headerScale')) {
+			el('te-headerScale').value = s.headerScale ?? 1;
+			el('te-headerScaleVal').textContent = (s.headerScale ?? 1).toFixed(2);
+		}
+		if (el('te-bodyScale')) {
+			el('te-bodyScale').value = s.bodyScale ?? 1;
+			el('te-bodyScaleVal').textContent = (s.bodyScale ?? 1).toFixed(2);
+		}
+		if (el('te-headerLetterSpacing')) {
+			el('te-headerLetterSpacing').value = s.headerLetterSpacing ?? 0.06;
+			el('te-headerLetterSpacingVal').textContent = (s.headerLetterSpacing ?? 0.06).toFixed(2);
+		}
+		if (el('te-headerWeight')) el('te-headerWeight').value = s.headerWeight ?? 400;
+		if (el('te-headerCase')) el('te-headerCase').value = s.headerCase || 'none';
+		if (el('te-buttonCase')) el('te-buttonCase').value = s.buttonCase || 'lowercase';
+
+		if (el('te-radiusIndependent')) el('te-radiusIndependent').checked = !!s.radiusIndependent;
+		if (el('te-radiusTopLeft')) {
+			el('te-radiusTopLeft').value = s.radiusTopLeft ?? 2;
+			el('te-radiusTopLeftVal').textContent = s.radiusTopLeft ?? 2;
+		}
+		if (el('te-radiusTopRight')) {
+			el('te-radiusTopRight').value = s.radiusTopRight ?? 2;
+			el('te-radiusTopRightVal').textContent = s.radiusTopRight ?? 2;
+		}
+		if (el('te-radiusBottomLeft')) {
+			el('te-radiusBottomLeft').value = s.radiusBottomLeft ?? 2;
+			el('te-radiusBottomLeftVal').textContent = s.radiusBottomLeft ?? 2;
+		}
+		if (el('te-radiusBottomRight')) {
+			el('te-radiusBottomRight').value = s.radiusBottomRight ?? 2;
+			el('te-radiusBottomRightVal').textContent = s.radiusBottomRight ?? 2;
+		}
+		if (el('te-buttonRadius')) {
+			el('te-buttonRadius').value = s.buttonRadius ?? 2;
+			el('te-buttonRadiusVal').textContent = s.buttonRadius ?? 2;
+		}
+		if (el('te-rollBtnRadius')) {
+			el('te-rollBtnRadius').value = s.rollBtnRadius ?? 2;
+			el('te-rollBtnRadiusVal').textContent = s.rollBtnRadius ?? 2;
+		}
+		if (el('te-borderStyle')) el('te-borderStyle').value = s.borderStyle || 'solid';
+		if (el('te-shadowDepth')) {
+			el('te-shadowDepth').value = s.shadowDepth ?? 0;
+			el('te-shadowDepthVal').textContent = s.shadowDepth ?? 0;
+		}
+		if (el('te-easing')) el('te-easing').value = s.easing || 'default';
+
+		const motion = s.perElementMotion || {};
+		if (el('te-motionHoverGlow')) el('te-motionHoverGlow').checked = motion.hoverGlow ?? true;
+		if (el('te-motionRainbowShimmer'))
+			el('te-motionRainbowShimmer').checked = motion.rainbowShimmer ?? true;
+		if (el('te-motionPageTransition'))
+			el('te-motionPageTransition').checked = motion.pageTransition ?? true;
+		if (el('te-motionAchievementPulse'))
+			el('te-motionAchievementPulse').checked = motion.achievementPulse ?? true;
+
+		if (el('te-noiseEnabled')) el('te-noiseEnabled').checked = !!s.noiseEnabled;
+		if (el('te-noiseIntensity')) {
+			el('te-noiseIntensity').value = s.noiseIntensity ?? 5;
+			el('te-noiseIntensityVal').textContent = s.noiseIntensity ?? 5;
+		}
+		if (el('te-vignetteEnabled')) el('te-vignetteEnabled').checked = !!s.vignetteEnabled;
+		if (el('te-vignetteIntensity')) {
+			el('te-vignetteIntensity').value = s.vignetteIntensity ?? 30;
+			el('te-vignetteIntensityVal').textContent = s.vignetteIntensity ?? 30;
+		}
+		if (el('te-bgPatternSize')) {
+			el('te-bgPatternSize').value = s.bgPatternSize ?? 20;
+			el('te-bgPatternSizeVal').textContent = s.bgPatternSize ?? 20;
+		}
+		if (el('te-bgPatternOpacity')) {
+			el('te-bgPatternOpacity').value = s.bgPatternOpacity ?? 5;
+			el('te-bgPatternOpacityVal').textContent = s.bgPatternOpacity ?? 5;
+		}
+
+		syncRadiusIndependentUI();
 		updateContrastBadges();
+	}
+
+	function resolveColorVar(key, vars, settings) {
+		const mode = settings.colorMode && settings.colorMode[key];
+		if (mode === 'gradient' && settings.gradientOverrides && settings.gradientOverrides[key]) {
+			const g = settings.gradientOverrides[key];
+			return `linear-gradient(${g.angle}deg, ${g.from}, ${g.to})`;
+		}
+		return vars[key];
+	}
+
+	function syncRadiusIndependentUI() {
+		const enabled = el('te-radiusIndependent')?.checked;
+		const controls = el('te-independentRadiusControls');
+		if (controls) controls.style.display = enabled ? 'block' : 'none';
 	}
 
 	function applyCSSVars(vars, borderWidth, settings) {
 		const root = document.documentElement;
 		const bw = (borderWidth ?? 1) + 'px';
-		const map = {
-			'--bg-color': vars.bgColor,
+
+		const flatMap = {
 			'--text-color': vars.textColor,
-			'--panel-bg': vars.panelBg,
 			'--overlay-bg': vars.overlayBg,
 			'--border-color': vars.borderColor,
-			'--button-bg': vars.buttonBg,
-			'--button-hover': vars.buttonBg,
 			'--button-text': vars.textColor,
 			'--input-bg': vars.buttonBg,
 			'--link-border': vars.borderColor,
 			'--accent-color': vars.accentColor,
-			'--achievement-bg': vars.achievementBg,
 			'--achievement-border': vars.achievementBorder,
+			'--gauntlet-easy': vars.gauntletEasy,
+			'--gauntlet-medium': vars.gauntletMedium,
+			'--gauntlet-hard': vars.gauntletHard,
+			'--gauntlet-insane': vars.gauntletInsane,
+			'--gauntlet-godlike': vars.gauntletGodlike,
+			'--gauntlet-inferno': vars.gauntletInferno,
+			'--gauntlet-void': vars.gauntletVoid,
+			'--gauntlet-abyss': vars.gauntletAbyss,
+			'--gauntlet-eclipse': vars.gauntletEclipseGate,
+			'--well-result-amount': vars.wellResultAmount,
+			'--notif-badge': vars.notifBadge,
+			'--active-potion-timer': vars.activePotionTimer,
 		};
-		for (const [k, v] of Object.entries(map)) {
+		for (const [k, v] of Object.entries(flatMap)) {
 			if (v) root.style.setProperty(k, v);
 		}
+
+		if (settings) {
+			const bgImg = resolveColorVar('bgColor', vars, settings);
+			const panelImg = resolveColorVar('panelBg', vars, settings);
+			const buttonImg = resolveColorVar('buttonBg', vars, settings);
+			const achImg = resolveColorVar('achievementBg', vars, settings);
+
+			root.style.setProperty('--bg-color', bgImg);
+			root.style.setProperty('--panel-bg', panelImg);
+			root.style.setProperty('--button-bg', buttonImg);
+			root.style.setProperty('--button-hover', buttonImg);
+			root.style.setProperty('--achievement-bg', achImg);
+		} else {
+			if (vars.bgColor) root.style.setProperty('--bg-color', vars.bgColor);
+			if (vars.panelBg) root.style.setProperty('--panel-bg', vars.panelBg);
+			if (vars.buttonBg) {
+				root.style.setProperty('--button-bg', vars.buttonBg);
+				root.style.setProperty('--button-hover', vars.buttonBg);
+			}
+			if (vars.achievementBg) root.style.setProperty('--achievement-bg', vars.achievementBg);
+		}
+
 		if (vars.pointsColor) root.style.setProperty('--points-color', vars.pointsColor);
+
 		document
 			.querySelectorAll(
 				'button, .shop-item, #inventoryList, .page-dots, #notifPanel, .well-container'
@@ -677,10 +1033,12 @@
 			.forEach((n) => {
 				n.style.borderWidth = bw;
 			});
+
 		if (vars.panelBg) {
 			const rgb = hexToRgb(vars.panelBg);
 			if (rgb) root.style.setProperty('--panel-bg-rgb', `${rgb.r},${rgb.g},${rgb.b}`);
 		}
+
 		if (settings) {
 			root.style.setProperty('--blur-intensity', (settings.blurIntensity ?? 10) + 'px');
 			root.style.setProperty('--blur-saturate', (settings.blurSaturate ?? 140) + '%');
@@ -692,8 +1050,89 @@
 				'--blur-border-opacity',
 				((settings.blurBorderOpacity ?? 8) / 100).toFixed(2)
 			);
+
+			root.style.setProperty('--border-style', settings.borderStyle || 'solid');
+			root.style.setProperty('--shadow-depth', shadowDepthToCss(settings.shadowDepth ?? 0));
+
+			root.style.setProperty('--spacing-scale', settings.spacingScale ?? 1);
+			root.style.setProperty('--header-scale', settings.headerScale ?? 1);
+			root.style.setProperty('--body-scale', settings.bodyScale ?? 1);
+			root.style.setProperty('--small-scale', settings.smallScale ?? 1);
+			root.style.setProperty('--roll-btn-text-scale', settings.rollBtnTextScale ?? 1);
+			root.style.setProperty(
+				'--header-letter-spacing',
+				(settings.headerLetterSpacing ?? 0.06) + 'em'
+			);
+			root.style.setProperty('--header-weight', settings.headerWeight ?? 400);
+			root.style.setProperty('--header-case', settings.headerCase || 'none');
+			root.style.setProperty('--button-case', settings.buttonCase || 'lowercase');
+
+			root.style.setProperty('--ease-curve', easingToCss(settings.easing));
+
+			if (settings.radiusIndependent) {
+				root.style.setProperty(
+					'--radius-tl',
+					(settings.radiusTopLeft ?? settings.radius ?? 2) + 'px'
+				);
+				root.style.setProperty(
+					'--radius-tr',
+					(settings.radiusTopRight ?? settings.radius ?? 2) + 'px'
+				);
+				root.style.setProperty(
+					'--radius-bl',
+					(settings.radiusBottomLeft ?? settings.radius ?? 2) + 'px'
+				);
+				root.style.setProperty(
+					'--radius-br',
+					(settings.radiusBottomRight ?? settings.radius ?? 2) + 'px'
+				);
+			} else {
+				const r = (settings.radius ?? 2) + 'px';
+				root.style.setProperty('--radius-tl', r);
+				root.style.setProperty('--radius-tr', r);
+				root.style.setProperty('--radius-bl', r);
+				root.style.setProperty('--radius-br', r);
+			}
+			root.style.setProperty(
+				'--button-radius',
+				(settings.buttonRadius ?? settings.radius ?? 2) + 'px'
+			);
+			root.style.setProperty(
+				'--roll-btn-radius',
+				(settings.rollBtnRadius ?? settings.radius ?? 2) + 'px'
+			);
+
+			applyNoiseOverlay(settings);
+			applyVignetteOverlay(settings);
+			applyPatternSettings(settings, vars.bgColor);
 			applyBgStyle(settings, vars.bgColor);
+
+			if (settings.font === 'custom') {
+				applyCustomFont('custom');
+			} else {
+				root.style.removeProperty('--font-body');
+			}
+			if (settings && window.applyIconSettings) {
+				window.applyIconSettings(settings);
+			}
 		}
+	}
+
+	function shadowDepthToCss(depth) {
+		const d = Math.max(0, Math.min(10, depth));
+		if (d === 0) return 'none';
+		return `0 ${d * 0.6}px ${d * 1.8}px rgb(0 0 0 / ${Math.min(0.5, d * 0.05)})`;
+	}
+
+	function easingToCss(name) {
+		const map = {
+			default: 'cubic-bezier(0.4, 0, 0.2, 1)',
+			linear: 'linear',
+			ease: 'ease',
+			bounce: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+			snap: 'cubic-bezier(0.9, 0, 0.1, 1)',
+		};
+		return map[name] || map.default;
 	}
 
 	async function applyBgStyle(settings, fallbackColor) {
@@ -728,6 +1167,54 @@
 				}
 			} catch (_) {}
 		}
+	}
+
+	function applyPatternSettings(settings, fallbackColor) {
+		const root = document.documentElement;
+		const size = settings.bgPatternSize ?? 20;
+		root.style.setProperty('--bg-pattern-size', size + 'px');
+		root.style.setProperty('--bg-pattern-size2', size + 'px');
+		root.style.setProperty(
+			'--bg-pattern-opacity',
+			((settings.bgPatternOpacity ?? 5) / 100).toFixed(3)
+		);
+		const color =
+			settings.bgPatternColor === 'auto' || !settings.bgPatternColor
+				? fallbackColor || '#dcdcdc'
+				: settings.bgPatternColor;
+		const rgb = hexToRgb(color);
+		if (rgb) root.style.setProperty('--bg-pattern-rgb', `${rgb.r},${rgb.g},${rgb.b}`);
+	}
+
+	function applyNoiseOverlay(settings) {
+		let el = document.getElementById('noiseOverlay');
+		if (!settings.noiseEnabled) {
+			if (el) el.remove();
+			return;
+		}
+		if (!el) {
+			el = document.createElement('div');
+			el.id = 'noiseOverlay';
+			document.body.appendChild(el);
+		}
+		el.style.opacity = ((settings.noiseIntensity ?? 5) / 100).toFixed(3);
+	}
+
+	function applyVignetteOverlay(settings) {
+		let el = document.getElementById('vignetteOverlay');
+		if (!settings.vignetteEnabled) {
+			if (el) el.remove();
+			return;
+		}
+		if (!el) {
+			el = document.createElement('div');
+			el.id = 'vignetteOverlay';
+			document.body.appendChild(el);
+		}
+		el.style.setProperty(
+			'--vignette-intensity',
+			((settings.vignetteIntensity ?? 30) / 100).toFixed(3)
+		);
 	}
 
 	function buildSettingsPatch(editorData) {
@@ -783,16 +1270,6 @@
 		const s = editorData.settings;
 
 		applyCSSVars(v, s.borderWidth, s);
-
-		const cssRadius = (s.radius ?? 2) + 'px';
-		document.documentElement.style.setProperty('--border-radius', cssRadius);
-		document
-			.querySelectorAll(
-				'button, .shop-item, #inventoryList, .page-dots, #notifPanel, .modal-content, .well-container, .gauntlet-tier, .potion-item, .index-content'
-			)
-			.forEach((n) => {
-				n.style.borderRadius = cssRadius;
-			});
 
 		const patch = buildSettingsPatch(editorData);
 		if (window.applySettings) {
@@ -924,15 +1401,6 @@
 	function livePreview() {
 		const d = readEditor();
 		applyCSSVars(d.vars, d.settings.borderWidth, d.settings);
-		const cssRadius = (d.settings.radius ?? 2) + 'px';
-		document.documentElement.style.setProperty('--border-radius', cssRadius);
-		document
-			.querySelectorAll(
-				'button, .shop-item, #inventoryList, .page-dots, #notifPanel, .modal-content, .well-container, .gauntlet-tier, .potion-item, .index-content' // added #notifPanel and .index-content
-			)
-			.forEach((n) => {
-				n.style.borderRadius = cssRadius;
-			});
 	}
 
 	function autoAdaptFromBackground() {
@@ -996,10 +1464,44 @@
 			'te-pointsColor',
 			'te-achievementBg',
 			'te-achievementBorder',
+			'te-gauntletEasy',
+			'te-gauntletMedium',
+			'te-gauntletHard',
+			'te-gauntletInsane',
+			'te-gauntletGodlike',
+			'te-wellResultAmount',
+			'te-notifBadge',
 			'te-radius',
+			'te-radiusIndependent',
+			'te-radiusTopLeft',
+			'te-radiusTopRight',
+			'te-radiusBottomLeft',
+			'te-radiusBottomRight',
+			'te-buttonRadius',
+			'te-rollBtnRadius',
 			'te-borderWidth',
+			'te-borderStyle',
+			'te-shadowDepth',
 			'te-textSize',
 			'te-font',
+			'te-headerScale',
+			'te-bodyScale',
+			'te-headerLetterSpacing',
+			'te-headerWeight',
+			'te-headerCase',
+			'te-buttonCase',
+			'te-spacingScale',
+			'te-easing',
+			'te-motionHoverGlow',
+			'te-motionRainbowShimmer',
+			'te-motionPageTransition',
+			'te-motionAchievementPulse',
+			'te-noiseEnabled',
+			'te-noiseIntensity',
+			'te-vignetteEnabled',
+			'te-vignetteIntensity',
+			'te-bgPatternSize',
+			'te-bgPatternOpacity',
 			'te-inventoryStyle',
 			'te-spinnerStyle',
 			'te-rollBtnSize',
@@ -1045,6 +1547,32 @@
 			'te-glowSize',
 			'te-glowOpacity',
 			'te-glowSpeed',
+			'te-colorMode-bgColor',
+			'te-colorMode-panelBg',
+			'te-colorMode-buttonBg',
+			'te-colorMode-achievementBg',
+			'te-gradFrom-bgColor',
+			'te-gradTo-bgColor',
+			'te-gradAngle-bgColor',
+			'te-gradFrom-panelBg',
+			'te-gradTo-panelBg',
+			'te-gradAngle-panelBg',
+			'te-gradFrom-buttonBg',
+			'te-gradTo-buttonBg',
+			'te-gradAngle-buttonBg',
+			'te-gradFrom-achievementBg',
+			'te-gradTo-achievementBg',
+			'te-gradAngle-achievementBg',
+			'te-iconPack',
+			'te-potionPack',
+			'te-icon-notifBell',
+			'te-icon-friendsBtn',
+			'te-icon-messagesBtn',
+			'te-icon-wellVisual',
+			'te-icon-seasonWinter',
+			'te-icon-seasonSpring',
+			'te-icon-seasonSummer',
+			'te-icon-seasonFall',
 		];
 		ids.forEach((id) => {
 			const n = el(id);
@@ -1064,7 +1592,34 @@
 				if (id === 'te-glowOpacity') el('te-glowOpacityVal').textContent = n.value;
 				if (id === 'te-glowSpeed') el('te-glowSpeedVal').textContent = n.value;
 				if (id === 'te-glowEnabled') syncGlowUI();
+				if (id === 'te-radiusIndependent') syncRadiusIndependentUI();
+				if (id === 'te-spacingScale')
+					el('te-spacingScaleVal').textContent = parseFloat(n.value).toFixed(2);
+				if (id === 'te-headerScale')
+					el('te-headerScaleVal').textContent = parseFloat(n.value).toFixed(2);
+				if (id === 'te-bodyScale')
+					el('te-bodyScaleVal').textContent = parseFloat(n.value).toFixed(2);
+				if (id === 'te-headerLetterSpacing')
+					el('te-headerLetterSpacingVal').textContent = parseFloat(n.value).toFixed(2);
+				if (id === 'te-radiusTopLeft') el('te-radiusTopLeftVal').textContent = n.value;
+				if (id === 'te-radiusTopRight') el('te-radiusTopRightVal').textContent = n.value;
+				if (id === 'te-radiusBottomLeft') el('te-radiusBottomLeftVal').textContent = n.value;
+				if (id === 'te-radiusBottomRight') el('te-radiusBottomRightVal').textContent = n.value;
+				if (id === 'te-buttonRadius') el('te-buttonRadiusVal').textContent = n.value;
+				if (id === 'te-rollBtnRadius') el('te-rollBtnRadiusVal').textContent = n.value;
+				if (id === 'te-shadowDepth') el('te-shadowDepthVal').textContent = n.value;
+				if (id === 'te-noiseIntensity') el('te-noiseIntensityVal').textContent = n.value;
+				if (id === 'te-vignetteIntensity') el('te-vignetteIntensityVal').textContent = n.value;
+				if (id === 'te-bgPatternSize') el('te-bgPatternSizeVal').textContent = n.value;
+				if (id === 'te-bgPatternOpacity') el('te-bgPatternOpacityVal').textContent = n.value;
+				if (id === 'te-radiusIndependent') syncRadiusIndependentUI();
 				if (id.endsWith('Color') || id.endsWith('Bg')) updateContrastBadges();
+				if (id.startsWith('te-colorMode-')) syncColorModeUI(id.replace('te-colorMode-', ''));
+				if (id.startsWith('te-gradAngle-')) {
+					const key = id.replace('te-gradAngle-', '');
+					const valEl = el('te-gradAngleVal-' + key);
+					if (valEl) valEl.textContent = n.value;
+				}
 				livePreview();
 				pushUndoSnapshotDebounced();
 			});
@@ -1084,6 +1639,17 @@
 		const imageControls = el('te-imageControls');
 		if (gradientControls) gradientControls.style.display = type === 'gradient' ? 'block' : 'none';
 		if (imageControls) imageControls.style.display = type === 'image' ? 'block' : 'none';
+	}
+
+	function syncColorModeUI(key) {
+		const select = el('te-colorMode-' + key);
+		const gradientRow = el('te-gradientRow-' + key);
+		if (!select || !gradientRow) return;
+		gradientRow.style.display = select.value === 'gradient' ? 'block' : 'none';
+	}
+
+	function syncAllColorModeUI() {
+		['bgColor', 'panelBg', 'buttonBg', 'achievementBg'].forEach(syncColorModeUI);
 	}
 
 	function syncGlowUI() {
@@ -1167,6 +1733,7 @@
 		if (autoAdaptBtn) autoAdaptBtn.addEventListener('click', autoAdaptFromBackground);
 
 		syncGlowUI();
+		syncAllColorModeUI();
 
 		if (!openBtn || !overlay) return;
 
@@ -1198,6 +1765,24 @@
 			overlay.style.display = 'block';
 			document.body.style.overflow = 'hidden';
 		});
+
+		const fontUpload = el('te-fontUpload');
+		if (fontUpload) {
+			fontUpload.addEventListener('change', async () => {
+				const file = fontUpload.files[0];
+				if (!file) return;
+				if (file.size > 5 * 1024 * 1024) {
+					await window.showAlert('font too large (max 5MB)');
+					return;
+				}
+				const buf = await file.arrayBuffer();
+				await idbSetFont('custom', buf);
+				if (el('te-customFontName')) el('te-customFontName').value = file.name;
+				if (el('te-font')) el('te-font').value = 'custom';
+				await applyCustomFont('custom');
+				livePreview();
+			});
+		}
 
 		function closeEditor() {
 			overlay.style.display = 'none';

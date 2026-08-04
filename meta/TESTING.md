@@ -1,25 +1,25 @@
-# testing guide
+# Testing guide
 
-this document is for contributors who want to test features without grinding for weeks.
+This document is for contributors who want to test features without grinding for weeks.
 
-## wait, this isnt for finding bugs?
+## Wait, this isnt for finding bugs?
 
-no! this isn't for finding bugs. this is mainly for testers who wanna get ahead and test their new features and other stuff out. finding bugs and problems is handled with the automatic cleanups (smoke, lighthouse, ESLint, stylelint, HTMLHint) made by bots.
+No! This isn't for finding bugs. this is mainly for testers who wanna get ahead and test their new features and other stuff out. Finding bugs and problems is handled with the automatic cleanups (smoke, lighthouse, ESLint, stylelint, HTMLHint) made by bots.
 
-## quick start
+## Quick start
 
-open the game in your browser, open devtools (`F12`), go to the **console** tab, and paste whatever script you want!
+Open the game in your browser, open devtools (`F12`), go to the **console** tab, and paste whatever script you want!
 
-there is an official cheat script that maxes out everything in one go, or a community cheat/mod menu proudly vibe-coded by StarryDev (https://starryscracks.online/)
+There is an official cheat script that maxes out everything in one go, or a community cheat/mod menu proudly vibe-coded (ew) by StarryDev (https://starryscracks.online/)
 
-to navigate easily:
+To navigate easily:
 
 - [mod menu](#mod-menu)
 - [official cheat script](#official-cheat-script)
 
-cheat/mod menu first, and cheat script after:
+Cheat/mod menu first, and cheat script after:
 
-## mod menu
+## Mod menu
 
 ```javascript
 // ==UserScript==
@@ -998,9 +998,9 @@ cheat/mod menu first, and cheat script after:
     init();
 })();
 ```
-you will probably know what it does when you install it in.
+You will probably know what it does when you install it in.
 
-## official cheat script
+## Official cheat script
 
 ```javascript
 (function() {
@@ -1102,7 +1102,7 @@ you will probably know what it does when you install it in.
 })();
 ```
 
-## what it gives you
+## What it gives you
 
 | thing | value |
 |---|---|
@@ -1124,24 +1124,24 @@ you will probably know what it does when you install it in.
 | elemental runes | 99 each |
 | blocks | 999,999 |
 
-## what it does NOT do
+## What it does NOT do
 
 - does not touch settings or theme preferences
 - does not affect cloud backups
 - does not unlock void market items (those are bought manually with the shards)
 - does not add gauntlet claims (gauntlets re-check inventory on their own timer, they'll register as claimable within ~4 seconds)
 
-## if the script says "rarities not loaded yet"
+## If the script says "rarities not loaded yet"
 
-the game's scripts haven't finished running. wait a second and try again. this usually only happens if you open devtools and paste immediately after a hard refresh.
+The game's scripts haven't finished running. wait a second and try again. This usually only happens if you open devtools and paste immediately after a hard refresh which is highly unlikely.
 
-## if something breaks after running it
+## If something breaks after running it
 
-the script calls `saveAllData()` at the end, so everything is written to localStorage. if the UI looks wrong, try navigating between pages (the arrow buttons) to force a re-render, or do a manual page refresh — your injected save will persist.
+The script calls `saveAllData()` at the end, so everything is written to localStorage. If the UI looks wrong, try navigating between pages (the arrow buttons) to force a re-render, or do a manual page refresh - your injected save will persist.
 
-## keeping this script up to date
+## Keeping this script up to date
 
-if new shop upgrades, potions, or achievements are added to the game, update this script to match. the relevant places to check are:
+If new shop upgrades, potions, or achievements are added to the game, update this script or wait for it to be updated automatically to match. The relevant places to check are:
 
 - `shopUpgrades` object in `main.js`
 - `playerPotions` object in `main.js`

@@ -30,11 +30,25 @@
 	let _activeMusicKey = null; // e.g. 'default', 'custom_1', or '__muted__'
 
 	const musicLinks = {
-		default: 'assets/audio/welcomecity.mp3',
 		wavelocity: 'assets/audio/wavelocity.mp3',
 		nocturne: 'assets/audio/nocturne.mp3',
 		fallout: 'assets/audio/fallout.mp3',
 	};
+
+	const defaultTierTracks = [
+		{ threshold: 1500000, file: 'assets/audio/4sanctuary2.mp3' },
+		{ threshold: 500000, file: 'assets/audio/3sanctuary1.mp3' },
+		{ threshold: 100000, file: 'assets/audio/2garden.mp3' },
+		{ threshold: 0, file: 'assets/audio/1field.mp3' },
+	];
+
+	function getDefaultTierTrack() {
+		const rolls = typeof totalRolls !== 'undefined' ? totalRolls : 0;
+		for (const tier of defaultTierTracks) {
+			if (rolls >= tier.threshold) return tier;
+		}
+		return defaultTierTracks[defaultTierTracks.length - 1];
+	}
 
 	// ── IndexedDB helpers ──────────────────────────────────────────────────
 	// Tracks are stored as { id (auto), name, buffer (ArrayBuffer), type (MIME) }
@@ -138,6 +152,47 @@
 					cursor.continue();
 				} else resolve(results);
 			};
+			req.onerror = () => reject(req.error);
+		});
+	}
+
+	function openSoundDB() {
+		return new Promise((resolve, reject) => {
+			const req = indexedDB.open('authsrng_sounds', 1);
+			req.onupgradeneeded = (e) => {
+				e.target.result.createObjectStore('sounds', { keyPath: 'slot' });
+			};
+			req.onsuccess = (e) => resolve(e.target.result);
+			req.onerror = (e) => reject(e.target.error);
+		});
+	}
+
+	async function setCustomSound(slot, buffer, type) {
+		const db = await openSoundDB();
+		return new Promise((resolve, reject) => {
+			const req = db
+				.transaction('sounds', 'readwrite')
+				.objectStore('sounds')
+				.put({ slot, buffer, type });
+			req.onsuccess = () => resolve();
+			req.onerror = () => reject(req.error);
+		});
+	}
+
+	async function getCustomSound(slot) {
+		const db = await openSoundDB();
+		return new Promise((resolve, reject) => {
+			const req = db.transaction('sounds', 'readonly').objectStore('sounds').get(slot);
+			req.onsuccess = () => resolve(req.result || null);
+			req.onerror = () => reject(req.error);
+		});
+	}
+
+	async function deleteCustomSound(slot) {
+		const db = await openSoundDB();
+		return new Promise((resolve, reject) => {
+			const req = db.transaction('sounds', 'readwrite').objectStore('sounds').delete(slot);
+			req.onsuccess = () => resolve();
 			req.onerror = () => reject(req.error);
 		});
 	}
@@ -289,7 +344,12 @@
 		const ctx = canvas.getContext('2d');
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		if (!['winter', 'spring', 'summer', 'fall'].includes(season)) return;
-		const emojiMap = { winter: '❄️', spring: '🌸', summer: '☀️', fall: '🍁' };
+		const emojiMap = {
+			winter: window.getIcon ? window.getIcon('seasonWinter') : '❄️',
+			spring: window.getIcon ? window.getIcon('seasonSpring') : '🌸',
+			summer: window.getIcon ? window.getIcon('seasonSummer') : '☀️',
+			fall: window.getIcon ? window.getIcon('seasonFall') : '🍁',
+		};
 		const emoji = emojiMap[season];
 		const w = (canvas.width = window.innerWidth);
 		const h = (canvas.height = window.innerHeight);
@@ -1276,7 +1336,10 @@
 	let _musicApplyToken = 0;
 
 	async function applyMusic(settings) {
-		const newKey = settings.muted ? '__muted__' : settings.music || 'default';
+		const musicKey = settings.muted ? '__muted__' : settings.music || 'default';
+		const tier = musicKey === 'default' ? getDefaultTierTrack() : null;
+		const newKey = musicKey === 'default' ? `default:${tier.file}` : musicKey;
+
 		if (newKey === _activeMusicKey) return;
 		_activeMusicKey = newKey;
 
@@ -1296,8 +1359,6 @@
 		}
 
 		if (window.lunarMusic) window.lunarMusic.volume = 0.6;
-
-		const musicKey = settings.music || 'default';
 
 		if (window.stopCustomAudio) window.stopCustomAudio();
 		if (window.backgroundMusic) {
@@ -1321,7 +1382,7 @@
 						_activeMusicKey = null;
 						if (window.stopCustomAudio) window.stopCustomAudio();
 						if (window.backgroundMusic) {
-							window.backgroundMusic.src = musicLinks.default;
+							window.backgroundMusic.src = getDefaultTierTrack().file;
 							window.backgroundMusic.volume = 0.3;
 							window.backgroundMusic.loop = true;
 							window.backgroundMusic.play().catch(() => {});
@@ -1334,13 +1395,21 @@
 		} else {
 			if (myToken !== _musicApplyToken) return;
 			if (window.backgroundMusic) {
-				window.backgroundMusic.src = musicLinks[musicKey] || musicLinks.default;
+				window.backgroundMusic.src =
+					musicKey === 'default' ? tier.file : musicLinks[musicKey] || getDefaultTierTrack().file;
 				window.backgroundMusic.volume = 0.3;
 				window.backgroundMusic.loop = true;
 				window.backgroundMusic.play().catch(() => {});
 			}
 		}
 	}
+
+	window.recheckDefaultMusicTier = function () {
+		if (!savedSettings) return;
+		if (savedSettings.muted) return;
+		if ((savedSettings.music || 'default') !== 'default') return;
+		applyMusic(savedSettings).catch(() => {});
+	};
 
 	function applyGlowBlobs(settings) {
 		let container = el('glowBlobsContainer');
@@ -1768,6 +1837,59 @@
 		});
 	}
 
+	function bindCustomSoundUploads() {
+		const slots = ['roll', 'rare', 'achievement'];
+		slots.forEach((slot) => {
+			const upload = el('customSound-' + slot);
+			if (!upload) return;
+			upload.addEventListener('change', async () => {
+				const file = upload.files[0];
+				if (!file) return;
+				if (file.size > 5 * 1024 * 1024) {
+					window.showAlert('sound file too large (max 5MB)');
+					upload.value = '';
+					return;
+				}
+				if (!file.type.startsWith('audio/')) {
+					window.showAlert('please upload an audio file');
+					upload.value = '';
+					return;
+				}
+				const buf = await file.arrayBuffer();
+				await setCustomSound(slot, buf, file.type);
+				invalidateSoundCache(slot);
+				const label = el('customSoundName-' + slot);
+				if (label) label.textContent = file.name;
+				const removeBtn = el('customSoundRemove-' + slot);
+				if (removeBtn) removeBtn.style.display = 'inline-block';
+				upload.value = '';
+				window.showAlert(slot + ' sound uploaded!');
+			});
+
+			const removeBtn = el('customSoundRemove-' + slot);
+			if (removeBtn) {
+				removeBtn.addEventListener('click', async () => {
+					await deleteCustomSound(slot);
+					invalidateSoundCache(slot);
+					const label = el('customSoundName-' + slot);
+					if (label) label.textContent = 'no custom sound set';
+					removeBtn.style.display = 'none';
+				});
+			}
+		});
+	}
+
+	async function refreshCustomSoundLabels() {
+		const slots = ['roll', 'rare', 'achievement'];
+		for (const slot of slots) {
+			const record = await getCustomSound(slot);
+			const label = el('customSoundName-' + slot);
+			const removeBtn = el('customSoundRemove-' + slot);
+			if (label) label.textContent = record ? 'custom sound set' : 'no custom sound set';
+			if (removeBtn) removeBtn.style.display = record ? 'inline-block' : 'none';
+		}
+	}
+
 	// ── Save / settings transfer ──────────────────────────────────────────
 	const SAVE_KEYS = [
 		'rarityInventory',
@@ -2071,6 +2193,8 @@
 		console.log('[settings] initializing...');
 		createPendingBar();
 		bindCustomMusicUpload();
+		bindCustomSoundUploads();
+		refreshCustomSoundLabels();
 		bindTransfer();
 		bindLegacyMode();
 
@@ -2147,4 +2271,41 @@
 		} catch (_) {}
 	};
 	window.getCurrentSettings = getCurrentSettings;
+
+	const soundAudioCache = {};
+
+	async function playThemeSound(slot) {
+		try {
+			let entry = soundAudioCache[slot];
+			if (entry === undefined) {
+				const record = await getCustomSound(slot);
+				if (record) {
+					const blob = new Blob([record.buffer], { type: record.type });
+					entry = URL.createObjectURL(blob);
+				} else {
+					entry = null;
+				}
+				soundAudioCache[slot] = entry;
+			}
+			if (!entry) return;
+			const audio = new Audio(entry);
+			audio.volume = 0.5;
+			audio.play().catch(() => {});
+		} catch (e) {
+			console.error('sound playback error', e);
+		}
+	}
+
+	function invalidateSoundCache(slot) {
+		if (soundAudioCache[slot]) {
+			URL.revokeObjectURL(soundAudioCache[slot]);
+		}
+		delete soundAudioCache[slot];
+	}
+
+	window.playThemeSound = playThemeSound;
+	window.setCustomSound = setCustomSound;
+	window.getCustomSound = getCustomSound;
+	window.deleteCustomSound = deleteCustomSound;
+	window.invalidateSoundCache = invalidateSoundCache;
 })();

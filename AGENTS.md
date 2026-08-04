@@ -1,31 +1,39 @@
 # agents.md
 
-## ai usage policy
+## AI Usage Policy
 
-ai is **allowed** in this repository, but with clear boundaries so this project does not slop itself.
+AI is **allowed** in this repository, but it must be used responsibly. The goal is to help contributors work more effectively - not to replace understanding, ownership, or good engineering practices.
 
-### what ai is not for
+## What AI Is Not For
 
-- refactoring entire systems or large subsystems
-- building new features or components from scratch entirely through ai
-- padding contribution history: do not use ai just to have something to commit!!
+AI should not be used for:
 
-### what ai is for
+* Refactoring entire systems or large subsystems without a contributor fully understanding and guiding the changes
+* Building new features or components entirely through AI-generated code
+* Creating meaningless commits or padding contribution history
 
-we use ai as a tool to assist contributors who already understand what they're doing. it's acceptable for:
+## What AI Is For
 
-- filling in boilerplate that follows an established pattern
-- generating a first draft of something the contributor then reviews and edits
-- helping debug or reason through a specific problem
-- writing repetitive or mechanical code the contributor could write themselves
+AI is a tool for assisting contributors who already understand the work they are doing. Acceptable uses include:
 
-however, we want AI to STRICTLY be a tool, not to be used all throughout.
+* Generating boilerplate that follows existing patterns
+* Creating first drafts that are reviewed, edited, and adapted by the contributor
+* Helping debug issues or reason through a specific problem
+* Writing repetitive or mechanical code that the contributor could reasonably write themselves
 
-### requirements for ai-generated code
+AI should remain a supporting tool, not the primary driver of development.
 
-1. **you must understand it.** if you cannot explain every line of ai-generated code in a review, it should not be in the codebase. ai is not a substitute for understanding...
+## Requirements for AI-Generated Code
 
-2. **it must be marked.** all ai-generated code must be wrapped with the following comments, including a date and timestamp:
+### 1. You Must Understand It
+
+Any AI-generated code that enters the repository must be fully understood by the contributor submitting it.
+
+If you cannot explain what the code does during review, it does not belong in the codebase. AI is not a substitute for understanding!
+
+### 2. It Must Be Marked
+
+All AI-generated code must be wrapped with comments indicating where the generated section begins and ends, including the date and timestamp.
 
 ```
 // Generated code starts here on [DATE-TIMESTAMP]:
@@ -33,7 +41,7 @@ however, we want AI to STRICTLY be a tool, not to be used all throughout.
 // Generated code ends here on [DATE-TIMESTAMP]:
 ```
 
-example:
+Example:
 
 ```js
 // Generated code starts here on 2026-06-08T14:32:00Z:
@@ -47,8 +55,14 @@ function debounce(fn, delay) {
 // Generated code ends here on 2026-06-08T14:32:00Z:
 ```
 
-3. **it must fit.** ai-generated code should match the style, conventions, and architecture of the surrounding code. if it doesn't, fix it before committing!
+### 3. It Must Fit the Codebase
 
-### tl;dr
+AI-generated code must match the project's existing style, conventions, architecture, and patterns.
 
-ai-assisted is fine. ai-driven is not. understand what you're committing.
+Do not commit AI output as-is if it does not fit. Review it, clean it up, and make it consistent with the surrounding code first.
+
+## TL;DR
+
+AI-assisted is fine. AI-driven is not.
+
+Use AI to help you build - not to avoid understanding what you are building.

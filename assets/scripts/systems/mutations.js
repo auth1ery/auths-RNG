@@ -184,6 +184,15 @@
 		return rarities[targetIdx];
 	}
 
+	function escHtml(s) {
+		return String(s)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
+
 	function renderMutations() {
 		const container = document.getElementById('mutationsContainer');
 		if (!container) return;
@@ -206,7 +215,7 @@
 		const options = invRarities
 			.map((r) => {
 				const d = Math.round(1 / r.chance);
-				return `<option value="${r.name}">${r.name} (1/${d.toLocaleString()})</option>`;
+				return `<option value="${escHtml(r.name)}">${escHtml(r.name)} (1/${d.toLocaleString()})</option>`;
 			})
 			.join('');
 
