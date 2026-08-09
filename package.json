@@ -2,7 +2,7 @@
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@playwright/test": "^1.61.0",
-		"globals": "^17.8.0",
+		"globals": "^17.9.0",
 		"stylelint": "^17.13.0",
 		"stylelint-config-standard": "^40.0.0"
 	}
