@@ -940,6 +940,12 @@ const messages = [
 	'weh....................',
 	'take the center stage!',
 	'we love useless messages dont we?',
+ 'hehehehehehhehehehehe auty',
+ 'estrogenification!!!!!!!',
+ 'yeah i want something new to love',
+ 'i have no nose and i must sneeze!',
+ 'remember to add "&fmt=18" to the end of the video URL to listen to it in high quality!',
+ 'waow...'
 ];
 
 const randomIndex = Math.floor(Math.random() * messages.length);
