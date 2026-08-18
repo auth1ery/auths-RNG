@@ -54,12 +54,6 @@
 			console.warn('[rescue] final save failed', e);
 		}
 		try {
-			localStorage.removeItem('userSettings');
-			localStorage.removeItem('themeEditorActive');
-			localStorage.removeItem('themeEditorPresets');
-			localStorage.removeItem('startAnimConfig');
-		} catch (e) {}
-		try {
 			document.documentElement.removeAttribute('style');
 			document.body.removeAttribute('style');
 			document.body.className = '';

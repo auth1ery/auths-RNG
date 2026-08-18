@@ -50,21 +50,11 @@
 	}
 
 	function getCurrentPoints() {
-		try {
-			const raw = localStorage.getItem('shopPoints');
-			return raw !== null ? Number(raw) : null;
-		} catch {
-			return null;
-		}
+		return typeof points !== 'undefined' ? points : null;
 	}
 
 	function getTotalRolls() {
-		try {
-			const raw = localStorage.getItem('totalRolls');
-			return raw !== null ? Number(raw) : null;
-		} catch {
-			return null;
-		}
+		return typeof totalRolls !== 'undefined' ? totalRolls : null;
 	}
 
 	function getLuckMultiplier() {

@@ -5,7 +5,7 @@ console.log(performance.now());
 
 (function () {
 	const SEEN_KEY = 'seenLegalConsent';
-	if (localStorage.getItem(SEEN_KEY)) return;
+	return;
 
 	const style = document.createElement('style');
 	style.textContent = `
@@ -72,7 +72,6 @@ console.log(performance.now());
 	document.body.appendChild(popup); // why do i have to make so many JS scripts ahhhhhhhhhhhh
 
 	document.getElementById('legalConsentDismiss').addEventListener('click', function () {
-		localStorage.setItem(SEEN_KEY, '1');
 		popup.classList.add('hidden');
 	});
 })();

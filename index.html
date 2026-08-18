@@ -112,8 +112,6 @@
 			defer
 		></script>
 
-		<script async defer src="assets/scripts/altcha.js" type="module"></script>
-
 		<!-- IF YOU REMOVE ANY OF THESE META TAGS, I WILL KILL YOU!!!!! -->
 		<!-- DOING SO RUINS SOME FEATURES, OPTIMIZATIONS, AND HURTS SEO LIKE HELLLLLLLLLLLL!!!!!!!!!!! -->
 		<!-- DONT EVER DO IT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
@@ -215,19 +213,6 @@ Last release date on nightly: ${nightlyRDate}`;
 			})();
 		</script>
 
-		<script>
-			// ccu
-			const _sid = Math.random().toString(36).slice(2);
-			const _hb = () => fetch('https://authsrng.xyz/api/ccu?sid=' + _sid, { method: 'POST' });
-
-			if (
-				location.hostname !== 'nightly.authsrng.xyz' &&
-				location.hostname !== 'native.authsrng.xyz'
-			) {
-				_hb();
-				setInterval(_hb, 60_000);
-			}
-		</script>
 
 		<img
 			src="https://librecounter.org/counter.svg"
@@ -526,7 +511,7 @@ Last release date on nightly: ${nightlyRDate}`;
 							function potionEmoji(p) {
 								let pack = 'default';
 								try {
-									const raw = JSON.parse(localStorage.getItem('themeEditorActive') || 'null');
+									const raw = null;
 									pack =
 										(raw &&
 											raw.editorData &&
@@ -852,49 +837,13 @@ Last release date on nightly: ${nightlyRDate}`;
 							</div>
 						</div>
 
-						<div class="settings-group">
-							<div class="settings-group-label">data</div>
 
-							<div class="settings-transfer-block">
-								<div class="transfer-label">settings</div>
-								<div id="settingsTransferCode" class="transfer-code"></div>
-								<div class="transfer-actions">
-									<button class="small" id="exportSettingsBtn">copy</button>
-									<button class="small" id="downloadSettingsBtn">download</button>
-									<button class="small" id="refreshSettingsBtn">refresh</button>
-									<button class="small" id="importSettingsBtn">import</button>
-								</div>
-							</div>
-
-							<div class="settings-transfer-block">
-								<div class="transfer-label">save data</div>
-								<div id="saveTransferCode" class="transfer-code"></div>
-								<div class="transfer-actions">
-									<button class="small" id="exportSaveBtn">copy</button>
-									<button class="small" id="downloadSaveBtn">download</button>
-									<button class="small" id="refreshSaveBtn">refresh</button>
-									<button class="small" id="importSaveBtn">import</button>
-								</div>
-							</div>
-						</div>
-
-						<div class="settings-group">
-							<div class="settings-group-label">cloud</div>
-							<div id="cloudBackupSection"></div>
-						</div>
-
-						<div class="settings-group">
-							<div class="settings-group-label">leaderboard</div>
-							<div id="leaderboardSection"></div>
-							<!-- FIXME: leaderboard link broken -->
-						</div>
 					</div>
 				</div>
 
 				<div class="page" id="page-9">
 					<h2 style="margin-top: 0">links and widgets</h2>
 
-					<a class="lazy" href="/assets/frontend/leaderboard.html">LEADERBOARD!</a>
 					<a class="lazy" href="https://authsrng.atabook.org/">guestbook!</a>
 
 					<div id="resetContainer" class="lazy">
@@ -1088,16 +1037,11 @@ Last release date on nightly: ${nightlyRDate}`;
 		<script src="assets/scripts/engine/plush-roller.js"></script>
 		<script src="assets/scripts/engine/plush-core.js"></script>
 		<script src="assets/scripts/popup.js"></script>
-		<script src="assets/scripts/sync.js"></script>
-		<script src="assets/scripts/social.js" defer></script>
-		<script src="assets/scripts/accounts.js" defer></script>
 		<!-- sad fucker oh god i swear too much -->
 		<script src="assets/scripts/rarities.js" defer></script>
 		<script src="assets/scripts/rarityStyle.js" defer></script>
 		<script src="assets/scripts/main.js" defer></script>
 		<script src="assets/scripts/context-menu.js" defer></script>
-		<script src="assets/scripts/cloud-backup.js" defer></script>
-		<script src="assets/scripts/leaderboard-submit.js" defer></script>
 		<script src="assets/scripts/theme-editor.js" defer></script>
 		<script src="assets/scripts/systems/labs.js" defer></script>
 		<script src="assets/scripts/services/cleanup.js" defer></script>
@@ -1137,136 +1081,6 @@ Last release date on nightly: ${nightlyRDate}`;
 
 		<div id="anomalyPopup"></div>
 
-		<button id="friendsBtn" class="social-btn" style="bottom: 16px; right: 74px" title="friends">
-			👥
-			<span id="friendsBadge" class="notif-badge"></span>
-		</button>
-		<button id="messagesBtn" class="social-btn" style="bottom: 16px; right: 16px" title="messages">
-			✉️
-			<span id="messagesBadge" class="notif-badge"></span>
-		</button>
-
-		<div id="friendsOverlay" class="auth-overlay">
-			<div class="auth-modal">
-				<button id="friendsClose" class="index-close">×</button>
-				<div id="friendsBody"></div>
-			</div>
-		</div>
-
-		<div id="messagesOverlay" class="auth-overlay">
-			<div class="auth-modal" style="max-width: 480px">
-				<button id="messagesClose" class="index-close">×</button>
-				<div id="messagesBody"></div>
-			</div>
-		</div>
-
-		<div id="accountBtn" class="account-btn">log in</div>
-
-		<div id="authOverlay" class="auth-overlay">
-			<div class="auth-modal">
-				<button id="authClose" class="index-close">×</button>
-				<div class="auth-tabs">
-					<button id="authTabLogin" class="dev-tab active" style="flex: 1">log in</button>
-					<button id="authTabSignup" class="dev-tab" style="flex: 1">sign up</button>
-					<button id="authTabForgot" class="dev-tab" style="flex: 1">forgot??</button>
-				</div>
-				<div id="authFormLogin">
-					<input type="text" id="loginUsername" class="auth-field" placeholder="username" />
-					<input type="password" id="loginPassword" class="auth-field" placeholder="password" />
-					<altcha-widget
-						id="loginAltcha"
-						challengeurl="https://accounts.authsrng.xyz/api/accounts/altcha-challenge"
-						hidefooter
-						hidelogo
-					></altcha-widget>
-					<p class="altcha-attribution">
-						captcha provided by <a href="https://altcha.org" target="_blank">altcha</a>
-					</p>
-					<button id="loginSubmit" class="small" style="width: 100%">log in</button>
-				</div>
-				<div id="authFormSignup" style="display: none">
-					<input
-						type="text"
-						id="signupUsername"
-						class="auth-field"
-						placeholder="username (3-20 chars, a-z0-9_-)"
-					/>
-					<input
-						type="password"
-						id="signupPassword"
-						class="auth-field"
-						placeholder="password (min 8 chars)"
-					/>
-					<input
-						type="password"
-						id="signupPasswordConfirm"
-						class="auth-field"
-						placeholder="confirm password"
-					/>
-					<altcha-widget
-						id="signupAltcha"
-						challengeurl="https://accounts.authsrng.xyz/api/accounts/altcha-challenge"
-						hidefooter
-						hidelogo
-					></altcha-widget>
-					<p class="altcha-attribution">
-						captcha provided by <a href="https://altcha.org" target="_blank">altcha</a>
-					</p>
-					<button id="signupSubmit" class="small" style="width: 100%">sign up</button>
-					<p class="auth-legal-note">
-						by making an account, you agree to the
-						<a href="/boring/legal.html" target="_blank">privacy policy and terms of service</a>
-						and have read the
-						<a href="/boring/community.html" target="_blank">community code of conduct</a>!
-					</p>
-					<p class="auth-legal-note" style="opacity: 0.6">
-						⚠ accounts are in beta!! expect bugs, and back up your save data via settings just in
-						case..
-					</p>
-				</div>
-				<div id="authFormForgot" style="display: none">
-					<input type="text" id="forgotUsername" class="auth-field" placeholder="username" />
-					<input type="text" id="forgotBackupKey" class="auth-field" placeholder="backup key" />
-					<input
-						type="password"
-						id="forgotNewPassword"
-						class="auth-field"
-						placeholder="new password (min 8 chars)"
-					/>
-					<button id="forgotSubmit" class="small" style="width: 100%">reset password</button>
-				</div>
-				<div id="authStatus" class="auth-status"></div>
-			</div>
-		</div>
-
-		<div id="accountInfoOverlay" class="auth-overlay">
-			<div class="auth-modal">
-				<button id="accountInfoClose" class="index-close">×</button>
-				<div id="accountInfoBody"></div>
-			</div>
-		</div>
-
-		<div id="backupKeysOverlay" class="auth-overlay">
-			<div class="auth-modal">
-				<button id="backupKeysClose" class="index-close">×</button>
-				<div id="backupKeysBody"></div>
-			</div>
-		</div>
-
-		<div id="migrationPopup" class="auth-overlay">
-			<div class="auth-modal">
-				<h3 style="margin-top: 0">accounts are here!! (beta)</h3>
-				<p id="migrationText" style="font-size: 0.85em; opacity: 0.8"></p>
-				<button id="migrationOk" class="small" style="width: 100%">ok</button>
-			</div>
-		</div>
-
-		<div id="syncLoadingOverlay" class="sync-loading-overlay">
-			<div class="sync-loading-box">
-				<div class="sync-spinner"></div>
-				<div id="syncLoadingText">downloading data...</div>
-			</div>
-		</div>
 
 		<div id="confirmModal">
 			<div class="modal-content">
@@ -1777,14 +1591,7 @@ Last release date on nightly: ${nightlyRDate}`;
 				const totalPages = 9;
 				const lockedPages = new Set();
 
-				let visitCount = parseInt(localStorage.getItem('pageVisitCount') || '0');
-				if (visitCount < 6) {
-					setTimeout(() => {
-						swipeIndicator.classList.add('show');
-						setTimeout(() => swipeIndicator.classList.remove('show'), 10000);
-					}, 1000);
-					localStorage.setItem('pageVisitCount', (visitCount + 1).toString());
-				}
+				let visitCount = 0;
 
 				function getPageLeft(pageIndex) {
 					let offset = 0;
@@ -1830,7 +1637,6 @@ Last release date on nightly: ${nightlyRDate}`;
 					prevBtn.disabled = currentPage === 0;
 					nextBtn.disabled = currentPage === totalPages - 1;
 
-					localStorage.setItem('currentPage', currentPage.toString());
 				}
 
 				prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
@@ -2022,20 +1828,7 @@ Last release date on nightly: ${nightlyRDate}`;
 					if (!res.ok) return;
 					const data = await res.json();
 					const tag = data.tag_name;
-					if (!tag || localStorage.getItem(SEEN_KEY) === tag) return;
-
-					document.getElementById('updatePopupTag').textContent = tag;
-					document.getElementById('updatePopupDate').textContent = new Date(
-						data.published_at
-					).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-					document.getElementById('updatePopupBody').textContent =
-						data.body || '(no release notes)';
-					document.getElementById('updatePopup').classList.remove('hidden');
-
-					document.getElementById('updatePopupClose').addEventListener('click', () => {
-						localStorage.setItem(SEEN_KEY, tag);
-						document.getElementById('updatePopup').classList.add('hidden');
-					});
+					return;
 				} catch (e) {}
 			})();
 		</script>
@@ -3363,27 +3156,6 @@ container.addEventListener('click', () => {
 							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
 						/>
 
-						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
-							>friends button override</label
-						>
-						<input
-							type="text"
-							id="te-icon-friendsBtn"
-							maxlength="4"
-							placeholder="leave blank to use pack"
-							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
-						/>
-
-						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
-							>messages button override</label
-						>
-						<input
-							type="text"
-							id="te-icon-messagesBtn"
-							maxlength="4"
-							placeholder="leave blank to use pack"
-							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
-						/>
 
 						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
 							>wishing well icon override</label
@@ -3558,11 +3330,11 @@ container.addEventListener('click', () => {
 			window.hidePageDot = hidePageDot;
 			window.unlockPageDot = unlockPageDot;
 
-			if (localStorage.getItem('mutationsUnlocked') !== '1') hidePageDot(3);
-			if (localStorage.getItem('starmapUnlocked') !== '1') hidePageDot(4);
-			if (localStorage.getItem('runesUnlocked') !== '1') hidePageDot(5);
+			hidePageDot(3);
+			hidePageDot(4);
+			hidePageDot(5);
 
-			const savedPage = parseInt(localStorage.getItem('currentPage') || '0');
+			const savedPage = 0;
 			window.goToPage(savedPage);
 		</script>
 

@@ -71,22 +71,7 @@
 	}
 
 	function _save() {
-		try {
-			if (typeof localStorage === 'undefined') return;
-			localStorage.setItem(
-				STORAGE_KEY,
-				JSON.stringify({
-					rngState: _rng.getState(),
-					pity: _roller.pity.serialize(),
-					streak: _roller.streak.serialize(),
-					momentum: _roller.momentum.serialize(),
-					fortune: _roller.fortune.serialize(),
-					resistance: _roller.resistance.serialize(),
-				})
-			);
-		} catch (err) {
-			root.PlushLog.warn('save', 'failed to save', err);
-		}
+		// No-op
 	}
 
 	_load();

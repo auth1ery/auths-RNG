@@ -53,14 +53,9 @@ console.log(performance.now());
 
 			Sentry.captureMessage('labs mode activated', {
 				level: 'info',
-				extra: {
-					totalRolls: localStorage.getItem('totalRolls'),
-					shopUpgrades: localStorage.getItem('shopUpgrades'),
-				},
 			});
 
 			setFetchingStatus('reloading...');
-			localStorage.setItem(LABS_KEY, '1');
 
 			await new Promise((r) => setTimeout(r, 700));
 			location.reload();
@@ -72,7 +67,6 @@ console.log(performance.now());
 	}
 
 	function exitLabs() {
-		localStorage.removeItem(LABS_KEY);
 		location.reload();
 	}
 
@@ -135,7 +129,6 @@ console.log(performance.now());
 		} catch (e) {
 			Sentry.captureException(e, { extra: { context: 'labs autoload' } });
 			hideFetchingOverlay();
-			localStorage.removeItem(LABS_KEY);
 			window.showAlert('failed to load nightly: ' + e.message);
 		}
 	}
@@ -153,13 +146,8 @@ console.log(performance.now());
 
       const exitBtn = document.getElementById('exitLabsBtn');
       if (exitBtn) {
-          if (localStorage.getItem(LABS_KEY) === '1') exitBtn.style.display = '';
           exitBtn.addEventListener('click', exitLabs);
       }
-
-    if (localStorage.getItem(LABS_KEY) === '1') {
-        autoLoadNightly();
-    }
   });
 })();
 

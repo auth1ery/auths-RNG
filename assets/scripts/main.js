@@ -7,11 +7,6 @@ const rollBtn = document.getElementById('rollBtn'),
 	totalRollsEl = document.getElementById('totalRolls'),
 	achievementsContainer = document.getElementById('achievementsContainer');
 
-const POINTS_KEY = 'shopPoints';
-const SHOP_UPGRADES_KEY = 'shopUpgrades';
-const SOLD_OUT_KEY = 'soldOutRarities';
-
-const RARITY_TIMESTAMPS_KEY = 'rarityTimestamps';
 let rarityTimestamps = new Map();
 
 window.formatNum = function (n) {
@@ -47,32 +42,14 @@ let pointDivisor = 3.0;
 let _rollClickTimer = null;
 let _rollFinalizeTimer = null;
 
-const STORAGE_KEY = 'rarityInventory',
-	TOTAL_ROLLS_KEY = 'totalRolls',
-	ACHIEVEMENTS_KEY = 'achievementsUnlocked';
-
-const ANOMALIES_KEY = 'anomalies';
-const ANOMALIES_USED_KEY = 'anomaliesUsed';
 let anomalies = 0;
 let anomaliesUsed = 0;
 
-const POTIONS_KEY = 'playerPotions';
-
 // ── Notification Center state ──────────────────────────────────────────
-const NOTIF_KEY = 'notifications';
-const NOTIF_MAX = 200; // cap stored; badge shows 100+ beyond 99
+const NOTIF_MAX = 200;
 
-// load immediately so addNotification() works before initNotifCenter() runs
-let notifications = (() => {
-	try {
-		return JSON.parse(localStorage.getItem(NOTIF_KEY) || '[]');
-	} catch (_) {
-		return [];
-	}
-})();
+let notifications = [];
 let notifPanelOpen = false;
-
-const ACTIVE_POTIONS_KEY = 'activePotions';
 
 let playerPotions = {
 	luck2x: 0,
@@ -402,7 +379,6 @@ function buyPotion(potionType) {
 		playerPotions[potionType]++;
 		updatePointsDisplay();
 		updatePotionUI();
-		saveAllData();
 		showAnomalyPopup(`bought ${data.emoji} ${data.name}!`);
 	} else {
 		window.showAlert(`need ${formatNum(data.cost)} points!`);
@@ -421,7 +397,6 @@ function usePotion(potionType) {
 		duplicateRollsLeft = data.rolls;
 		playerPotions[potionType]--;
 		updatePotionUI();
-		saveAllData();
 		showAnomalyPopup(`${data.emoji} next ${data.rolls} rolls will be x2!`);
 		return;
 	}
@@ -437,7 +412,6 @@ function usePotion(potionType) {
 	recalcPotionLuck();
 	updatePotionUI();
 	updateActivePotionsDisplay();
-	saveAllData();
 	showAnomalyPopup(`${data.emoji} ${data.name} activated!`);
 }
 
@@ -590,9 +564,7 @@ function updateLuckDisplay() {
 		typeof window.getStarmapLuckBonus === 'function' ? window.getStarmapLuckBonus() : 1;
 	if (starmapMult > 1)
 		parts.push(
-			`starmap: +${formatMult(starmapMult - 1)}x (${
-				JSON.parse(localStorage.getItem('starmapData') || '{}').constellations?.length || 0
-			} constellations)`
+			`starmap: +${formatMult(starmapMult - 1)}x`
 		);
 
 	breakdownEl.textContent = parts.length ? parts.join(' • ') : 'base luck (no modifiers active)';
@@ -601,8 +573,6 @@ function updateLuckDisplay() {
 let luckBoostActive = false;
 let luckBoostEndTime = 0;
 let luckInterval = null;
-
-const LUCK_KEY = 'luckBoostState';
 
 let totalRolls = 0;
 const inventoryData = new Map();
@@ -619,8 +589,7 @@ lunarMusic.volume = 0; // ITS INTENTIONALLY 0. DONT MAKE A FIX TO THIS. when we 
 
 const runId = Math.floor(Math.random() * 1e10);
 
-const playtimeKey = 'totalPlaytime';
-let storedSeconds = parseInt(localStorage.getItem(playtimeKey)) || 0;
+let storedSeconds = 0;
 let sessionStart = Date.now();
 
 function formatTimeDisplay(seconds) {
@@ -637,7 +606,6 @@ function getCurrentTotalSeconds() {
 function flushPlaytime() {
 	storedSeconds = getCurrentTotalSeconds();
 	sessionStart = Date.now();
-	localStorage.setItem(playtimeKey, storedSeconds);
 }
 
 function updatePlaytimeDisplay() {
@@ -968,83 +936,16 @@ function updateAchievementsUI() {
 }
 
 function saveAllData() {
-	const arr = Array.from(inventoryData.values()).map(({ rarityObj, count }) => ({
-		name: rarityObj.name,
-		chance: rarityObj.chance,
-		count,
-	}));
-	localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-	localStorage.setItem(TOTAL_ROLLS_KEY, totalRolls);
-	localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(Array.from(achievementsUnlocked)));
-	localStorage.setItem(ANOMALIES_KEY, String(anomalies));
-	localStorage.setItem(ANOMALIES_USED_KEY, String(anomaliesUsed));
-	localStorage.setItem(POINTS_KEY, points);
-	localStorage.setItem(SHOP_UPGRADES_KEY, JSON.stringify(shopUpgrades));
-	localStorage.setItem(RARITY_TIMESTAMPS_KEY, JSON.stringify([...rarityTimestamps.entries()]));
-	localStorage.setItem(SOLD_OUT_KEY, JSON.stringify(Array.from(soldOutRarities.entries())));
-	localStorage.setItem(POTIONS_KEY, JSON.stringify(playerPotions));
-	localStorage.setItem(
-		ACTIVE_POTIONS_KEY,
-		JSON.stringify({
-			active: activePotions,
-			duplicateLeft: duplicateRollsLeft,
-		})
-	);
-	Plush.save();
+	// No-op: saving disabled
 }
 
 function loadAllData() {
-	console.log('[main] loading all data...');
-
-	const sr = localStorage.getItem(TOTAL_ROLLS_KEY);
-	if (sr !== null) {
-		totalRolls = parseInt(sr, 10);
-		updateTotalRolls();
-	}
-
-	const sv = localStorage.getItem(STORAGE_KEY);
-	if (sv) {
-		try {
-			JSON.parse(sv).forEach((item) => {
-				const o = rarities.find((r) => r.name === item.name);
-				if (o) {
-					const li = document.createElement('li');
-					inventoryData.set(o.name, {
-						rarityObj: o,
-						count: item.count,
-						liElement: li,
-					});
-					updateItem(inventoryData.get(o.name));
-					inventoryList.appendChild(li);
-				}
-			});
-		} catch (e) {
-			console.error('[main] failed to parse inventory:', e);
-		}
-	}
-
-	const sa = localStorage.getItem(ACHIEVEMENTS_KEY);
-	if (sa) {
-		try {
-			JSON.parse(sa).forEach((id) => achievementsUnlocked.add(id));
-		} catch (e) {
-			console.error('[main] failed to parse achievements:', e);
-		}
-	}
+	console.log('[main] save loading disabled, running with clean state.');
 	updateAchievementsUI();
-
-	const saAnom = localStorage.getItem(ANOMALIES_KEY);
-	if (saAnom !== null) anomalies = parseInt(saAnom, 10) || 0;
-	const saAnomUsed = localStorage.getItem(ANOMALIES_USED_KEY);
-	if (saAnomUsed !== null) anomaliesUsed = parseInt(saAnomUsed, 10) || 0;
-
-	// re-derive upgrade-dependent values from loaded shopUpgrades
 	shopLuckMultiplier = 1 + shopUpgrades.luck * 0.1;
 	rollSpeed = Math.max(0.25, 1.0 - shopUpgrades.speed * 0.2);
 	pointDivisor = Math.max(1.0, 3.0 - shopUpgrades.pointMult * 0.2);
-
 	recalcLuckMultiplier();
-	console.log('[main] all data loaded.');
 }
 
 function updateTotalRolls() {
@@ -1100,7 +1001,6 @@ function addToInventory(o, skipAutoSell = false) {
 		}
 		duplicateRollsLeft--;
 		updateActivePotionsDisplay();
-		debouncedSave();
 	}
 
 	if (skipAutoSell) return;
@@ -1176,7 +1076,6 @@ document.getElementById('buyLuckBtn').addEventListener('click', () => {
 		recalcLuckMultiplier();
 		updatePointsDisplay();
 		updateShopUI();
-		saveAllData();
 	}
 });
 
@@ -1188,7 +1087,6 @@ document.getElementById('buySpeedBtn').addEventListener('click', () => {
 		rollSpeed = Math.max(0.25, 1.0 - shopUpgrades.speed * 0.2);
 		updatePointsDisplay();
 		updateShopUI();
-		saveAllData();
 	}
 });
 
@@ -1200,7 +1098,6 @@ document.getElementById('buyPointBtn').addEventListener('click', () => {
 		pointDivisor = Math.max(1.0, 3.0 - shopUpgrades.pointMult * 0.2);
 		updatePointsDisplay();
 		updateShopUI();
-		saveAllData();
 	}
 });
 
@@ -1294,7 +1191,6 @@ function updateItem(d) {
 				soldOutRarities.set(key, { count: freshData.count });
 				updatePointsDisplay();
 				updateShopUI();
-				saveAllData();
 				updateItem(freshData);
 				recalcLuckMultiplier();
 				updateLuckDisplay();
@@ -1321,7 +1217,6 @@ function checkAchievements(currentRarity) {
 	if (newlyUnlocked) {
 		if (window.playThemeSound) window.playThemeSound('achievement');
 		updateAchievementsUI();
-		saveAllData();
 	}
 }
 
@@ -1342,12 +1237,8 @@ function awardAnomalyIfEligible(rarityObj) {
 	const denom = Plush.denomOf(rarityObj);
 	if (denom > 10000) {
 		anomalies++;
-		try {
-			localStorage.setItem(ANOMALIES_KEY, String(anomalies));
-		} catch {}
 		showAnomalyPopup('+1 anomaly');
 		updateAnomalyUI();
-		saveAllData();
 		return true;
 	}
 	return false;
@@ -1378,9 +1269,6 @@ function addNotification(text) {
 	});
 	// trim oldest if over cap
 	if (notifications.length > NOTIF_MAX) notifications.shift();
-	try {
-		localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
-	} catch (_) {}
 	updateNotifBadge();
 	if (notifPanelOpen) renderNotifList();
 }
@@ -1500,9 +1388,6 @@ function notifMarkRead(id) {
 	const n = notifications.find((n) => n.id === id);
 	if (n && !n.read) {
 		n.read = true;
-		try {
-			localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
-		} catch (_) {}
 		updateNotifBadge();
 		renderNotifList();
 	}
@@ -1510,27 +1395,18 @@ function notifMarkRead(id) {
 
 function notifMarkAllRead() {
 	notifications.forEach((n) => (n.read = true));
-	try {
-		localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
-	} catch (_) {}
 	updateNotifBadge();
 	renderNotifList();
 }
 
 function notifDelete(id) {
 	notifications = notifications.filter((n) => n.id !== id);
-	try {
-		localStorage.setItem(NOTIF_KEY, JSON.stringify(notifications));
-	} catch (_) {}
 	updateNotifBadge();
 	renderNotifList();
 }
 
 function notifClearAll() {
 	notifications = [];
-	try {
-		localStorage.removeItem(NOTIF_KEY);
-	} catch (_) {}
 	updateNotifBadge();
 	renderNotifList();
 }
@@ -1573,7 +1449,6 @@ function consumeAnomaly() {
 	recalcLuckMultiplier();
 	updateAnomalyUI();
 	updateLuckDisplay();
-	saveAllData();
 	showAnomalyPopup('ANOMALY CONSUMED! permanent boost');
 }
 
@@ -1590,7 +1465,6 @@ function consumeAllAnomalies() {
 	recalcLuckMultiplier();
 	updateAnomalyUI();
 	updateLuckDisplay();
-	saveAllData();
 	showAnomalyPopup(`CONSUMED ${count} ANOMALIES! +${(count * 0.5).toFixed(1)}x permanent luck!`);
 }
 
@@ -1616,56 +1490,10 @@ function renderSortedInventory(mode) {
 	inventoryList.scrollTop = savedScroll;
 }
 
-const savedPoints = localStorage.getItem(POINTS_KEY);
-if (savedPoints !== null) points = parseInt(savedPoints, 10) || 0;
-
-const savedUpgrades = localStorage.getItem(SHOP_UPGRADES_KEY);
-if (savedUpgrades) {
-	try {
-		shopUpgrades = JSON.parse(savedUpgrades);
-	} catch {}
-}
-
-const savedSoldOut = localStorage.getItem(SOLD_OUT_KEY);
-if (savedSoldOut) {
-	try {
-		soldOutRarities = new Map(JSON.parse(savedSoldOut));
-	} catch {}
-}
-
 shopLuckMultiplier = 1 + shopUpgrades.luck * 0.1;
 rollSpeed = Math.max(0.25, 1.0 - shopUpgrades.speed * 0.2);
 pointDivisor = Math.max(1.0, 3.0 - shopUpgrades.pointMult * 0.2);
 
-const savedPotions = localStorage.getItem(POTIONS_KEY);
-if (savedPotions) {
-	try {
-		const loaded = JSON.parse(savedPotions);
-		// merge into defaults so missing/NaN keys fall back to 0
-		for (const key of Object.keys(playerPotions)) {
-			const v = loaded[key];
-			playerPotions[key] = typeof v === 'number' && !isNaN(v) ? v : 0;
-		}
-	} catch {}
-}
-
-const savedActive = localStorage.getItem(ACTIVE_POTIONS_KEY);
-if (savedActive) {
-	try {
-		const data = JSON.parse(savedActive);
-		activePotions = data.active || [];
-		duplicateRollsLeft = data.duplicateLeft || 0;
-		recalcPotionLuck();
-		updateActivePotionsDisplay();
-	} catch {}
-}
-
-const savedTimestamps = localStorage.getItem(RARITY_TIMESTAMPS_KEY);
-if (savedTimestamps) {
-	try {
-		rarityTimestamps = new Map(JSON.parse(savedTimestamps));
-	} catch {}
-}
 window.rarityTimestamps = rarityTimestamps;
 
 // Called by starmap.js after crystallizing — clears inventory, keeps everything else
@@ -1675,8 +1503,6 @@ window.doCrystallizeReset = function () {
 	updateCollectedCounter();
 	rarityTimestamps = new Map();
 	window.rarityTimestamps = rarityTimestamps;
-	localStorage.setItem(RARITY_TIMESTAMPS_KEY, JSON.stringify([]));
-	saveAllData();
 };
 
 // Called by starmap.js when luck changes
@@ -1686,43 +1512,10 @@ window.applyStarmapLuck = function () {
 
 async function resetInventory() {
 	const confirmed = await window.showConfirm(
-		'are you comfortably sure that you will delete your sweet sweet data???',
-		'reset data'
+		'are you comfortably sure that you will reset your current session state???',
+		'reset session'
 	);
 	if (!confirmed) return;
-	localStorage.removeItem(STORAGE_KEY);
-	localStorage.removeItem(TOTAL_ROLLS_KEY);
-	localStorage.removeItem(ACHIEVEMENTS_KEY);
-	localStorage.removeItem(ANOMALIES_KEY);
-	localStorage.removeItem(ANOMALIES_USED_KEY);
-	localStorage.removeItem(POINTS_KEY);
-	localStorage.removeItem(SHOP_UPGRADES_KEY);
-	localStorage.removeItem(SOLD_OUT_KEY);
-	localStorage.removeItem(LUCK_KEY);
-	localStorage.removeItem('daily_lastClaim');
-	localStorage.removeItem('daily_streak');
-	localStorage.removeItem('weekly_lastClaim');
-	localStorage.removeItem('weekly_streak');
-	localStorage.removeItem(playtimeKey);
-	localStorage.removeItem('userSettings');
-	localStorage.removeItem('wishingWell');
-	localStorage.removeItem('gauntletData');
-	localStorage.removeItem('_beacon_v2');
-	localStorage.removeItem('_plush_v3');
-	localStorage.removeItem('mutationsUnlocked');
-	localStorage.removeItem('starmapData');
-	localStorage.removeItem('starmapUnlocked');
-	localStorage.removeItem(NOTIF_KEY);
-	localStorage.removeItem(RARITY_TIMESTAMPS_KEY);
-	localStorage.removeItem('mutationTrust');
-	localStorage.removeItem('mutationTrustOwned');
-	localStorage.removeItem('mutationTrustActive');
-	localStorage.removeItem('mutationHistory');
-	localStorage.removeItem('mutationBestResult');
-	localStorage.removeItem('runesData');
-	localStorage.removeItem('runeBlocks');
-	localStorage.removeItem('runeGift');
-	localStorage.removeItem('runeUpgrades');
 	rarityTimestamps = new Map();
 	window.rarityTimestamps = rarityTimestamps;
 	notifications = [];
@@ -1762,8 +1555,6 @@ async function resetInventory() {
 	activePotions = [];
 	duplicateRollsLeft = 0;
 	potionLuckMultiplier = 1;
-	localStorage.removeItem(POTIONS_KEY);
-	localStorage.removeItem(ACTIVE_POTIONS_KEY);
 	updatePotionUI();
 	updateActivePotionsDisplay();
 	soldOutRarities.clear();
@@ -1772,15 +1563,13 @@ async function resetInventory() {
 	pointDivisor = 3.0;
 	storedSeconds = 0;
 	sessionStart = Date.now();
-	localStorage.setItem(playtimeKey, 0);
 	recalcLuckMultiplier();
 	updatePointsDisplay();
 	updateShopUI();
 	updateAnomalyUI();
 	updatePlaytimeDisplay();
 	updateLuckDisplay();
-	await window.showAlert('all data reset! it was your choice btw', 'reset complete');
-	location.reload();
+	await window.showAlert('session reset!', 'reset complete');
 }
 
 function startLuckBoost() {
@@ -1791,14 +1580,6 @@ function startLuckBoost() {
 	const badge = document.getElementById('luckBoostBadge');
 	if (badge) badge.style.display = 'block';
 	updateLuckTimer();
-
-	localStorage.setItem(
-		LUCK_KEY,
-		JSON.stringify({
-			active: luckBoostActive,
-			endTime: luckBoostEndTime,
-		})
-	);
 
 	if (luckInterval) clearInterval(luckInterval);
 	luckInterval = setInterval(updateLuckTimer, 200);
@@ -1829,24 +1610,9 @@ function endLuckBoost() {
 	if (badge) badge.style.display = 'none';
 
 	if (luckInterval) clearInterval(luckInterval);
-
-	localStorage.removeItem(LUCK_KEY);
 }
 
 function checkMuteSettings() {
-	try {
-		const settingsStr = localStorage.getItem('userSettings');
-		if (settingsStr) {
-			const settings = JSON.parse(settingsStr);
-			if (settings.muted) {
-				backgroundMusic.pause();
-				backgroundMusic.volume = 0;
-				lunarMusic.pause();
-				lunarMusic.volume = 0;
-				return true;
-			}
-		}
-	} catch (e) {}
 	return false;
 }
 
@@ -2005,18 +1771,13 @@ function maybeFireConfettiAndCutscene(res) {
 	}
 }
 
-let _saveTimer = null;
-function debouncedSave(delay = 1500) {
-	clearTimeout(_saveTimer);
-	_saveTimer = setTimeout(saveAllData, delay);
+function debouncedSave() {
+	// No-op
 }
 
-// Force immediate save when tab is hidden
 document.addEventListener('visibilitychange', () => {
 	if (document.hidden) {
-		clearTimeout(_saveTimer);
 		flushPlaytime();
-		saveAllData();
 	}
 });
 
@@ -2137,22 +1898,6 @@ recalcLuckMultiplier();
 updatePointsDisplay();
 updateShopUI();
 
-const ls = localStorage.getItem(LUCK_KEY);
-if (ls) {
-	try {
-		const obj = JSON.parse(ls);
-		if (obj.active && obj.endTime > Date.now()) {
-			luckBoostActive = true;
-			luckBoostEndTime = obj.endTime;
-			const badge = document.getElementById('luckBoostBadge');
-			if (badge) badge.style.display = 'block';
-			updateLuckTimer();
-			luckInterval = setInterval(updateLuckTimer, 200);
-		} else {
-			localStorage.removeItem(LUCK_KEY);
-		}
-	} catch {}
-}
 
 function updateCollectedCounter() {
 	const collected = inventoryData.size;
@@ -2180,7 +1925,6 @@ if (consumeAllBtn) {
 updateAnomalyUI();
 renderSortedInventory(sortSelect.value);
 
-setInterval(saveAllData, 10000);
 
 document.addEventListener('DOMContentLoaded', () => {
 	const btn = document.getElementById('rollBtn');
@@ -2207,56 +1951,45 @@ function formatPlaytime(seconds) {
 const weeklyBtn = document.getElementById('weeklyBtn');
 const weeklyStatus = document.getElementById('weeklyStatus');
 
-function loadWeeklyData() {
-	return {
-		lastClaim: localStorage.getItem('weekly_lastClaim'),
-		streak: Number(localStorage.getItem('weekly_streak') || 0),
-	};
-}
-
-function saveWeeklyData(lastClaim, streak) {
-	localStorage.setItem('weekly_lastClaim', lastClaim);
-	localStorage.setItem('weekly_streak', streak);
-}
+let weeklyLastClaim = null;
+let weeklyStreak = 0;
 
 function updateWeeklyUI() {
-	const { lastClaim, streak } = loadWeeklyData();
 	const now = Date.now();
 	const oneWeek = 7 * 24 * 60 * 60 * 1000;
 
-	if (!lastClaim || now - Number(lastClaim) >= oneWeek) {
+	if (!weeklyLastClaim || now - Number(weeklyLastClaim) >= oneWeek) {
 		weeklyBtn.disabled = false;
-		weeklyStatus.textContent = `weekly reward available · streak: ${streak}`;
+		weeklyStatus.textContent = `weekly reward available · streak: ${weeklyStreak}`;
 	} else {
 		weeklyBtn.disabled = true;
-		weeklyStatus.textContent = `weekly claimed · streak: ${streak}`;
+		weeklyStatus.textContent = `weekly claimed · streak: ${weeklyStreak}`;
 	}
 }
 
 weeklyBtn.addEventListener('click', async () => {
-	const { lastClaim, streak } = loadWeeklyData();
 	const now = Date.now();
 	const oneWeek = 7 * 24 * 60 * 60 * 1000;
 
-	// Guard: shouldn't be reachable if UI is correct, but be safe
-	if (lastClaim && now - Number(lastClaim) < oneWeek) return;
+	if (weeklyLastClaim && now - Number(weeklyLastClaim) < oneWeek) return;
 
-	let newStreak;
-	if (!lastClaim) {
-		newStreak = 1;
+	if (!weeklyLastClaim) {
+		weeklyStreak = 1;
 	} else {
-		const diffWeeks = Math.floor((now - Number(lastClaim)) / oneWeek);
-		// streak continues only if exactly 1 week passed; 2+ weeks resets
-		newStreak = diffWeeks === 1 ? streak + 1 : 1;
+		const diffWeeks = Math.floor((now - Number(weeklyLastClaim)) / oneWeek);
+		weeklyStreak = diffWeeks === 1 ? weeklyStreak + 1 : 1;
 	}
+	weeklyLastClaim = now.toString();
 
-	saveWeeklyData(now.toString(), newStreak);
 	updateWeeklyUI();
-	await window.showAlert(`weekly claimed!\nstreak: ${newStreak}`, 'weekly reward');
+	await window.showAlert(`weekly claimed!\nstreak: ${weeklyStreak}`, 'weekly reward');
 });
 
 const dailyBtn = document.getElementById('dailyBtn');
 const dailyStatus = document.getElementById('dailyStatus');
+
+let dailyLastClaim = null;
+let dailyStreak = 0;
 
 function getToday() {
 	const d = new Date();
@@ -2266,50 +1999,35 @@ function getToday() {
 	return `${y}-${m}-${day}`;
 }
 
-function loadDailyData() {
-	return {
-		lastClaim: localStorage.getItem('daily_lastClaim'),
-		streak: Number(localStorage.getItem('daily_streak') || 0),
-	};
-}
-
-function saveDailyData(lastClaim, streak) {
-	localStorage.setItem('daily_lastClaim', lastClaim);
-	localStorage.setItem('daily_streak', streak);
-}
-
 function updateDailyUI() {
-	const { lastClaim, streak } = loadDailyData();
 	const today = getToday();
 
-	if (lastClaim === today) {
+	if (dailyLastClaim === today) {
 		dailyBtn.disabled = true;
-		dailyStatus.textContent = `daily claimed · streak: ${streak}`;
+		dailyStatus.textContent = `daily claimed · streak: ${dailyStreak}`;
 	} else {
 		dailyBtn.disabled = false;
-		dailyStatus.textContent = `daily available · current streak: ${streak}`;
+		dailyStatus.textContent = `daily available · current streak: ${dailyStreak}`;
 	}
 }
 
 dailyBtn.addEventListener('click', async () => {
 	const today = getToday();
-	const { lastClaim, streak } = loadDailyData();
-	let newStreak = streak;
-	if (!lastClaim) {
-		newStreak = 1;
+	if (!dailyLastClaim) {
+		dailyStreak = 1;
 	} else {
-		const last = new Date(lastClaim);
+		const last = new Date(dailyLastClaim);
 		const now = new Date(today);
 		const diffDays = Math.round((now - last) / (1000 * 60 * 60 * 24));
 		if (diffDays === 1) {
-			newStreak += 1;
+			dailyStreak += 1;
 		} else if (diffDays > 1) {
-			newStreak = 1;
+			dailyStreak = 1;
 		}
 	}
-	saveDailyData(today, newStreak);
+	dailyLastClaim = today;
 	updateDailyUI();
-	await window.showAlert(`daily claimed!\nstreak: ${newStreak}`, 'daily reward');
+	await window.showAlert(`daily claimed!\nstreak: ${dailyStreak}`, 'daily reward');
 });
 
 updateDailyUI();
@@ -2409,7 +2127,6 @@ if (buyMagnetBtn) {
 			shopUpgrades.magnet = (shopUpgrades.magnet || 0) + 1;
 			updatePointsDisplay();
 			updateShopUI();
-			saveAllData();
 		}
 	});
 }
@@ -2424,7 +2141,6 @@ if (buyPrinterBtn) {
 			shopUpgrades.printer = level + 1;
 			updatePointsDisplay();
 			updateShopUI();
-			saveAllData();
 		}
 	});
 }
@@ -2439,7 +2155,6 @@ if (buyDupeBtn) {
 			shopUpgrades.duplicate = level + 1;
 			updatePointsDisplay();
 			updateShopUI();
-			saveAllData();
 		}
 	});
 }
@@ -2639,28 +2354,11 @@ let wellData = {
 };
 
 function loadWellData() {
-	const saved = localStorage.getItem(WELL_KEY);
-	if (saved) {
-		try {
-			const parsed = JSON.parse(saved);
-			// merge so any missing fields fall back to defaults above
-			wellData = {
-				lastThrow: parsed.lastThrow || 0,
-				totalThrown: parsed.totalThrown || 0,
-				totalReceived: parsed.totalReceived || 0,
-				timesThrown: parsed.timesThrown || 0,
-				successes: parsed.successes || 0, // guarded
-			};
-		} catch (e) {
-			console.error('Failed to load well data:', e);
-		}
-	}
 	updateWellUI();
 }
 
-// Save well data
 function saveWellData() {
-	localStorage.setItem(WELL_KEY, JSON.stringify(wellData));
+	// No-op
 }
 
 // Set well amount from quick buttons
