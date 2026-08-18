@@ -168,10 +168,9 @@ console.log(performance.now());
 
 		const btn = document.createElement('button');
 		btn.type = 'button';
+		btn.className = 'pw-toggle-btn';
 		btn.textContent = 'show';
 		btn.setAttribute('aria-label', 'show password');
-		btn.style.cssText =
-			'position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;opacity:0.5;font-size:0.72em;letter-spacing:0.03em;cursor:pointer;padding:4px 6px;';
 		btn.addEventListener('click', () => {
 			const showing = input.type === 'text';
 			input.type = showing ? 'password' : 'text';

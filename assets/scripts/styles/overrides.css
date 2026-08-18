@@ -4947,3 +4947,27 @@ altcha-widget:empty::before {
 .altcha-attribution a:hover {
 	opacity: 1;
 }
+
+.pw-toggle-btn {
+	position: absolute;
+	right: 4px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	color: var(--text-color);
+	opacity: 0.5;
+	font-family: monospace;
+	font-size: 0.72em;
+	letter-spacing: 0.03em;
+	cursor: pointer;
+	padding: 4px 6px;
+	border-radius: 2px;
+	transition: opacity 0.15s;
+}
+
+.pw-toggle-btn:hover {
+	opacity: 1;
+	background: none;
+	animation: none;
+}
