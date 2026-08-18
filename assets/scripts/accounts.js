@@ -1274,8 +1274,9 @@ console.log(performance.now());
 			}
 		});
 		el('authClose').addEventListener('click', () => hideOverlay('authOverlay'));
-		el('accountInfoClose').addEventListener('click', () => hideOverlay('accountInfoOverlay'));
 		el('backupKeysClose').addEventListener('click', () => hideOverlay('backupKeysOverlay'));
+		const legacyAccountClose = el('accountInfoClose');
+		if (legacyAccountClose) legacyAccountClose.style.display = 'none';
 
 		el('authTabLogin').addEventListener('click', () => switchAuthTab('login'));
 		el('authTabSignup').addEventListener('click', () => switchAuthTab('signup'));
