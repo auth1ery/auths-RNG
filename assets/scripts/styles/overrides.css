@@ -4500,7 +4500,22 @@ body.blur-panels .starmap-market-item {
 	}
 }
 
-.account-avatar-preview {
+#accountInfoOverlay .auth-modal {
+	max-width: 460px;
+	padding: 0;
+	overflow: hidden;
+}
+
+.dash-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 20px 20px 16px;
+	border-bottom: 1px solid var(--border-color);
+	position: relative;
+}
+
+.dash-avatar {
 	width: 48px;
 	height: 48px;
 	border-radius: 50%;
@@ -4509,19 +4524,193 @@ body.blur-panels .starmap-market-item {
 	flex-shrink: 0;
 }
 
-.account-avatar-placeholder {
-	width: 48px;
-	height: 48px;
-	border-radius: 50%;
-	background: var(--button-bg);
-	border: 1px solid var(--border-color);
+.dash-avatar-placeholder {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	background: var(--button-bg);
 	font-size: 1.2em;
 	color: var(--text-color);
 	opacity: 0.6;
+}
+
+.dash-header-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.dash-username {
+	font-size: 1.05em;
+	color: var(--text-color);
+}
+
+.dash-joined {
+	font-size: 0.75em;
+	opacity: 0.45;
+	margin-top: 2px;
+}
+
+.dash-close {
+	background: none;
+	border: none;
+	color: var(--text-color);
+	font-size: 22px;
+	opacity: 0.5;
+	cursor: pointer;
+	padding: 0;
+	width: 28px;
+	height: 28px;
 	flex-shrink: 0;
+	transition: opacity 0.2s;
+}
+
+.dash-close:hover {
+	opacity: 1;
+}
+
+.dash-tabs {
+	display: flex;
+	gap: 2px;
+	padding: 10px 12px 0;
+	border-bottom: 1px solid var(--border-color);
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.dash-tabs::-webkit-scrollbar {
+	display: none;
+}
+
+.dash-tab-btn {
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+	color: var(--text-color);
+	opacity: 0.5;
+	font-family: monospace;
+	font-size: 0.82em;
+	padding: 8px 10px 10px;
+	cursor: pointer;
+	border-radius: 0;
+	white-space: nowrap;
+	transition:
+		opacity 0.15s,
+		border-color 0.15s;
+}
+
+.dash-tab-btn:hover {
+	opacity: 0.8;
+	background: none;
+	animation: none;
+}
+
+.dash-tab-btn.active {
+	opacity: 1;
+	border-bottom-color: var(--text-color);
+}
+
+.dash-pane {
+	padding: 18px 20px 20px;
+	max-height: 60vh;
+	overflow-y: auto;
+}
+
+.dash-stat-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.dash-stat {
+	background: var(--overlay-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 3px;
+	padding: 12px;
+	text-align: center;
+}
+
+.dash-stat-num {
+	font-size: 1.4em;
+	color: var(--text-color);
+}
+
+.dash-stat-label {
+	font-size: 0.72em;
+	opacity: 0.45;
+	margin-top: 2px;
+}
+
+.dash-quick-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 14px;
+}
+
+.dash-quick-actions .small {
+	flex: 1;
+}
+
+.dash-field-label {
+	display: block;
+	margin-bottom: 4px;
+	font-size: 0.85em;
+	opacity: 0.7;
+}
+
+.dash-banner-preview {
+	height: 70px;
+	border-radius: 4px;
+	border: 1px solid var(--border-color);
+	margin-bottom: 8px;
+}
+
+.dash-widget-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.dash-widget-row:last-of-type {
+	border-bottom: none;
+}
+
+.dash-session-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.dash-session-row:last-of-type {
+	border-bottom: none;
+}
+
+.dash-security-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.dash-security-item:last-of-type {
+	border-bottom: none;
+}
+
+.dash-security-title {
+	font-size: 0.9em;
+	color: var(--text-color);
+}
+
+.dash-security-desc {
+	font-size: 0.75em;
+	opacity: 0.5;
+	margin-top: 2px;
 }
 
 .account-btn-avatar {
@@ -4757,4 +4946,28 @@ altcha-widget:empty::before {
 
 .altcha-attribution a:hover {
 	opacity: 1;
+}
+
+.pw-toggle-btn {
+	position: absolute;
+	right: 4px;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	color: var(--text-color);
+	opacity: 0.5;
+	font-family: monospace;
+	font-size: 0.72em;
+	letter-spacing: 0.03em;
+	cursor: pointer;
+	padding: 4px 6px;
+	border-radius: 2px;
+	transition: opacity 0.15s;
+}
+
+.pw-toggle-btn:hover {
+	opacity: 1;
+	background: none;
+	animation: none;
 }
