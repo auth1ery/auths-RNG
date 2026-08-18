@@ -169,9 +169,6 @@ console.log(performance.now());
 		if (trimmed.length === before) return;
 
 		notifications = trimmed;
-		try {
-			localStorage.setItem('notifications', JSON.stringify(notifications));
-		} catch (e) {}
 
 		if (typeof updateNotifBadge === 'function') updateNotifBadge();
 		if (
@@ -187,34 +184,7 @@ console.log(performance.now());
 	let lsGrowthStreak = 0;
 
 	function checkLocalStorageSize() {
-		let total = 0;
-		for (const key of Object.keys(localStorage)) {
-			total += ((localStorage.getItem(key) || '').length + key.length) * 2;
-		}
-		const kb = total / 1024;
-		window._cleanupLsKB = parseFloat(kb.toFixed(1));
-
-		if (lastLsKB !== null && kb > lastLsKB + LOCALSTORAGE_GROWTH_NOISE_FLOOR_KB) {
-			lsGrowthStreak++;
-		} else {
-			lsGrowthStreak = 0;
-		}
-		lastLsKB = kb;
-
-		if (lsGrowthStreak >= LOCALSTORAGE_GROWTH_WARN_STREAK) {
-			console.warn(
-				'[cleanup] localStorage keeps growing despite cleanup passes (' +
-					kb.toFixed(1) +
-					'KB, ' +
-					lsGrowthStreak +
-					' consecutive growth passes)'
-			);
-		}
-		if (total > LOCALSTORAGE_WARN_BYTES) {
-			console.warn(
-				'[cleanup] localStorage at ' + kb.toFixed(1) + 'KB — getting close to 5MB quota!'
-			);
-		}
+		window._cleanupLsKB = 0;
 	}
 
 	function runLightPass() {

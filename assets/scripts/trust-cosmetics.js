@@ -97,31 +97,27 @@
 		click: '💥 click effects',
 	};
 
+	let inMemTrust = 0;
+	let inMemOwned = [];
+	let inMemActive = {};
+
 	function getTrust() {
-		return parseInt(localStorage.getItem(TRUST_KEY) || '0');
+		return inMemTrust;
 	}
 	function setTrust(v) {
-		localStorage.setItem(TRUST_KEY, String(Math.max(0, v)));
+		inMemTrust = Math.max(0, v);
 	}
 	function getOwned() {
-		try {
-			return JSON.parse(localStorage.getItem(TRUST_OWNED_KEY) || '[]');
-		} catch {
-			return [];
-		}
+		return inMemOwned;
 	}
 	function getActive() {
-		try {
-			return JSON.parse(localStorage.getItem(TRUST_ACTIVE_KEY) || '{}');
-		} catch {
-			return {};
-		}
+		return inMemActive;
 	}
 	function saveOwned(o) {
-		localStorage.setItem(TRUST_OWNED_KEY, JSON.stringify(o));
+		inMemOwned = o;
 	}
 	function saveActive(a) {
-		localStorage.setItem(TRUST_ACTIVE_KEY, JSON.stringify(a));
+		inMemActive = a;
 	}
 
 	function buy(id) {

@@ -27,11 +27,12 @@
 		}
 	});
 
+	let inMemTrust = 0;
 	function getTrust() {
-		return parseInt(localStorage.getItem(TRUST_KEY) || '0');
+		return inMemTrust;
 	}
 	function setTrust(v) {
-		localStorage.setItem(TRUST_KEY, String(Math.max(0, v)));
+		inMemTrust = Math.max(0, v);
 	}
 	function addTrust(delta) {
 		setTrust(getTrust() + delta);
@@ -56,17 +57,12 @@
 		if (el) el.textContent = getTrust();
 	}
 
+	let inMemHistory = [];
 	function loadHistory() {
-		try {
-			return JSON.parse(localStorage.getItem(MUTATION_HISTORY_KEY) || '[]');
-		} catch {
-			return [];
-		}
+		return inMemHistory;
 	}
 	function saveHistory(h) {
-		try {
-			localStorage.setItem(MUTATION_HISTORY_KEY, JSON.stringify(h));
-		} catch {}
+		inMemHistory = h;
 	}
 	function addToHistory(nameA, nameB, result, wasGood) {
 		const h = loadHistory();
@@ -115,8 +111,9 @@
 
 	let lastMutationTime = 0;
 
+	let inMemUnlocked = false;
 	function isUnlocked() {
-		return localStorage.getItem(MUTATIONS_KEY) === '1';
+		return inMemUnlocked;
 	}
 
 	function getInventoryRarities() {

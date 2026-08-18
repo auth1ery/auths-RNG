@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	let _fg = '#dcdcdc';
 
 	try {
-		const saved = JSON.parse(localStorage.getItem('themeEditorActive') || 'null');
+		const saved = null;
 		if (saved?.editorData?.vars) {
 			const v = saved.editorData.vars;
 			if (v.bgColor) _bg = v.bgColor;
@@ -28,7 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
 	};
 
 	try {
-		const stored = JSON.parse(localStorage.getItem(ANIM_KEY) || 'null');
+		const stored = null;
 		if (stored) config = { ...config, ...stored };
 	} catch (_) {}
 

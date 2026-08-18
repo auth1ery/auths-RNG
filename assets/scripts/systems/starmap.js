@@ -50,15 +50,12 @@
 	];
 
 	// ── data helpers ─────────────────────────────────────────────────────
+	let inMemStarmapData = {};
 	function loadData() {
-		try {
-			return JSON.parse(localStorage.getItem(STARMAP_KEY) || '{}');
-		} catch {
-			return {};
-		}
+		return inMemStarmapData;
 	}
 	function saveData(d) {
-		localStorage.setItem(STARMAP_KEY, JSON.stringify(d));
+		inMemStarmapData = d;
 	}
 	function getData() {
 		return Object.assign(
@@ -225,7 +222,7 @@
 		const container = document.getElementById('starmapContainer');
 		if (!container) return;
 
-		const unlocked = localStorage.getItem('starmapUnlocked') === '1';
+		const unlocked = false;
 
 		if (!unlocked) {
 			container.innerHTML = `
@@ -421,17 +418,14 @@
 			window.applyStarmapLuck?.();
 			showAnomalyPopup?.('✦ +0.25x permanent luck!');
 		} else if (item.type === 'rarity_unlock') {
-			localStorage.setItem('voidUnlock_' + item.id, '1');
 			showAnomalyPopup?.(`✦ ${item.name} unlocked!`);
 		} else if (item.type === 'cosmetic') {
-			localStorage.setItem('cosmeticUnlock_' + item.id, '1');
 			showAnomalyPopup?.(`✦ ${item.name} unlocked!`);
 			if (item.id === 'star_trail') initStarTrail();
 		} else if (item.type === 'anomalies') {
 			if (typeof anomalies !== 'undefined') {
 				anomalies += 500;
 				if (typeof updateAnomalyUI === 'function') updateAnomalyUI();
-				if (typeof saveAllData === 'function') saveAllData();
 				showAnomalyPopup?.('✦ +500 anomalies!');
 			}
 		}
@@ -444,7 +438,6 @@
 		if (window._starTrailActive) return;
 		window._starTrailActive = true;
 		document.addEventListener('mousemove', (e) => {
-			if (!localStorage.getItem('cosmeticUnlock_star_trail')) return;
 			const dot = document.createElement('div');
 			dot.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;width:3px;height:3px;
         background:rgba(200,200,255,0.75);border-radius:50%;pointer-events:none;z-index:2147483640;
@@ -474,8 +467,6 @@
 
 	window.renderStarmap = renderStarmap;
 
-	// init star trail if already owned
-	if (localStorage.getItem('cosmeticUnlock_star_trail')) initStarTrail();
 
 	// wait for DOM
 	function tryInit(n) {

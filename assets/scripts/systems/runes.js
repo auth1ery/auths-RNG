@@ -36,42 +36,18 @@
 	let dopamineAttackInterval = null;
 	let giftWealthInterval = null;
 	let linkAnimationActive = false;
+	let inMemUnlocked = false;
 
 	function isUnlocked() {
-		return localStorage.getItem(RUNES_KEY) === '1';
+		return inMemUnlocked;
 	}
 
 	function loadData() {
-		try {
-			const d = JSON.parse(localStorage.getItem(RUNES_DATA_KEY) || '{}');
-			runesData = {
-				counts: d.counts || {},
-				elementals: d.elementals || {},
-				totalDropped: d.totalDropped || 0,
-			};
-		} catch (_) {}
-		blocks = parseFloat(localStorage.getItem(BLOCKS_KEY) || '0');
-		gift = localStorage.getItem(GIFT_KEY) || null;
-		try {
-			const u = JSON.parse(localStorage.getItem(UPGRADES_KEY) || '{}');
-			upgrades = Object.assign(
-				{
-					tripleLuck: false,
-					moreBlocks: false,
-					anomalyMachine: false,
-					dopamineAttack: false,
-					doubleClover: false,
-				},
-				u
-			);
-		} catch (_) {}
+		// Loaded in memory
 	}
 
 	function saveData() {
-		localStorage.setItem(RUNES_DATA_KEY, JSON.stringify(runesData));
-		localStorage.setItem(BLOCKS_KEY, String(blocks));
-		if (gift) localStorage.setItem(GIFT_KEY, gift);
-		localStorage.setItem(UPGRADES_KEY, JSON.stringify(upgrades));
+		// Saved in memory
 	}
 
 	function getRarityTier(rarityObj) {

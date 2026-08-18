@@ -373,15 +373,12 @@ console.log(performance.now());
 	}
 
 	// ── helpers ──────────────────────────────────────────────────────────
+	let inMemGauntletData = {};
 	function loadData() {
-		try {
-			return JSON.parse(localStorage.getItem(GAUNTLET_KEY) || '{}');
-		} catch {
-			return {};
-		}
+		return inMemGauntletData;
 	}
 	function saveData(d) {
-		localStorage.setItem(GAUNTLET_KEY, JSON.stringify(d));
+		inMemGauntletData = d;
 	}
 
 	function checkRotationChange() {
@@ -499,17 +496,14 @@ console.log(performance.now());
 			}
 			showAnomalyPopup(rew.mult + 'x luck · ' + rew.dur + 's 🏆');
 		} else if (rew.type === 'unlock_mutations') {
-			localStorage.setItem('mutationsUnlocked', '1');
 			showAnomalyPopup('mutations unlocked! 🧬');
 			if (typeof renderMutations === 'function') renderMutations();
 			window.unlockPageDot?.(3);
 		} else if (rew.type === 'unlock_starmap') {
-			localStorage.setItem('starmapUnlocked', '1');
 			showAnomalyPopup('✦ starmap unlocked!');
 			if (typeof renderStarmap === 'function') renderStarmap();
 			window.unlockPageDot?.(4);
 		} else if (rew.type === 'unlock_runes') {
-			localStorage.setItem('runesUnlocked', '1');
 			showAnomalyPopup('🔷 runes unlocked!');
 			if (typeof renderRunes === 'function') renderRunes();
 			window.unlockPageDot?.(5);

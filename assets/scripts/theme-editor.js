@@ -449,30 +449,11 @@
 	}
 
 	function getUserPresets() {
-		let raw;
-		try {
-			raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-		} catch (_) {
-			return [];
-		}
-		if (!Array.isArray(raw)) return [];
-
-		let migratedAny = false;
-		const migrated = raw.map((p) => {
-			if (p.__v === PRESET_SCHEMA_VERSION) return p;
-			migratedAny = true;
-			return migratePreset(p);
-		});
-
-		if (migratedAny) saveUserPresets(migrated);
-		return migrated;
+		return [];
 	}
 
 	function saveUserPresets(arr) {
-		try {
-			const stamped = arr.map((p) => ({ ...p, __v: PRESET_SCHEMA_VERSION }));
-			localStorage.setItem(STORAGE_KEY, JSON.stringify(stamped));
-		} catch (_) {}
+		// No-op
 	}
 
 	function getAllPresets() {
@@ -1276,18 +1257,6 @@
 			window.applySettings(patch);
 		}
 
-		try {
-			localStorage.setItem(
-				ACTIVE_KEY,
-				JSON.stringify({ name: presetName || 'custom', editorData })
-			);
-		} catch (_) {}
-
-		if (editorData.settings.startAnim) {
-			try {
-				localStorage.setItem('startAnimConfig', JSON.stringify(editorData.settings.startAnim));
-			} catch (_) {}
-		}
 
 		const label = el('activeThemeName');
 		if (label) label.textContent = 'current: ' + (presetName || 'custom');
@@ -1745,17 +1714,7 @@
 				bodyStyle: document.body.getAttribute('style') || '',
 			};
 
-			let activeData;
-			try {
-				activeData = JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null');
-			} catch (_) {
-				activeData = null;
-			}
-			if (activeData && activeData.editorData) {
-				writeEditor(activeData.editorData);
-			} else {
-				writeEditor(BUILT_IN_PRESETS[0]);
-			}
+			writeEditor(BUILT_IN_PRESETS[0]);
 
 			syncBgTypeUI();
 			refreshBgImagePreview();
@@ -1896,15 +1855,6 @@
 			});
 		}
 
-		let activeData;
-		try {
-			activeData = JSON.parse(localStorage.getItem(ACTIVE_KEY) || 'null');
-		} catch (_) {
-			activeData = null;
-		}
-		if (activeData) {
-			applyAndSave(activeData.editorData, activeData.name);
-		}
 	}
 
 	if (document.readyState === 'loading') {

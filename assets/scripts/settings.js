@@ -1569,9 +1569,6 @@
 		const current = { ...savedSettings, ...getCurrentSettings() };
 		await applyMusic(current);
 		savedSettings = current;
-		try {
-			localStorage.setItem('userSettings', JSON.stringify(current));
-		} catch (_) {}
 	}
 
 	async function saveChanges() {
@@ -1580,9 +1577,6 @@
 		await applyMusic(current);
 		syncUIToSettings(current);
 		savedSettings = current;
-		try {
-			localStorage.setItem('userSettings', JSON.stringify(current));
-		} catch (_) {}
 		hidePendingBar();
 	}
 
@@ -2202,9 +2196,6 @@
 		await loadCustomMusicUI();
 
 		let loaded = {};
-		try {
-			loaded = JSON.parse(localStorage.getItem('userSettings') || '{}');
-		} catch (_) {}
 
 		const defaults = {
 			theme: 'black',
@@ -2266,9 +2257,6 @@
 		applyVisuals(savedSettings);
 		await applyMusic(savedSettings);
 		syncUIToSettings(savedSettings);
-		try {
-			localStorage.setItem('userSettings', JSON.stringify(savedSettings));
-		} catch (_) {}
 	};
 	window.getCurrentSettings = getCurrentSettings;
 
