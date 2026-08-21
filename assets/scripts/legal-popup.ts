@@ -1,13 +1,14 @@
-"use strict";
 // BORINGGG
 //but i gotta do this nonetheless
+
 console.log(performance.now());
+
 (function () {
-    const SEEN_KEY = 'seenLegalConsent';
-    if (localStorage.getItem(SEEN_KEY))
-        return;
-    const style = document.createElement('style');
-    style.textContent = `
+	const SEEN_KEY = 'seenLegalConsent';
+	if (localStorage.getItem(SEEN_KEY)) return;
+
+	const style = document.createElement('style');
+	style.textContent = `
 #legalConsentPopup {
   position: fixed;
   inset: 0;
@@ -58,20 +59,21 @@ console.log(performance.now());
 }
 #legalConsentDismiss:hover { background: #222; }
 `;
-    document.head.appendChild(style);
-    const popup = document.createElement('div');
-    popup.id = 'legalConsentPopup';
-    popup.innerHTML = `
+	document.head.appendChild(style);
+
+	const popup = document.createElement('div');
+	popup.id = 'legalConsentPopup';
+	popup.innerHTML = `
     <div id="legalConsentInner">
       <p>by continuing, you agree to the game's <a href="/boring/legal" target="_blank">privacy policy and terms of service</a>. you have rights, and your privacy is ensured!</p>
       <button id="legalConsentDismiss">okay, got it!!</button>
     </div>
   `;
-    document.body.appendChild(popup); // why do i have to make so many JS scripts ahhhhhhhhhhhh
-    const dismissBtn = document.getElementById('legalConsentDismiss');
-    dismissBtn?.addEventListener('click', function () {
-        localStorage.setItem(SEEN_KEY, '1');
-        popup.classList.add('hidden');
-    });
+	document.body.appendChild(popup); // why do i have to make so many JS scripts ahhhhhhhhhhhh
+
+	const dismissBtn = document.getElementById('legalConsentDismiss');
+	dismissBtn?.addEventListener('click', function () {
+		localStorage.setItem(SEEN_KEY, '1');
+		popup.classList.add('hidden');
+	});
 })();
-//# sourceMappingURL=legal-popup.js.map

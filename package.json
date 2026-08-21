@@ -2,8 +2,30 @@
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
 		"@playwright/test": "^1.61.0",
+		"@types/node": "^26.2.0",
 		"globals": "^17.11.0",
 		"stylelint": "^17.13.0",
-		"stylelint-config-standard": "^40.0.0"
-	}
+		"stylelint-config-standard": "^40.0.0",
+		"typescript": "^7.0.2"
+	},
+	"name": "auths-rng",
+	"version": "1.0.0",
+	"description": "![Version](https://img.shields.io/github/v/release/authsrng-game/auths-RNG) ![Last Commit](https://img.shields.io/github/last-commit/authsrng-game/auths-RNG) ![License](https://img.shields.io/github/license/authsrng-game/auths-RNG) ![Code Size](https://img.shields.io/github/languages/code-size/authsrng-game/auths-RNG) ![trans rights](https://pride-badges.pony.workers.dev/static/v1?label=trans%20rights&stripeWidth=6&stripeColors=5BCEFA,F5A9B8,FFFFFF,F5A9B8,5BCEFA) [![Discord](https://img.shields.io/discord/1443019622109675682?color=5BCEFA)](https://discord.gg/mTDw8jJYqX) [![CI](https://img.shields.io/github/actions/workflow/status/authsrng-game/auths-RNG/autofix.yml?branch=nightly&label=autofix&color=5BCEFA)](https://github.com/authsrng-game/auths-RNG/actions/workflows/autofix.yml) ![Status](https://img.shields.io/badge/status-actively%20developed-5BCEFA) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/authsrng-game/auths-RNG)",
+	"main": "playwright.config.js",
+	"directories": {
+		"test": "tests"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/authsrng-game/auths-RNG.git"
+	},
+	"keywords": [],
+	"type": "commonjs",
+	"bugs": {
+		"url": "https://github.com/authsrng-game/auths-RNG/issues"
+	},
+	"homepage": "https://github.com/authsrng-game/auths-RNG#readme"
 }
