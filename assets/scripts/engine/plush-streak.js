@@ -15,6 +15,38 @@
 		return 1.0 + ((h & 0xff) / 255 - 0.5) * DAILY_VARIANCE;
 	}
 
+	/*
+
+	h=
+	Bin: .... .1.1 ..1. .11. .1.1 11.. .... ....
+	---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+
+	28 24 20 16 12 8 4 0
+
+	Hex: 0526 5C00 (32-bit)
+	Str: . & \ . (5, 38, 92, 0)
+	Dec: 86,400,000 (82.397 MiB)
+
+	day=
+	Bin: .... .1.1 ..1. .11. .1.1 11.. .... ....
+	---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+
+	28 24 20 16 12 8 4 0
+
+	Hex: 0526 5C00 (32-bit)
+	Str: . & \ . (5, 38, 92, 0)
+	Dec: 86,400,000 (82.397 MiB)
+	
+	h&=
+	Bin: 1111 1111
+	---+ ---+
+	4 0
+
+	Hex: FF (8-bit)
+	Str: . (255)
+	Dec: 255 (255 B) / -1
+
+	These comments might not be useful now that I think about it.
+	*/
+
 	class StreakTracker {
 		constructor() {
 			this._recentTiers = [];

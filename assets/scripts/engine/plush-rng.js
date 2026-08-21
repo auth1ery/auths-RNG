@@ -2,6 +2,20 @@
 	const FLOAT_DIV = 9007199254740992;
 	const DRIFT_INTERVAL = 50000;
 
+	/* FLOAT_DIV's hex data is
+	Bin: 60 56 52 48 44 40 36 32
+	---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+
+	.... .... ..1. .... .... .... .... ....
+	.... .... .... .... .... .... .... ....
+	---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+
+	28 24 20 16 12 8 4 0
+
+	Hex: 0020 0000 0000 0000 (64-bit)
+	Str: . . . . . . .
+	(0, 32, 0, 0, 0, 0, 0, 0)
+	Dec: 9,007,199,254,740,992 (8.000 PiB)
+  */
+
 	class PlushRNG {
 		constructor() {
 			this._gen = new root.Xoshiro256SS();
@@ -46,6 +60,8 @@
 			this._gen.setState(newState);
 			if (root.PlushLog) root.PlushLog.debug('rng', 'long-session drift remix applied');
 		}
+
+		// may be refactored
 
 		float() {
 			this._callCount++;

@@ -10,7 +10,7 @@
 		!root.PlushLogger ||
 		!root.Epic
 	) {
-		throw new Error('Plush dependencies not loaded correctly');
+		throw new Error('Plush dependencies not loaded correctly?');
 	}
 
 	const VERSION = '3.0.0';
