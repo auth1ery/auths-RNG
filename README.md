@@ -8,6 +8,7 @@
 [![Discord](https://img.shields.io/discord/1443019622109675682?color=5BCEFA)](https://discord.gg/mTDw8jJYqX)
 [![CI](https://img.shields.io/github/actions/workflow/status/authsrng-game/auths-RNG/autofix.yml?branch=nightly&label=autofix&color=5BCEFA)](https://github.com/authsrng-game/auths-RNG/actions/workflows/autofix.yml)
 ![Status](https://img.shields.io/badge/status-actively%20developed-5BCEFA)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/authsrng-game/auths-RNG)
 
 <!-- RELEASE-NOTES:START -->
 <!-- RELEASE-NOTES:END -->

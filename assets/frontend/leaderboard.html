@@ -217,6 +217,18 @@
 					font-size: 0.8em;
 				}
 			}
+
+			.tag-pill {
+				display: inline-block;
+				font-size: 0.68em;
+				padding: 1px 7px;
+				border-radius: 20px;
+				border: 1px solid #402020;
+				color: var(--danger);
+				background: rgb(255 136 136 / 8%);
+				margin-left: 6px;
+				vertical-align: middle;
+			}
 		</style>
 	</head>
 	<body>
@@ -348,7 +360,7 @@
 
 						return `<tr>
       <td class="rank-cell${rankClass}">${rankLabel(i)}</td>
-      <td class="username-cell">${escHtml(e.username || '?')}</td>
+      <td class="username-cell">${escHtml(e.username || '?')}${(e.tags || []).map((t) => `<span class="tag-pill">${escHtml(t)}</span>`).join('')}</td>
       <td>${abbr(e.rolls)}</td>
       <td>${abbr(e.rarities)}</td>
       <td class="rarest-cell">${rarest}</td>

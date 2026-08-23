@@ -1,10 +1,12 @@
-'use strict';
 // BORINGGG
 //but i gotta do this nonetheless
+
 console.log(performance.now());
+
 (function () {
 	const SEEN_KEY = 'seenLegalConsent';
 	if (localStorage.getItem(SEEN_KEY)) return;
+
 	const style = document.createElement('style');
 	style.textContent = `
 #legalConsentPopup {
@@ -58,6 +60,7 @@ console.log(performance.now());
 #legalConsentDismiss:hover { background: #222; }
 `;
 	document.head.appendChild(style);
+
 	const popup = document.createElement('div');
 	popup.id = 'legalConsentPopup';
 	popup.innerHTML = `
@@ -67,10 +70,10 @@ console.log(performance.now());
     </div>
   `;
 	document.body.appendChild(popup); // why do i have to make so many JS scripts ahhhhhhhhhhhh
+
 	const dismissBtn = document.getElementById('legalConsentDismiss');
 	dismissBtn?.addEventListener('click', function () {
 		localStorage.setItem(SEEN_KEY, '1');
 		popup.classList.add('hidden');
 	});
 })();
-//# sourceMappingURL=legal-popup.js.map

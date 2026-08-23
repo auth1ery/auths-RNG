@@ -152,7 +152,7 @@ console.log(performance.now());
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
       <button id="lbSubmitNowBtn" class="small">update now</button>
-      <a href="leaderboard.html" class="small"
+      <a href="/assets/frontend/leaderboard.html" class="small"
          style="display:inline-block;padding:4px 10px;border:1px solid var(--border-color,#333);text-decoration:none;color:inherit;">
         view leaderboard →
       </a>

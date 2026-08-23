@@ -1,44 +1,64 @@
-'use strict';
 (function () {
 	'use strict';
-	const win = window;
+
+	interface RescueWindow extends Window {
+		__rescueLoaded?: boolean;
+		__rescueSavesBlocked?: boolean;
+		__rescueDebug?: {
+			getLevel: () => number;
+			simulateStall: (ms?: number) => void;
+		};
+		flushPlaytime?: () => void;
+		saveAllData?: () => void;
+		forceCleanup?: () => void;
+	}
+
+	const win = window as RescueWindow;
+
 	if (win.__rescueLoaded) return;
 	win.__rescueLoaded = true;
+
 	console.log(performance.now());
+
 	const STALL_MS = 3000;
 	const STEP1_WAIT_MS = 1000;
 	const STEP2_WAIT_MS = 2000;
 	const RESCUE_FLAG_KEY = 'rescueModeReloaded';
+
 	let lastTick = performance.now();
 	let level = 0;
-	let escalateTimer = null;
-	let rafHandle = null;
-	function resetClock() {
+	let escalateTimer: ReturnType<typeof setTimeout> | null = null;
+	let rafHandle: number | null = null;
+
+	function resetClock(): void {
 		lastTick = performance.now();
 	}
+
 	document.addEventListener('visibilitychange', resetClock);
 	window.addEventListener('focus', resetClock);
 	window.addEventListener('pageshow', resetClock);
-	function blockFutureLocalStorageWrites() {
+
+	function blockFutureLocalStorageWrites(): void {
 		if (win.__rescueSavesBlocked) return;
 		win.__rescueSavesBlocked = true;
 		try {
 			const proto = Storage.prototype;
 			const originalSetItem = proto.setItem;
 			const originalRemoveItem = proto.removeItem;
-			proto.setItem = function (key, value) {
+			proto.setItem = function (this: Storage, key: string, value: string): void {
 				if (this === window.localStorage) return;
-				return originalSetItem.apply(this, arguments);
+				return originalSetItem.apply(this, arguments as any);
 			};
-			proto.removeItem = function (key) {
+			proto.removeItem = function (this: Storage, key: string): void {
 				if (this === window.localStorage) return;
-				return originalRemoveItem.apply(this, arguments);
+				return originalRemoveItem.apply(this, arguments as any);
 			};
 		} catch (e) {
 			console.warn('[rescue] failed to lock localStorage', e);
 		}
 	}
-	function performResetToDefault() {
+
+	function performResetToDefault(): void {
 		try {
 			if (typeof win.flushPlaytime === 'function') win.flushPlaytime();
 		} catch (e) {}
@@ -72,7 +92,8 @@
 		} catch (e) {}
 		blockFutureLocalStorageWrites();
 	}
-	function forceReload() {
+
+	function forceReload(): void {
 		try {
 			sessionStorage.setItem(RESCUE_FLAG_KEY, '1');
 		} catch (e) {}
@@ -84,7 +105,8 @@
 			}
 		}, 50);
 	}
-	function armEscalation(forLevel) {
+
+	function armEscalation(forLevel: number): void {
 		if (escalateTimer !== null) clearTimeout(escalateTimer);
 		const wait = forLevel === 1 ? STEP1_WAIT_MS : STEP2_WAIT_MS;
 		escalateTimer = setTimeout(() => {
@@ -94,7 +116,8 @@
 			}
 		}, wait);
 	}
-	function onStall(delta) {
+
+	function onStall(delta: number): void {
 		if (level === 0) {
 			console.log('entering rescue mode...');
 			console.log('[rescue] stall detected, ' + Math.round(delta) + 'ms');
@@ -117,7 +140,8 @@
 			forceReload();
 		}
 	}
-	function loop() {
+
+	function loop(): void {
 		const t = performance.now();
 		const delta = t - lastTick;
 		lastTick = t;
@@ -126,8 +150,10 @@
 		}
 		rafHandle = requestAnimationFrame(loop);
 	}
+
 	rafHandle = requestAnimationFrame(loop);
-	function showRescueWarning() {
+
+	function showRescueWarning(): void {
 		const div = document.createElement('div');
 		div.id = 'rescueWarningOverlay';
 		Object.assign(div.style, {
@@ -154,7 +180,8 @@
 		div.addEventListener('click', () => div.remove());
 		document.body.appendChild(div);
 	}
-	function checkRescueFlag() {
+
+	function checkRescueFlag(): void {
 		try {
 			if (sessionStorage.getItem(RESCUE_FLAG_KEY) === '1') {
 				sessionStorage.removeItem(RESCUE_FLAG_KEY);
@@ -162,14 +189,15 @@
 			}
 		} catch (e) {}
 	}
+
 	if (document.readyState === 'loading') {
 		document.addEventListener('DOMContentLoaded', checkRescueFlag);
 	} else {
 		checkRescueFlag();
 	}
+
 	win.__rescueDebug = {
 		getLevel: () => level,
-		simulateStall: (ms) => onStall(ms || 3500),
+		simulateStall: (ms?: number) => onStall(ms || 3500),
 	};
 })();
-//# sourceMappingURL=rescue.js.map

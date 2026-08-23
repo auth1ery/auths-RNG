@@ -57,7 +57,7 @@
 				const m = this._mastery.get(name) || 0;
 				this._mastery.set(name, Math.min(m + MASTERY_GAIN, MASTERY_CAP));
 				if (root.PlushLog)
-					root.PlushLog.debug('pity', 'mastery gained (natural pull)', {
+					root.PlushLog.debug('pity', 'mastery gained (natural pull!)', {
 						name,
 						mastery: this._mastery.get(name),
 					});

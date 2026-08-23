@@ -3,6 +3,35 @@
 	const MULT_PRECISION = 1000000n;
 	const NOTICEABLE_DENOM = 100n;
 
+	/*
+
+	scale=
+	Bin: ..11 1.11 1..1 1.1. 11.. 1.1. .... ....
+	---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+
+	28 24 20 16 12 8 4 0
+
+	Hex: 3B9A CA00 (32-bit)
+	Str: ; . . . (59, 154, 202, 0)
+	Dec: 1,000,000,000 (953.674 MiB)
+
+	mult=
+	Bin: .... .... .... 1111 .1.. ..1. .1.. ....
+	---+ ---+ ---+ ---+ ---+ ---+ ---+ ---+
+	28 24 20 16 12 8 4 0
+
+	Hex: 000F 4240 (32-bit)
+	Str: . . B @ (0, 15, 66, 64)
+	Dec: 1,000,000 (976.563 KiB)
+
+	noticeable=
+	Bin: .11. .1..
+	---+ ---+
+	4 0
+
+	Hex: 64 (8-bit)
+	Str: d (100)
+	Dec: 100 (100 B)
+	*/
 	function rarityTier(r) {
 		if (r.tier !== undefined) return r.tier;
 		if (r.denomEpic) return 5;
