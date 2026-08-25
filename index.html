@@ -12,6 +12,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 		<!-- a relic of the past...............-->
 		<title>auth's RNG</title>
+		<script src="assets/scripts/temp.js"></script>
 		<link rel="canonical" href="https://authsrng.xyz/" />
 		<link rel="preconnect" href="https://cdnjs.cloudflare.com" />
 		<link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
@@ -213,7 +214,6 @@ Last release date on nightly: ${nightlyRDate}`;
 			})();
 		</script>
 
-
 		<img
 			src="https://librecounter.org/counter.svg"
 			referrerpolicy="unsafe-url"
@@ -238,7 +238,7 @@ Last release date on nightly: ${nightlyRDate}`;
 		<!-- BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~  BITES AT YOU~ -->
 
 		<div class="site-header lazy">
-			<div class="header-chip">update 9.6</div>
+			<div class="header-chip">update 9.6 (event) (nosave)</div>
 			<h1>welcome to auth's RNG!</h1>
 			<p class="header-msg" id="randomMessage"></p>
 			<div class="header-links">
@@ -836,8 +836,6 @@ Last release date on nightly: ${nightlyRDate}`;
 								<button id="erudaBtn" class="setting-btn small">enable</button>
 							</div>
 						</div>
-
-
 					</div>
 				</div>
 
@@ -1068,6 +1066,7 @@ Last release date on nightly: ${nightlyRDate}`;
 		<script src="assets/scripts/icons.js" defer></script>
 		<script src="assets/scripts/settings.js" defer></script>
 		<script src="assets/scripts/jukebox.js" defer></script>
+		<script src="assets/scripts/tour.js" defer></script>
 
 		<div id="cutsceneOverlay">
 			<video id="cutsceneVideo" preload="none"></video>
@@ -1080,7 +1079,6 @@ Last release date on nightly: ${nightlyRDate}`;
 		</div>
 
 		<div id="anomalyPopup"></div>
-
 
 		<div id="confirmModal">
 			<div class="modal-content">
@@ -1636,7 +1634,6 @@ Last release date on nightly: ${nightlyRDate}`;
 
 					prevBtn.disabled = currentPage === 0;
 					nextBtn.disabled = currentPage === totalPages - 1;
-
 				}
 
 				prevBtn.addEventListener('click', () => goToPage(currentPage - 1));
@@ -3155,7 +3152,6 @@ container.addEventListener('click', () => {
 							placeholder="leave blank to use pack"
 							style="width: 100%; padding: 6px 8px; margin-bottom: 8px"
 						/>
-
 
 						<label style="display: block; margin-bottom: 4px; font-size: 0.8em; opacity: 0.6"
 							>wishing well icon override</label
