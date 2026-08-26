@@ -19,7 +19,9 @@
   <img src="assets/repo3.png" width="30%" />
 </p>
 
-Get the mobile app on F-Droid: `<link soon>`
+[<img src="https://f-droid.org/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/com.ivylopez.authsrng)
 
 ## about
 
