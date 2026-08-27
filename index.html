@@ -229,6 +229,28 @@ Last release date on nightly: ${nightlyRDate}`;
 			}
 		</script>
 
+		<script>
+			(function () {
+				var params = new URLSearchParams(location.search);
+				if (!params.has('discordLinked') && !params.has('discordError')) return;
+
+				var ok = params.get('discordLinked') === '1';
+				var msg = ok
+					? 'discord account connected!'
+					: 'discord link failed: ' + (params.get('discordError') || 'unknown error');
+				history.replaceState(null, '', location.pathname);
+
+				document.addEventListener('DOMContentLoaded', function () {
+					setTimeout(function () {
+						if (window.showAlert) window.showAlert(msg);
+						if (ok && window.AuthAccount && window.AuthAccount.isLoggedIn()) {
+							window.AuthAccount.openDashboard('connections');
+						}
+					}, 500);
+				});
+			})();
+		</script>
+
 		<img
 			src="https://librecounter.org/counter.svg"
 			referrerpolicy="unsafe-url"
