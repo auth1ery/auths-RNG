@@ -5021,7 +5021,7 @@ altcha-widget:empty::before {
 	background: rgb(100 80 200 / 8%);
 }
 
-.eternum-tier-row:not(.eternum-locked):not(.eternum-owned) {
+.eternum-tier-row:not(.eternum-locked, .eternum-owned) {
 	opacity: 1;
 }
 
