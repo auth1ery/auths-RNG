@@ -393,7 +393,7 @@
 
 			const label = document.createElement('div');
 			label.className = 'starmap-section-label eternum-label';
-			label.textContent = '⟁ eternum — pity compression';
+			label.textContent = '⟁ eternum ::: pity compression';
 			eternum.appendChild(label);
 
 			const desc = document.createElement('div');
