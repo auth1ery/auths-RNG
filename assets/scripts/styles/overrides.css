@@ -631,6 +631,28 @@ select {
 	animation: glow-pulse 4s ease-in-out infinite;
 }
 
+#spinnerContainer.roll-pending {
+	animation: glow-pulse 1s ease-in-out infinite;
+	opacity: 0.6;
+}
+
+#spinnerContainer.roll-pending::after {
+	content: 'resolving...';
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.8em;
+	opacity: 0.5;
+	background: var(--overlay-bg);
+	pointer-events: none;
+}
+
+body.reduce-motion #spinnerContainer.roll-pending {
+	animation: none;
+}
+
 .spin-item {
 	height: 56px;
 	display: flex;

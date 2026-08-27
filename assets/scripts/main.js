@@ -1865,6 +1865,7 @@ function spinAndReveal(res) {
 	if (totalRolls > 0 && totalRolls % 100 === 0) startLuckBoost();
 
 	const finalize = () => {
+		document.getElementById('spinnerContainer')?.classList.remove('roll-pending');
 		totalRolls++;
 		updateTotalRolls();
 		if (window.recheckDefaultMusicTier) window.recheckDefaultMusicTier();
@@ -2088,29 +2089,10 @@ document.addEventListener('visibilitychange', () => {
 		updateActivePotionsDisplay();
 	}
 
-	if (_rollClickTimer) {
-		clearTimeout(_rollClickTimer);
-		_rollClickTimer = null;
+	if (_rollClickTimer || _rollFinalizeTimer) {
 		spinner.style.transition = 'none';
 		spinner.style.transform = 'translateY(0)';
-		spinner.innerHTML = '';
-		rollBtn.disabled = false;
-	}
-
-	if (_rollFinalizeTimer) {
-		clearTimeout(_rollFinalizeTimer);
-		_rollFinalizeTimer = null;
-		spinner.style.transition = 'none';
-		spinner.style.transform = 'translateY(0)';
-		spinner.innerHTML = '';
-		rollBtn.disabled = false;
-	}
-
-	if (!isCutscenePlaying && rollBtn.disabled) {
-		spinner.style.transition = 'none';
-		spinner.style.transform = 'translateY(0)';
-		spinner.innerHTML = '';
-		rollBtn.disabled = false;
+		document.getElementById('spinnerContainer')?.classList.add('roll-pending');
 	}
 
 	if (luckBoostActive) {
