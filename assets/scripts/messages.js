@@ -955,7 +955,7 @@ const messages = [
 	'i have no nose and i must sneeze!',
 	'remember to add "&fmt=18" to the end of the video URL to listen to it in high quality!',
 	'waow...',
- 'this space is ad space: Drink our auth flavoured juice today! (may include side effects such as death)',
+	'this space is ad space: Drink our auth flavoured juice today! (may include side effects such as death)',
 ];
 
 const randomIndex = Math.floor(Math.random() * messages.length);
