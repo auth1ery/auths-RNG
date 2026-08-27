@@ -31,7 +31,11 @@
 
 	function resolveConfig(rarity) {
 		if (rarity.pityLimit != null) {
-			const hard = rarity.pityLimit;
+			const reduction =
+				typeof root.getPityCompressionReduction === 'function'
+					? root.getPityCompressionReduction(rarity.name)
+					: 1;
+			const hard = Math.max(1000, Math.round(rarity.pityLimit * reduction));
 			return {
 				hardPity: hard,
 				softPityStart: Math.ceil(hard * SOFT_RATIO),

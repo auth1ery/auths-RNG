@@ -49,6 +49,52 @@
 		},
 	];
 
+	const ETERNUM_UNLOCK_CONSTELLATIONS = 15; // needs real starmap investment first!!!!
+
+	const COMPRESSION_TIERS = [
+		{ id: 'comp_1', mult: 0.75, cost: 75000 },
+		{ id: 'comp_2', mult: 0.6, cost: 300000 },
+		{ id: 'comp_3', mult: 0.45, cost: 1200000 },
+		{ id: 'comp_4', mult: 0.3, cost: 4000000 },
+		{ id: 'comp_5', mult: 0.18, cost: 12000000 },
+	];
+
+	function isEternumUnlocked(d) {
+		return (d.constellations?.length || 0) >= ETERNUM_UNLOCK_CONSTELLATIONS;
+	}
+
+	function getCompressionTiersOwned(d) {
+		return d.compressionTiers || 0; // count of sequential tiers purchased
+	}
+
+	window.getPityCompressionReduction = function (rarityName) {
+		const d = getData();
+		const owned = getCompressionTiersOwned(d);
+		let mult = 1;
+		for (let i = 0; i < owned && i < COMPRESSION_TIERS.length; i++) {
+			mult *= COMPRESSION_TIERS[i].mult;
+		}
+		return mult;
+	};
+
+	function buyCompressionTier() {
+		const d = getData();
+		accrueShards(d);
+		const owned = getCompressionTiersOwned(d);
+		const tier = COMPRESSION_TIERS[owned];
+		if (!tier) return; // maxed
+		if (Math.floor(d.voidShards) < tier.cost) {
+			window.showAlert?.(`need ${fmt(tier.cost)} void shards!`);
+			return;
+		}
+		d.voidShards -= tier.cost;
+		d.compressionTiers = owned + 1;
+		saveData(d);
+		showAnomalyPopup?.(`✦ pity compression tier ${owned + 1} acquired!`);
+		renderStarmap();
+	}
+	window.buyCompressionTier = buyCompressionTier;
+
 	// ── data helpers ─────────────────────────────────────────────────────
 	function loadData() {
 		try {
@@ -338,6 +384,72 @@
 
 		VOID_MARKET.forEach((item) => market.appendChild(buildMarketItem(item, d, shards)));
 		container.appendChild(market);
+
+		// eternum
+
+		if (isEternumUnlocked(d)) {
+			const eternum = document.createElement('div');
+			eternum.className = 'starmap-section eternum-section';
+
+			const label = document.createElement('div');
+			label.className = 'starmap-section-label eternum-label';
+			label.textContent = '⟁ eternum — pity compression';
+			eternum.appendChild(label);
+
+			const desc = document.createElement('div');
+			desc.className = 'eternum-desc';
+			desc.textContent =
+				'compress the hard-pity ceiling on Void, Antimatter, and the rarities beyond. sequential, permanent, expensive.';
+			eternum.appendChild(desc);
+
+			const currentMult = window.getPityCompressionReduction();
+			const readout = document.createElement('div');
+			readout.className = 'eternum-readout';
+			readout.textContent = `current compression: ${Math.round((1 - currentMult) * 100)}% off hard pity`;
+			eternum.appendChild(readout);
+
+			const owned = getCompressionTiersOwned(d);
+			COMPRESSION_TIERS.forEach((tier, i) => {
+				const row = document.createElement('div');
+				const isOwned = i < owned;
+				const isNext = i === owned;
+				const isLocked = i > owned;
+				row.className =
+					'eternum-tier-row' +
+					(isOwned ? ' eternum-owned' : '') +
+					(isLocked ? ' eternum-locked' : '');
+				row.innerHTML = `
+      <div class="eternum-tier-info">
+        <div class="eternum-tier-name">compression tier ${i + 1}</div>
+        <div class="eternum-tier-desc">${Math.round((1 - tier.mult) * 100)}% reduction this tier</div>
+      </div>
+      <div class="eternum-tier-right">
+        ${
+					isOwned
+						? '<span class="eternum-owned-tag">owned</span>'
+						: `<div class="eternum-tier-cost">${fmt(tier.cost)} ✦</div>
+             <button class="small eternum-buy-btn" ${isNext ? '' : 'disabled'}>buy</button>`
+				}
+      </div>
+    `;
+				if (isNext) {
+					row.querySelector('.eternum-buy-btn')?.addEventListener('click', buyCompressionTier);
+				}
+				eternum.appendChild(row);
+			});
+
+			container.appendChild(eternum);
+		} else {
+			const teaseBox = document.createElement('div');
+			teaseBox.className = 'eternum-tease';
+			const remaining = ETERNUM_UNLOCK_CONSTELLATIONS - (d.constellations?.length || 0);
+			teaseBox.innerHTML = `
+    <div class="eternum-tease-icon">⟁</div>
+    <div class="eternum-tease-text">eternum sealed</div>
+    <div class="eternum-tease-sub">crystallize ${remaining} more constellation${remaining === 1 ? '' : 's'} to unlock</div>
+  `;
+			container.appendChild(teaseBox);
+		}
 	}
 
 	function buildConstellationCard(c) {

@@ -4971,3 +4971,101 @@ altcha-widget:empty::before {
 	background: none;
 	animation: none;
 }
+
+.eternum-section {
+	border: 1px solid rgb(184 168 255 / 25%);
+	border-radius: 4px;
+	padding: 16px;
+	background: rgb(100 80 200 / 4%);
+}
+
+.eternum-label {
+	color: #b8a8ff;
+	opacity: 0.7;
+}
+
+.eternum-desc {
+	font-size: 0.8em;
+	opacity: 0.55;
+	line-height: 1.5;
+	margin-bottom: 10px;
+}
+
+.eternum-readout {
+	font-size: 0.85em;
+	color: #b8a8ff;
+	margin-bottom: 16px;
+	padding: 8px 10px;
+	background: var(--overlay-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 3px;
+	text-align: center;
+}
+
+.eternum-tier-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: var(--overlay-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 3px;
+	padding: 10px 12px;
+	margin-bottom: 8px;
+	gap: 12px;
+	opacity: 0.5;
+}
+
+.eternum-tier-row.eternum-owned {
+	opacity: 1;
+	border-color: rgb(184 168 255 / 30%);
+	background: rgb(100 80 200 / 8%);
+}
+
+.eternum-tier-row:not(.eternum-locked):not(.eternum-owned) {
+	opacity: 1;
+}
+
+.eternum-tier-name {
+	font-size: 0.88em;
+	color: var(--text-color);
+}
+
+.eternum-tier-desc {
+	font-size: 0.72em;
+	opacity: 0.5;
+	margin-top: 2px;
+}
+
+.eternum-tier-cost {
+	font-size: 0.78em;
+	color: #b8a8ff;
+	margin-bottom: 4px;
+	text-align: right;
+}
+
+.eternum-owned-tag {
+	font-size: 0.8em;
+	color: #8c8;
+}
+
+.eternum-tease {
+	text-align: center;
+	padding: 40px 20px;
+	opacity: 0.4;
+}
+
+.eternum-tease-icon {
+	font-size: 2.4em;
+	margin-bottom: 10px;
+	color: #b8a8ff;
+}
+
+.eternum-tease-text {
+	font-size: 1em;
+	margin-bottom: 4px;
+}
+
+.eternum-tease-sub {
+	font-size: 0.78em;
+	opacity: 0.6;
+}
