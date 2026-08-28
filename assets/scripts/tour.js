@@ -3,9 +3,7 @@
 
 	const API_BASE = 'https://nosave.authsrng.xyz';
 
-	// lock deadline: August 28, 2026, 2:00 PM MDT (UTC-6). server is authoritative,
-	// this is just for the local countdown display before the first fetch lands.
-	const LOCK_DEADLINE = new Date('2026-08-28T20:00:00Z').getTime();
+	const START_TIME = new Date('2026-08-28T20:00:00Z').getTime();
 
 	const NAME_KEY = 'tour_player_name_v1';
 	const TOKEN_KEY = 'tour_player_token_v1';
@@ -73,18 +71,18 @@
 
 	let playerName = localStorage.getItem(NAME_KEY) || '';
 	let playerToken = localStorage.getItem(TOKEN_KEY) || '';
-	let completed = {}; // synced from server
+	let completed = {};
 	let leaderboard = [];
-	let serverLocked = isLocked(); // fallback until server responds
+	let serverOpen = hasStarted();
 	let panelOpen = false;
-	let activeTab = 'tasks'; // 'tasks' | 'leaderboard'
+	let activeTab = 'tasks';
 
-	function isLocked() {
-		return Date.now() >= LOCK_DEADLINE;
+	function hasStarted() {
+		return Date.now() >= START_TIME;
 	}
 
-	function timeUntilLock() {
-		return Math.max(0, LOCK_DEADLINE - Date.now());
+	function timeUntilStart() {
+		return Math.max(0, START_TIME - Date.now());
 	}
 
 	function formatCountdown(ms) {
@@ -262,7 +260,7 @@
 				font-size: 0.75em;
 				opacity: 0.55;
 			}
-			#tourCountdown.locked { color: #f66; opacity: 0.85; }
+			#tourCountdown.locked { color: #fa6; opacity: 0.85; }
 			#tourNameRow {
 				display: flex;
 				gap: 6px;
@@ -536,7 +534,7 @@
 		try {
 			const data = await apiLeaderboard();
 			leaderboard = data.rows || [];
-			serverLocked = !!data.locked;
+			serverOpen = !!data.open;
 			renderBody();
 		} catch (e) {
 			// leave stale leaderboard in place
@@ -550,12 +548,12 @@
 		const winFlag = document.getElementById('tourWinFlag');
 		if (!cdEl) return;
 
-		const locked = serverLocked || isLocked();
-		if (locked) {
-			cdEl.textContent = 'tournament locked. entries closed.';
+		const open = serverOpen || hasStarted();
+		if (!open) {
+			cdEl.textContent = `starts in: ${formatCountdown(timeUntilStart())}`;
 			cdEl.classList.add('locked');
 		} else {
-			cdEl.textContent = `locks in: ${formatCountdown(timeUntilLock())}`;
+			cdEl.textContent = 'tournament is live';
 			cdEl.classList.remove('locked');
 		}
 
@@ -573,7 +571,7 @@
 		}
 
 		document.querySelectorAll('.tour-task input').forEach((cb) => {
-			cb.disabled = locked || !playerName;
+			cb.disabled = !open || !playerName;
 		});
 	}
 
@@ -596,6 +594,8 @@
 			return;
 		}
 
+		const open = serverOpen || hasStarted();
+
 		TIERS.forEach((tier) => {
 			const tierEl = document.createElement('div');
 			tierEl.className = 'tour-tier';
@@ -616,7 +616,7 @@
 				const cb = document.createElement('input');
 				cb.type = 'checkbox';
 				cb.checked = done;
-				cb.disabled = serverLocked || isLocked();
+				cb.disabled = !open;
 
 				const textWrap = document.createElement('span');
 				textWrap.textContent = task.label;
@@ -654,7 +654,7 @@
 					} catch (e) {
 						cb.checked = !wantsChecked;
 						setStatus('could not sync, try again');
-						cb.disabled = serverLocked || isLocked();
+						cb.disabled = !(serverOpen || hasStarted());
 					}
 				});
 
@@ -700,7 +700,6 @@
 		return div.innerHTML;
 	}
 
-	// ── init ────────────────────────────────────────────────────────────
 	function init() {
 		injectStyles();
 		buildUI();
