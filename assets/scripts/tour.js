@@ -10,7 +10,7 @@
 
 	const TIERS = [
 		{
-			id: 1,
+			id: 1,//cnjcedgyjcu hnyuvgvfcfubymt7uyvdbr tgfvjdm yvgju fvgfgyj uvj g yjukdrjfuyvfgyvrbrgcs vrfcubvtsgfv dgunby ghdju,fnynufgn yfh rngy fgjvf yujrj vgf yjf gnvt fv gfrgfvhuvnu vghjifxugv yhbgtggy7evgrghughvb  bhfuig uidhnurweufjiungfhiefrehurhfukhsjgfgrjhnuyjgfnfduygf rgghh giuvrvhggvbhukmhvg bui sjgfhggvuh gvbjhi8yvfygys gkff7yhbvhyjufidzb ggukhgvhxugvbhduhfg urfvcbfsx hvc 7tiumvcwun8g fbusjvfgggfyugvhfgecsh
 			name: 'warm-up',
 			basePoints: 10,
 			tasks: [
