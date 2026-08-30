@@ -70,7 +70,7 @@ Translations happen at https://crowdin.com/project/arng.
 
 ## Versioning
 
-The repo starts at `v9.0`, but the game itself dates back to `1.0`, originally hosted on w3spaces and neocities. Archives from `v5.5` onward (when auth's RNG went open source) live on the [Wayback Machine](https://archive.org) under `authsrng.neocities.org` and `authsrng.w3spaces.com`. Personal archives collected by auth herself are [here](https://archive.org/details/@skunko_lee).
+The repo starts at `v9.0`, but the game itself dates back to `1.0`, originally hosted on W3spaces and Neocities. Archives from `v5.5` onward (when auth's RNG went open source) live on the [Wayback Machine](https://archive.org) under `authsrng.neocities.org` and `authsrng.w3spaces.com`. Personal archives collected by auth herself are [here](https://archive.org/details/@skunko_lee).
 
 The Git log is not the full history of this project's development.
 
