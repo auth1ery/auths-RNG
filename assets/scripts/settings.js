@@ -33,7 +33,9 @@
 		wavelocity: 'assets/audio/wavelocity.mp3',
 		nocturne: 'assets/audio/nocturne.mp3',
 		fallout: 'assets/audio/fallout.mp3',
-	};
+	}; /* FIXME: DONT MAKE THIS HARDCODED ITS GENUINELY ANNOYING
+							 MIRROR IT TO native AS WELL!!!
+		 */
 
 	const defaultTierTracks = [
 		{ threshold: 1500000, file: 'assets/audio/4sanctuary2.mp3' },

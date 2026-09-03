@@ -229,4 +229,6 @@ console.log(performance.now());
 		/** Parse only — returns the command AST without running it. */
 		parse: parseCommands,
 	};
+
+	// FIXME: add more elements to rarity style so it isnt just fancy text
 })();
