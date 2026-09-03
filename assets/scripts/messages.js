@@ -1344,6 +1344,9 @@ const messages = [
 	'we are witnessing history',
 	'this is not the history we should be witnessing',
 	'peak internet',
+	'authjam!',
+	'hehehehehehehehehehehe..... auty...',
+	'guh',
 ];
 
 const randomIndex = Math.floor(Math.random() * messages.length);
