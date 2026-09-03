@@ -714,6 +714,22 @@ Last release date on nightly: ${nightlyRDate}`;
 						</div>
 
 						<div class="settings-group">
+							<div class="settings-group-label">extras</div>
+							<div class="setting-row" id="catShrineSettingRow">
+								<div class="setting-info">
+									<span class="setting-name">enable the cat shrine</span>
+									<span class="setting-desc" id="catShrineSettingDesc"
+										>wow! emotional support cats for your gambling time..</span
+									>
+								</div>
+								<label class="pill-toggle">
+									<input type="checkbox" id="catShrineEnabled" disabled />
+									<span class="pill-track"></span>
+								</label>
+							</div>
+						</div>
+
+						<div class="settings-group">
 							<div class="settings-group-label">audio</div>
 
 							<div class="setting-row">
@@ -1075,6 +1091,18 @@ Last release date on nightly: ${nightlyRDate}`;
 
 					<br />
 				</div>
+
+				<div class="page" id="page-10">
+					<h2 style="margin-top: 0">cat shrine</h2>
+					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 12px">
+						summon cats, keep the last 50, equip one to pin it to your screen
+					</p>
+					<div id="catShrineCount" style="font-size: 0.78em; opacity: 0.5; margin-bottom: 14px">
+						0/50 cats saved
+					</div>
+					<button id="catShrineSummonBtn" style="margin-bottom: 20px">summon a cat</button>
+					<div id="catShrineGrid" class="cat-grid"></div>
+				</div>
 			</div>
 		</div>
 
@@ -1088,7 +1116,10 @@ Last release date on nightly: ${nightlyRDate}`;
 			<div class="page-dot" data-page="6"></div>
 			<div class="page-dot" data-page="7"></div>
 			<div class="page-dot" data-page="8"></div>
+			<div class="page-dot" data-page="9"></div>
 		</div>
+
+		<script src="assets/scripts/cat-shrine.js" defer></script>
 
 		<button class="page-arrow left" id="prevPage">‹</button>
 		<button class="page-arrow right" id="nextPage">›</button>
@@ -1796,7 +1827,7 @@ Last release date on nightly: ${nightlyRDate}`;
 				const swipeIndicator = document.querySelector('.swipe-indicator');
 
 				let currentPage = 0;
-				const totalPages = 9;
+				const totalPages = 10;
 				const lockedPages = new Set();
 
 				let visitCount = parseInt(localStorage.getItem('pageVisitCount') || '0');
@@ -3583,6 +3614,7 @@ container.addEventListener('click', () => {
 			if (localStorage.getItem('mutationsUnlocked') !== '1') hidePageDot(3);
 			if (localStorage.getItem('starmapUnlocked') !== '1') hidePageDot(4);
 			if (localStorage.getItem('runesUnlocked') !== '1') hidePageDot(5);
+			if (localStorage.getItem('catShrineUnlocked') !== '1') hidePageDot(9);
 
 			const savedPage = parseInt(localStorage.getItem('currentPage') || '0');
 			window.goToPage(savedPage);
