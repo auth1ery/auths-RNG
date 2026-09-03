@@ -130,14 +130,11 @@
 			actions.appendChild(delBtn);
 			cell.appendChild(actions);
 			grid.appendChild(cell);
+			img.onerror = () => {
+				cell.style.opacity = '0.3';
+				img.alt = 'this cat wandered off.. nooo';
+			};
 		});
-	}
-
-	async function refreshGrid() {
-		const cats = await getAllCats();
-		renderGrid(cats);
-		const countEl = document.getElementById('catShrineCount');
-		if (countEl) countEl.textContent = `${cats.length}/${MAX_CATS} cats saved`;
 	}
 
 	function toggleEquip(url) {
