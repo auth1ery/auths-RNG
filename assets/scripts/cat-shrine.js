@@ -70,6 +70,14 @@
 		return data.url;
 	}
 
+	async function refreshGrid() {
+		const cats = await getAllCats();
+		renderGrid(cats);
+		const countEl = document.getElementById('catShrineCount');
+		if (countEl) countEl.textContent = `${cats.length}/${MAX_CATS} cats saved`;
+		if (window._currentPage === 9 && window.goToPage) window.goToPage(9);
+	}
+
 	function checkUnlock() {
 		if (localStorage.getItem(UNLOCK_KEY) === '1') return true;
 		if (typeof totalRolls !== 'undefined' && totalRolls >= UNLOCK_ROLLS) {
