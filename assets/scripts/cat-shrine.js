@@ -67,7 +67,8 @@
 		const res = await fetch('https://cataas.com/cat?json=true');
 		if (!res.ok) throw new Error('cat fetch failed');
 		const data = await res.json();
-		return `https://cataas.com/cat/${data._id}`;
+		if (!data.id) throw new Error('no cat id returned');
+		return `https://cataas.com/cat/${data.id}`;
 	}
 
 	async function refreshGrid() {
