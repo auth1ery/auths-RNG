@@ -64,10 +64,7 @@
 	}
 
 	async function fetchNewCat() {
-		const res = await fetch('/api/cat');
-		if (!res.ok) throw new Error('cat fetch failed');
-		const data = await res.json();
-		return data.url;
+		return `https://cataas.com/cat?t=${Date.now()}`;
 	}
 
 	async function refreshGrid() {
