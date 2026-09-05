@@ -1075,8 +1075,8 @@
 			},
 			goto(args) {
 				const p = Number(args[0]);
-				if (!p || p < 1 || p > 9) {
-					dcLog('usage: :goto <1-9>', 'err');
+				if (!p || p < 1 || p > 12) {
+					dcLog('usage: :goto <1-12>', 'err');
 					return;
 				}
 				if (typeof window.goToPage === 'function') window.goToPage(p - 1);
@@ -2135,7 +2135,7 @@
 		const legacyShopPopup = el('legacyShopPopup');
 		const legacySettingsPopup = el('legacySettingsPopup');
 		const shopPage = document.querySelector('#page-2');
-		const settingsPage = document.querySelector('#page-8');
+		const settingsPage = document.querySelector('#page-10');
 		if (!legacyShopBtn || !legacySettingsBtn || !legacyShopPopup || !legacySettingsPopup) return;
 
 		let shopMoved = false,

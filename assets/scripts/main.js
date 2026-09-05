@@ -1723,6 +1723,10 @@ async function resetInventory() {
 	localStorage.removeItem('runeBlocks');
 	localStorage.removeItem('runeGift');
 	localStorage.removeItem('runeUpgrades');
+	localStorage.removeItem('expeditionData');
+	localStorage.removeItem('expeditionsUnlocked');
+	localStorage.removeItem('dealerData');
+	localStorage.removeItem('dealerUnlocked');
 	rarityTimestamps = new Map();
 	window.rarityTimestamps = rarityTimestamps;
 	notifications = [];

@@ -121,7 +121,7 @@ console.log(performance.now());
 		'Astral',
 		'Fearful',
 
-		// --- harder end (~1/2101–~1/3000) ---
+		// --- er end (~1/2101–~1/3000) ---
 		'horsehead hahahaha',
 		'Pillars',
 		'Verbose',
@@ -208,7 +208,7 @@ console.log(performance.now());
 			rewards: [
 				{ type: 'points', amount: 25000, label: '25,000 pts' },
 				{ type: 'anomaly', amount: 20, label: '20 anomalies' },
-				{ type: 'luck', mult: 2.5, dur: 60, label: '1m 2.5x luck' },
+				{ type: 'unlock_expeditions', label: 'unlock expeditions ⏳!!!' },
 			],
 		},
 		{
@@ -220,7 +220,7 @@ console.log(performance.now());
 			rewards: [
 				{ type: 'points', amount: 100000, label: '100,000 pts' },
 				{ type: 'anomaly', amount: 100, label: '100 anomalies' },
-				{ type: 'luck', mult: 3, dur: 120, label: '2m 3x luck' },
+				{ type: 'unlock_dealer', label: 'unlock the dealer 🎭' },
 			],
 		},
 		{
@@ -339,7 +339,7 @@ console.log(performance.now());
 		'global',
 		'easy',
 		'medium',
-		'hard',
+		'',
 		'insane',
 		'godlike',
 		'inferno',
@@ -502,17 +502,27 @@ console.log(performance.now());
 			localStorage.setItem('mutationsUnlocked', '1');
 			showAnomalyPopup('mutations unlocked! 🧬');
 			if (typeof renderMutations === 'function') renderMutations();
-			window.unlockPageDot?.(3);
+			window.unlockPageDot?.(5);
 		} else if (rew.type === 'unlock_starmap') {
 			localStorage.setItem('starmapUnlocked', '1');
 			showAnomalyPopup('✦ starmap unlocked!');
 			if (typeof renderStarmap === 'function') renderStarmap();
-			window.unlockPageDot?.(4);
+			window.unlockPageDot?.(6);
 		} else if (rew.type === 'unlock_runes') {
 			localStorage.setItem('runesUnlocked', '1');
 			showAnomalyPopup('🔷 runes unlocked!');
 			if (typeof renderRunes === 'function') renderRunes();
-			window.unlockPageDot?.(5);
+			window.unlockPageDot?.(7);
+		} else if (rew.type === 'unlock_expeditions') {
+			localStorage.setItem('expeditionsUnlocked', '1');
+			showAnomalyPopup('expeditions unlocked!');
+			if (typeof renderExpeditions === 'function') renderExpeditions();
+			window.unlockPageDot?.(3);
+		} else if (rew.type === 'unlock_dealer') {
+			localStorage.setItem('dealerUnlocked', '1');
+			showAnomalyPopup('someone new is at the table...');
+			if (typeof renderDealer === 'function') renderDealer();
+			window.unlockPageDot?.(4);
 		}
 	}
 

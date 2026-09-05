@@ -600,6 +600,25 @@ Last release date on nightly: ${nightlyRDate}`;
 				</div>
 
 				<div class="page" id="page-4">
+					<h2 style="margin-top: 0">expeditions</h2>
+					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 16px">
+						send your luck out rolling · come back to a batch of results!!
+					</p>
+					<div id="expeditionsContainer" style="width: 100%; max-width: 540px"></div>
+				</div>
+
+				<div class="page" id="page-5">
+					<h2 style="margin-top: 0">the dealer</h2>
+					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 16px">
+						high-card duel · pick a card, read the tell, call or fold...
+					</p>
+					<div
+						id="dealerContainer"
+						style="width: 100%; max-width: 540px; display: flex; justify-content: center"
+					></div>
+				</div>
+
+				<div class="page" id="page-6">
 					<h2 style="margin-top: 0">mutations</h2>
 					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 12px">
 						combine two rarities for an unpredictable result!
@@ -607,7 +626,7 @@ Last release date on nightly: ${nightlyRDate}`;
 					<div id="mutationsContainer"></div>
 				</div>
 
-				<div class="page" id="page-5">
+				<div class="page" id="7">
 					<h2 style="margin-top: 0">starmap</h2>
 					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 16px">
 						crystallize runs into permanent constellations · generate void shards · spend in the
@@ -616,7 +635,7 @@ Last release date on nightly: ${nightlyRDate}`;
 					<div id="starmapContainer" style="width: 100%; max-width: 540px"></div>
 				</div>
 
-				<div class="page" id="page-6">
+				<div class="page" id="page-8">
 					<h2 style="margin-top: 0">runes</h2>
 					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 16px">
 						runes drop as you roll · collect all 4 elementals to choose a gift · spend blocks on
@@ -625,7 +644,7 @@ Last release date on nightly: ${nightlyRDate}`;
 					<div id="runesContainer" style="width: 100%; max-width: 540px"></div>
 				</div>
 
-				<div class="page" id="page-7">
+				<div class="page" id="page-9">
 					<h2 style="margin-top: 0">wishing well</h2>
 
 					<div class="well-container">
@@ -676,7 +695,7 @@ Last release date on nightly: ${nightlyRDate}`;
 					</div>
 				</div>
 
-				<div class="page" id="page-8">
+				<div class="page" id="page-10">
 					<h2 style="margin-top: 0">settings</h2>
 					<div class="settings-wrap">
 						<div class="settings-group">
@@ -928,7 +947,7 @@ Last release date on nightly: ${nightlyRDate}`;
 					</div>
 				</div>
 
-				<div class="page" id="page-9">
+				<div class="page" id="page-11">
 					<h2 style="margin-top: 0">links and widgets</h2>
 
 					<a class="lazy" href="/assets/frontend/leaderboard.html">LEADERBOARD!</a>
@@ -1092,7 +1111,7 @@ Last release date on nightly: ${nightlyRDate}`;
 					<br />
 				</div>
 
-				<div class="page" id="page-10">
+				<div class="page" id="page-12">
 					<h2 style="margin-top: 0">cat shrine</h2>
 					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 12px">
 						summon cats, keep the last 50, equip one to pin it to your screen
@@ -1117,6 +1136,8 @@ Last release date on nightly: ${nightlyRDate}`;
 			<div class="page-dot" data-page="7"></div>
 			<div class="page-dot" data-page="8"></div>
 			<div class="page-dot" data-page="9"></div>
+			<div class="page-dot" data-page="10"></div>
+			<div class="page-dot" data-page="11"></div>
 		</div>
 
 		<script src="assets/scripts/cat-shrine.js" defer></script>
@@ -1827,7 +1848,7 @@ Last release date on nightly: ${nightlyRDate}`;
 				const swipeIndicator = document.querySelector('.swipe-indicator');
 
 				let currentPage = 0;
-				const totalPages = 10;
+				const totalPages = 12;
 				const lockedPages = new Set();
 
 				let visitCount = parseInt(localStorage.getItem('pageVisitCount') || '0');
@@ -1992,6 +2013,8 @@ Last release date on nightly: ${nightlyRDate}`;
 		<script src="assets/scripts/systems/starmap.js" defer></script>
 		<script src="assets/scripts/systems/runes.js" defer></script>
 		<script src="assets/scripts/systems/mutations.js" defer></script>
+		<script src="assets/scripts/systems/expeditions.js" defer></script>
+		<script src="assets/scripts/systems/dealer.js" defer></script>
 
 		<script>
 			// TAGS
@@ -3611,10 +3634,12 @@ container.addEventListener('click', () => {
 			window.hidePageDot = hidePageDot;
 			window.unlockPageDot = unlockPageDot;
 
-			if (localStorage.getItem('mutationsUnlocked') !== '1') hidePageDot(3);
-			if (localStorage.getItem('starmapUnlocked') !== '1') hidePageDot(4);
-			if (localStorage.getItem('runesUnlocked') !== '1') hidePageDot(5);
-			if (localStorage.getItem('catShrineUnlocked') !== '1') hidePageDot(9);
+			if (localStorage.getItem('mutationsUnlocked') !== '1') hidePageDot(5); // was 3
+			if (localStorage.getItem('starmapUnlocked') !== '1') hidePageDot(6); // was 4
+			if (localStorage.getItem('runesUnlocked') !== '1') hidePageDot(7); // was 5
+			if (localStorage.getItem('catShrineUnlocked') !== '1') hidePageDot(11); // was 9
+			if (localStorage.getItem('expeditionsUnlocked') !== '1') hidePageDot(3);
+			if (localStorage.getItem('dealerUnlocked') !== '1') hidePageDot(4);
 
 			const savedPage = parseInt(localStorage.getItem('currentPage') || '0');
 			window.goToPage(savedPage);
@@ -3640,7 +3665,7 @@ container.addEventListener('click', () => {
 				var e = 0,
 					l =
 						D.querySelector('.page:last-of-type .image-column:last-of-type') ||
-						D.querySelector('#page-9 .image-column:last-of-type');
+						D.querySelector('#page-11 .image-column:last-of-type');
 
 				W._showGoneLink = function () {
 					if (e) return;
