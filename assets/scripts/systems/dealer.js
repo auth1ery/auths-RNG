@@ -7,10 +7,17 @@
 	const RANK_LABEL = { 11: 'J', 12: 'Q', 13: 'K', 14: 'A' };
 	const ENCOUNTER_COOLDOWN = 3 * 60 * 60 * 1000;
 
+	const SESSION_DURATION = 5 * 60 * 1000;
+
+	const TIMEOUT_LINES = [
+		'"time\'s up." he starts folding into the noise before you can protest. he vanishes in your sight..',
+		'he checks a watch that wasn\'t there before. "we\'re done here, buckaroo."',
+	];
+
 	const TELLS_STRONG = ["he doesn't blink.", '"go on. call it."', 'taps the table twice, slow.'];
 	const TELLS_WEAK = [
 		'his coat shifts. just fabric. probably.',
-		'"...your funeral." — something almost like nerves.',
+		'"...your funeral." something almost like nerves... ooh',
 		"he's too still. that's new.",
 	];
 	const TELLS_NEUTRAL = ['"heh."'];
@@ -27,12 +34,12 @@
 		'for a second his coat isn\'t a coat. then it is again. "well played."',
 	];
 	const LOSE_LINES = [
-		"he doesn't gloat. that's worse.",
-		'"i did say." — he takes it without ceremony.',
+		"he doesn't gloat. that's worse!",
+		'"i did say." he takes it without ceremony.',
 		'the deck folds itself back into shape. "again?"',
 	];
 	const FOLD_LINES = [
-		'"smart. boring. smart."',
+		'"smart. boring. smart. i hate you."',
 		'he shrugs, already re-dealing.',
 		'"you\'ll call eventually. everyone does."',
 	];
@@ -43,7 +50,7 @@
 	];
 	const DEPART_LINES = [
 		'he folds back into the noise between rolls.',
-		'"same time, whenever that is." he\'s already gone.',
+		'"same time, whenever that is." he\'s already gone...?',
 	];
 
 	function pick(arr) {
@@ -66,8 +73,13 @@
 			tier: 0,
 			handsPlayed: 0,
 			correctReads: 0,
-			active: null, // current hand state
+			active: null,
+			startedAt: Date.now(),
 		};
+	}
+
+	function sessionTimeLeft(s) {
+		return SESSION_DURATION - (Date.now() - (s.startedAt || Date.now()));
 	}
 
 	function loadData() {
@@ -272,26 +284,95 @@
 		});
 	}
 
-	function leaveTable(data) {
+	function leaveTable(data, forced = false) {
 		data.session = null;
 		data.cooldownUntil = Date.now() + ENCOUNTER_COOLDOWN;
 		saveData(data);
-		showAnomalyPopup?.(pick(DEPART_LINES));
+		showAnomalyPopup?.(pick(forced ? TIMEOUT_LINES : DEPART_LINES));
 		renderDealer();
 	}
 	window.dealerLeaveTable = leaveTable;
+
+	const DEALER_FIGURE = `
+                 .-""""-.
+               .'  .--.  '.
+              /   /    \\   \\
+             ;   |  o o |   ;
+             |   |   ^  |   |
+             ;   | '-'  |   ;
+              \\   \\____/  /
+               '.        .'
+                 '-.__.-'
+                    ||
+              .-----||-----.
+             /      ||      \\
+            /       ||       \\
+           /     .--||--.     \\
+          ;     /   ||   \\     ;
+          |    /  __||__   \\    |
+          |   ;  /  ||  \\   ;   |
+          |   | /___||___\\  |   |
+          ;   |     ||       |   ;
+          \\  |    /||\\     |  /
+           \\ |   /_||_\\    | /
+            \\|      ||      |/
+              |      ||      |
+              |      ||      |
+             /|      ||      |\\
+            / |      ||      | \\
+           /  |______||______|  \\
+          /______________________\\
+             /              \\
+            /   _        _   \\
+           /___/ \\______/ \\___\\
+`;
+
+	let _dealerParallaxBound = false;
+
+	function initDealerParallax() {
+		if (_dealerParallaxBound) return;
+		const scene = document.getElementById('dealerScene');
+		const inner = scene?.querySelector('.dealer-scene-inner');
+		if (!scene || !inner) return;
+		if (!window.matchMedia('(pointer: fine)').matches) return;
+
+		_dealerParallaxBound = true;
+
+		scene.addEventListener('mousemove', (e) => {
+			if (document.body.classList.contains('reduce-motion')) return;
+			const rect = scene.getBoundingClientRect();
+			const x = (e.clientX - rect.left) / rect.width - 0.5;
+			const y = (e.clientY - rect.top) / rect.height - 0.5;
+			inner.style.transform = `rotateY(${x * 6}deg) rotateX(${y * -4}deg)`;
+		});
+		scene.addEventListener('mouseleave', () => {
+			inner.style.transform = 'rotateY(0deg) rotateX(0deg)';
+		});
+	}
+
+	function updateDealerScene(tier, present) {
+		const scene = document.getElementById('dealerScene');
+		const figure = document.getElementById('dealerFigure');
+		if (!scene || !figure) return;
+		scene.style.display = '';
+		figure.textContent = DEALER_FIGURE;
+		scene.dataset.tier = present ? String(tier) : 'none';
+		scene.classList.toggle('dealer-scene-empty', !present);
+	}
 
 	function renderDealer() {
 		const container = document.getElementById('dealerContainer');
 		if (!container) return;
 
 		if (!isUnlocked()) {
+			const scene = document.getElementById('dealerScene');
+			if (scene) scene.style.display = 'none';
 			container.innerHTML = `
-        <div class="starmap-locked">
-          <div class="starmap-locked-icon">🎭</div>
-          <div class="starmap-locked-text">the table is empty</div>
-          <div class="starmap-locked-sub">complete the insane gauntlet to unlock</div>
-        </div>`;
+      <div class="starmap-locked">
+        <div class="starmap-locked-icon">🎭</div>
+        <div class="starmap-locked-text">the table is empty</div>
+        <div class="starmap-locked-sub">complete the insane gauntlet to unlock</div>
+      </div>`;
 			return;
 		}
 
@@ -300,24 +381,20 @@
 
 		if (!data.session) {
 			if (Date.now() < data.cooldownUntil) {
+				updateDealerScene(0, false);
 				const cd = document.createElement('div');
 				cd.className = 'dealer-cooldown-box';
-				cd.innerHTML = `<div class="dealer-ascii-portrait">░░░░░</div><div>the table is empty. he'll be back in ${fmtTime(data.cooldownUntil - Date.now())}.</div>`;
+				cd.innerHTML = `<div>the table is empty. he'll be back in ${fmtTime(data.cooldownUntil - Date.now())}.</div>`;
 				container.appendChild(cd);
 				return;
 			}
+			updateDealerScene(0, true);
 			const sitBox = document.createElement('div');
 			sitBox.className = 'dealer-cooldown-box';
 			sitBox.innerHTML = `
-        <div class="dealer-ascii-portrait">
-▄▄▄▄▄▄▄
-█ ● ● █
-█  ▼  █
-▀▀▀▀▀▀▀
-        </div>
-        <p style="font-style:italic;opacity:0.7;">${pick(ARRIVAL_LINES)}</p>
-        <button class="small" id="dealerSitBtn">sit down</button>
-      `;
+      <p style="font-style:italic;opacity:0.7;">${pick(ARRIVAL_LINES)}</p>
+      <button class="small" id="dealerSitBtn">sit down</button>
+    `;
 			container.appendChild(sitBox);
 			sitBox.querySelector('#dealerSitBtn').addEventListener('click', () => {
 				data.session = freshSession();
@@ -329,14 +406,23 @@
 
 		const s = data.session;
 
+		if (sessionTimeLeft(s) <= 0) {
+			leaveTable(data, true);
+			return;
+		}
+
+		updateDealerScene(s.tier, true);
+		const timerText = `leaves in ${fmtTime(sessionTimeLeft(s))}`;
+
 		if (!s.active) {
 			const startBox = document.createElement('div');
 			startBox.className = 'dealer-table-box';
 			startBox.innerHTML = `
-        <div class="dealer-session-stats">hands: ${s.handsPlayed} · read accuracy: ${s.handsPlayed ? Math.round((s.correctReads / s.handsPlayed) * 100) : 0}% · his attention: tier ${s.tier}</div>
-        <button id="dealerNextHandBtn">deal next hand</button>
-        <button class="small" id="dealerLeaveBtn" style="opacity:0.6;">leave the table</button>
-      `;
+      <div class="dealer-session-stats">hands: ${s.handsPlayed} · read accuracy: ${s.handsPlayed ? Math.round((s.correctReads / s.handsPlayed) * 100) : 0}% · his attention: tier ${s.tier}</div>
+      <div class="dealer-session-timer">${timerText}</div>
+      <button id="dealerNextHandBtn">deal next hand</button>
+      <button class="small" id="dealerLeaveBtn" style="opacity:0.6;">leave the table</button>
+    `;
 			container.appendChild(startBox);
 			startBox.querySelector('#dealerNextHandBtn').addEventListener('click', () => startHand(data));
 			startBox.querySelector('#dealerLeaveBtn').addEventListener('click', () => leaveTable(data));
@@ -346,6 +432,11 @@
 		const hand = s.active;
 		const box = document.createElement('div');
 		box.className = 'dealer-table-box';
+
+		const timerEl = document.createElement('div');
+		timerEl.className = 'dealer-session-timer';
+		timerEl.textContent = timerText;
+		box.appendChild(timerEl);
 
 		const cardsRow = document.createElement('div');
 		cardsRow.className = 'dealer-hand-row';
@@ -401,8 +492,15 @@
 	window.renderDealer = renderDealer;
 
 	function tryInit(n) {
-		if (document.getElementById('dealerContainer')) renderDealer();
-		else if (n > 0) setTimeout(() => tryInit(n - 1), 200);
+		if (document.getElementById('dealerContainer')) {
+			renderDealer();
+			initDealerParallax();
+		} else if (n > 0) {
+			setTimeout(() => tryInit(n - 1), 200);
+		}
 	}
 	tryInit(25);
+	setInterval(() => {
+		if (loadData().session) renderDealer();
+	}, 1000);
 })();

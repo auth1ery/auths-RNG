@@ -5362,3 +5362,132 @@ body.cat-shrine-off #catShrinePin {
 .dealer-modal {
 	text-align: center;
 }
+
+.dealer-instructions {
+	width: 100%;
+	max-width: 480px;
+	margin-bottom: 14px;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	background: var(--overlay-bg);
+}
+
+.dealer-instructions summary {
+	cursor: pointer;
+	padding: 10px 14px;
+	font-size: 0.85em;
+	opacity: 0.7;
+	list-style: none;
+}
+
+.dealer-instructions summary::-webkit-details-marker {
+	display: none;
+}
+
+.dealer-instructions summary::before {
+	content: '▸ ';
+	opacity: 0.5;
+}
+
+.dealer-instructions[open] summary::before {
+	content: '▾ ';
+}
+
+.dealer-instructions-body {
+	padding: 0 14px 14px;
+	font-size: 0.8em;
+	opacity: 0.75;
+	line-height: 1.6;
+}
+
+.dealer-instructions-body p {
+	text-align: left;
+	max-width: none;
+	margin: 0 0 10px;
+	opacity: 1;
+}
+
+.dealer-instructions-body p:last-child {
+	margin-bottom: 0;
+}
+
+.dealer-scene-inner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	transform-style: preserve-3d;
+	transition: transform 0.4s ease-out;
+}
+
+.dealer-table-plane {
+	position: absolute;
+	bottom: -10px;
+	left: 50%;
+	width: 340px;
+	height: 130px;
+	background: linear-gradient(180deg, #1c1a22, #0a090c);
+	border: 1px solid rgb(150 130 255 / 15%);
+	border-radius: 50%;
+	transform: translateX(-50%) rotateX(70deg);
+	box-shadow: 0 0 40px rgb(150 130 255 / 6%);
+}
+
+.dealer-scene {
+	height: 440px;
+}
+
+.dealer-figure {
+	position: absolute;
+	top: 24px;
+	bottom: auto;
+	left: 50%;
+	transform: translateX(-50%) translateZ(20px);
+	font-size: 0.78em;
+	line-height: 1.05;
+	letter-spacing: normal;
+}
+
+@keyframes dealer-breathe {
+	0%,
+	100% {
+		transform: translateX(-50%) translateZ(20px) translateY(0);
+	}
+	50% {
+		transform: translateX(-50%) translateZ(20px) translateY(-3px);
+	}
+}
+
+.dealer-scene-vignette {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background: radial-gradient(ellipse at center, transparent 40%, rgb(0 0 0 / 55%) 100%);
+}
+
+.dealer-scene[data-tier='1'] {
+	--dealer-glow: rgb(150 130 255 / 45%);
+}
+
+.dealer-scene[data-tier='2'] {
+	--dealer-glow: rgb(255 130 200 / 50%);
+}
+
+.dealer-scene[data-tier='3'] {
+	--dealer-glow: rgb(255 80 80 / 55%);
+}
+
+.dealer-scene.dealer-scene-empty .dealer-figure {
+	opacity: 0.12;
+	animation: none;
+	text-shadow: none;
+}
+
+body.reduce-motion .dealer-figure {
+	animation: none !important;
+}
+
+.dealer-session-timer {
+	font-size: 0.72em;
+	opacity: 0.4;
+	margin-bottom: 10px;
+}

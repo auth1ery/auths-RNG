@@ -612,6 +612,34 @@ Last release date on nightly: ${nightlyRDate}`;
 					<p style="font-size: 0.8em; opacity: 0.5; margin: -6px 0 16px">
 						high-card duel · pick a card, read the tell, call or fold...
 					</p>
+					<details class="dealer-instructions">
+						<summary>how to play</summary>
+						<div class="dealer-instructions-body">
+							<p>sit down to draw two hands of 3 cards, yours and his.</p>
+							<p>
+								pick one of your cards. before you decide, he drops a "tell", a line of flavor text.
+								how honest that tell is depends on his attention tier, shown in the stats line. read
+								him right often enough and he starts playing straighter.
+							</p>
+							<p>
+								pick a stake, 0.5x, 1x, or 2x, then call or fold. call compares your card to his (he
+								sometimes plays worse than his best on purpose at higher tiers). fold bails with no
+								result.
+							</p>
+							<p>
+								wins pay points, sometimes anomalies instead. losses cost anomalies if you have any,
+								otherwise they eat an upgrade level! you don't want that.. do you?
+							</p>
+						</div>
+					</details>
+
+					<div id="dealerScene" class="dealer-scene" data-tier="none">
+						<div class="dealer-scene-inner">
+							<div class="dealer-table-plane"></div>
+							<pre class="dealer-figure" id="dealerFigure"></pre>
+							<div class="dealer-scene-vignette"></div>
+						</div>
+					</div>
 					<div
 						id="dealerContainer"
 						style="width: 100%; max-width: 540px; display: flex; justify-content: center"
