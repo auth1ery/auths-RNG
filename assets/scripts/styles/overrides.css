@@ -5171,41 +5171,50 @@ body.cat-shrine-off #catShrinePin {
 	width: 100%;
 	max-width: 540px;
 }
+
 .expedition-card.expedition-locked {
 	opacity: 0.42;
 	filter: saturate(0.4);
 }
+
 .expedition-card-header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 8px;
 }
+
 .expedition-card-name {
 	font-size: 0.95em;
 }
+
 .expedition-card-dur {
 	font-size: 0.75em;
 	opacity: 0.5;
 }
+
 .expedition-card-desc {
 	font-size: 0.8em;
 	opacity: 0.55;
 	margin-bottom: 12px;
 	line-height: 1.5;
 }
+
 .expedition-card-locked {
 	font-size: 0.75em;
 	opacity: 0.5;
 }
+
 .expedition-card-actions {
 	display: flex;
 	gap: 8px;
 	flex-wrap: wrap;
 }
+
 .expedition-risk-btn {
 	color: #ffb86b;
 }
+
 .expedition-active-box,
 .expedition-cooldown-box {
 	background: var(--panel-bg);
@@ -5217,10 +5226,12 @@ body.cat-shrine-off #catShrinePin {
 	margin-bottom: 16px;
 	text-align: center;
 }
+
 .expedition-active-title {
 	font-size: 0.95em;
 	margin-bottom: 4px;
 }
+
 .expedition-risk-tag {
 	font-size: 0.7em;
 	color: #f88;
@@ -5229,10 +5240,12 @@ body.cat-shrine-off #catShrinePin {
 	padding: 1px 7px;
 	vertical-align: middle;
 }
+
 .expedition-active-timer {
 	font-size: 0.85em;
 	opacity: 0.6;
 }
+
 .expedition-cooldown-box {
 	opacity: 0.6;
 	font-size: 0.85em;
@@ -5247,6 +5260,7 @@ body.cat-shrine-off #catShrinePin {
 	margin-bottom: 16px;
 	text-align: center;
 }
+
 .dealer-cooldown-box,
 .dealer-table-box {
 	background: var(--panel-bg);
@@ -5257,22 +5271,27 @@ body.cat-shrine-off #catShrinePin {
 	max-width: 480px;
 	text-align: center;
 }
+
 .dealer-cooldown-box p {
 	opacity: 0.7;
 }
+
 #dealerSitBtn {
 	margin-top: 4px;
 }
+
 .dealer-session-stats {
 	font-size: 0.72em;
 	opacity: 0.4;
 	margin-bottom: 16px;
 }
+
 #dealerNextHandBtn {
 	width: 100%;
 	padding: 12px;
 	margin-bottom: 8px;
 }
+
 .dealer-hand-row {
 	display: flex;
 	gap: 10px;
@@ -5280,6 +5299,7 @@ body.cat-shrine-off #catShrinePin {
 	margin-bottom: 14px;
 	flex-wrap: wrap;
 }
+
 .dealer-ascii-card {
 	font-family: monospace;
 	white-space: pre;
@@ -5294,14 +5314,17 @@ body.cat-shrine-off #catShrinePin {
 		border-color 0.15s,
 		transform 0.15s;
 }
+
 .dealer-ascii-card:hover {
 	border-color: #888;
 	transform: translateY(-2px);
 }
+
 .dealer-card-chosen {
 	border-color: var(--accent-color);
 	box-shadow: 0 0 8px rgb(220 220 220 / 15%);
 }
+
 .dealer-ascii-small {
 	font-family: monospace;
 	white-space: pre;
@@ -5310,27 +5333,32 @@ body.cat-shrine-off #catShrinePin {
 	text-align: center;
 	margin-bottom: 4px;
 }
+
 .dealer-tell-text {
 	font-style: italic;
 	opacity: 0.7;
 	font-size: 0.88em;
 	margin: 10px 0 16px;
 }
+
 .dealer-stake-row {
 	display: flex;
 	gap: 6px;
 	justify-content: center;
 	margin-bottom: 12px;
 }
+
 .dealer-stake-active {
 	border-color: var(--text-color) !important;
 	opacity: 1 !important;
 }
+
 .dealer-action-row {
 	display: flex;
 	gap: 10px;
 	justify-content: center;
 }
+
 .dealer-modal {
 	text-align: center;
 }
