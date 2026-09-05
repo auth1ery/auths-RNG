@@ -5452,6 +5452,7 @@ body.cat-shrine-off #catShrinePin {
 	100% {
 		transform: translateX(-50%) translateZ(20px) translateY(0);
 	}
+
 	50% {
 		transform: translateX(-50%) translateZ(20px) translateY(-3px);
 	}
