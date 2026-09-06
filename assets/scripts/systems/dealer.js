@@ -1,5 +1,6 @@
 (function () {
 	'use strict';
+	// TODO: make it so you shoot the dealer with a pistol
 	console.log(performance.now());
 
 	const DEALER_KEY = 'dealerData';
