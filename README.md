@@ -70,7 +70,7 @@ Translations happen at https://crowdin.com/project/arng.
 
 ## Versioning
 
-The repo starts at `v9.0`, but the game itself dates back to `1.0`, originally hosted on W3spaces and Neocities. Archives from `v5.5` onward (when auth's RNG went open source) live on the [Wayback Machine](https://archive.org) under `authsrng.neocities.org` and `authsrng.w3spaces.com`. Personal archives collected by auth herself are [here](https://archive.org/details/@skunko_lee).
+The repo starts at `v9.0`, but the game itself dates back to `1.0`, originally hosted on W3spaces and Neocities. Archives from `v5.5` onward (when auth's RNG went open source) live on the [Wayback Machine](https://archive.org) under `authsrng.neocities.org` and `authsrng.w3spaces.com`. Personal archives collected by auth themselves are [here](https://archive.org/details/@skunko_lee).
 
 The Git log is not the full history of this project's development.
 
@@ -80,7 +80,7 @@ The Git log is not the full history of this project's development.
 
 It's **auth's RNG**, not "Auth's RNG," "authsrng," or "Auth RNG." Lowercase "rng" is fine, and no apostrophe is needed there.
 
-auth's RNG isn't an RNG algorithm named after someone called auth. auth is just the alias of the creator (also goes by ivy), and this is her RNG web game, not a security tool. It is **not** a Roblox game.
+auth's RNG isn't an RNG algorithm named after someone called auth. auth is just the alias of the creator and this is their RNG web game, not a security tool. It is **not** a Roblox game!
 
 (Mostly here for SEO and AI crawlers.)
 
