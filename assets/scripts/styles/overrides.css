@@ -5492,3 +5492,225 @@ body.reduce-motion .dealer-figure {
 	opacity: 0.4;
 	margin-bottom: 10px;
 }
+
+.info-tip {
+	position: absolute;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	border: 1px solid var(--border-color);
+	background: var(--overlay-bg);
+	color: var(--text-color);
+	opacity: 0.55;
+	font-family: Georgia, serif;
+	font-style: italic;
+	font-size: 10px;
+	line-height: 1;
+	cursor: pointer;
+	user-select: none;
+	z-index: 5;
+	transition:
+		transform 0.15s ease,
+		opacity 0.15s ease,
+		border-color 0.15s ease;
+}
+
+.info-tip::after {
+	content: 'i';
+}
+
+.info-tip:hover {
+	opacity: 1;
+	border-color: var(--text-color);
+}
+
+.info-tip.unread {
+	opacity: 0.9;
+	border-color: var(--accent-color);
+}
+
+.info-tip-pos-top-right {
+	top: -7px;
+	right: -7px;
+}
+
+.info-tip-pos-top-left {
+	top: -7px;
+	left: -7px;
+}
+
+.info-tip-pos-bottom-right {
+	bottom: -7px;
+	right: -7px;
+}
+
+.info-tip-pos-bottom-left {
+	bottom: -7px;
+	left: -7px;
+}
+
+.info-tip-pos-right {
+	top: calc(50% - 8px);
+	right: -20px;
+}
+
+.info-tip-pos-left {
+	top: calc(50% - 8px);
+	left: -20px;
+}
+
+.info-tip-pos-top-right:hover,
+.info-tip-pos-top-left:hover,
+.info-tip-pos-bottom-right:hover,
+.info-tip-pos-bottom-left:hover,
+.info-tip-pos-right:hover,
+.info-tip-pos-left:hover {
+	transform: scale(1.15);
+}
+
+.info-tip-orbit {
+	position: absolute;
+	inset: -7px;
+	pointer-events: none;
+}
+
+.info-tip:not(.unread) .info-tip-orbit {
+	display: none;
+}
+
+.info-tip-orbit span {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	border: 1px solid var(--accent-color);
+	background: transparent;
+	opacity: 0.5;
+}
+
+.info-tip-orbit span:nth-child(1) {
+	animation: infotip-orbit-a 3.2s linear infinite;
+}
+
+.info-tip-orbit span:nth-child(2) {
+	animation: infotip-orbit-b 4s linear infinite;
+	opacity: 0.35;
+}
+
+.info-tip-orbit span:nth-child(3) {
+	animation: infotip-orbit-c 4.8s ease-in-out infinite;
+	opacity: 0.4;
+}
+
+@keyframes infotip-orbit-a {
+	from {
+		transform: translate(-50%, -50%) rotate(0deg) translateX(6px);
+	}
+
+	to {
+		transform: translate(-50%, -50%) rotate(360deg) translateX(6px);
+	}
+}
+
+@keyframes infotip-orbit-b {
+	from {
+		transform: translate(-50%, -50%) rotate(140deg) translateX(8px);
+	}
+
+	to {
+		transform: translate(-50%, -50%) rotate(-220deg) translateX(8px);
+	}
+}
+
+@keyframes infotip-orbit-c {
+	0% {
+		transform: translate(-50%, -50%) rotate(260deg) translateX(4px) scale(0.85);
+	}
+
+	50% {
+		transform: translate(-50%, -50%) rotate(430deg) translateX(9px) scale(1.2);
+	}
+
+	100% {
+		transform: translate(-50%, -50%) rotate(620deg) translateX(4px) scale(0.85);
+	}
+}
+
+body.reduce-motion .info-tip-orbit span {
+	animation: none !important;
+}
+
+.info-tip-popover {
+	position: fixed;
+	z-index: 10050;
+	max-width: 260px;
+	padding: 12px 14px;
+	background: var(--panel-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	color: var(--text-color);
+	font-size: 0.82em;
+	line-height: 1.55;
+	box-shadow: 0 6px 20px rgb(0 0 0 / 40%);
+	opacity: 0;
+	transform: translateY(4px) scale(0.97);
+	pointer-events: none;
+	transition:
+		opacity 0.15s ease,
+		transform 0.15s ease;
+}
+
+.info-tip-popover.show {
+	opacity: 1;
+	transform: translateY(0) scale(1);
+	pointer-events: auto;
+}
+
+.info-tip-popover-text {
+	padding-right: 14px;
+}
+
+.info-tip-popover-close {
+	position: absolute;
+	top: 3px;
+	right: 5px;
+	background: none;
+	border: none;
+	color: var(--text-color);
+	opacity: 0.5;
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+	padding: 3px 5px;
+}
+
+.info-tip-popover-close:hover {
+	opacity: 1;
+	background: none;
+	animation: none;
+}
+
+.info-tip-popover-arrow {
+	position: absolute;
+	top: -6px;
+	width: 11px;
+	height: 11px;
+	background: var(--panel-bg);
+	border-left: 1px solid var(--border-color);
+	border-top: 1px solid var(--border-color);
+	transform: rotate(45deg);
+}
+
+.info-tip-popover.place-above .info-tip-popover-arrow {
+	top: auto;
+	bottom: -6px;
+	border-left: none;
+	border-top: none;
+	border-right: 1px solid var(--border-color);
+	border-bottom: 1px solid var(--border-color);
+}
